@@ -1,19 +1,11 @@
 import camelCase from 'lodash.camelcase';
-import upperFirst from 'lodash.upperfirst';
 import snakeCase from 'lodash.snakecase';
 import kebabCase from 'lodash.kebabcase';
 import isEmpty = require('lodash.isempty');
 import uniq = require('lodash.uniq');
 import { Casing, NameRestriction } from './types';
 import { truncateWithSemiHash } from './truncate-w-hash';
-
-function titleCase (input = '') {
-  return upperFirst(camelCase(input));
-}
-
-function constantCase (input = '') {
-  return snakeCase(input).toUpperCase();
-}
+import { titleCase, constantCase } from '../string-manipulation';
 
 function doNothing (input: any) {
   return input;

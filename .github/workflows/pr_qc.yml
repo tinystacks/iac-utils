@@ -18,8 +18,6 @@ jobs:
         with:
           node-version: 16
           cache: 'npm'
-          registry-url: 'https://npm.pkg.github.com'
-          token: ${{ secrets.TS_GH_BOT }}
       - name: Quality Checks
         run: |
           npm ci;
@@ -32,6 +30,4 @@ jobs:
               echo "missing file .version-change-type!"
               exit 1
           fi
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.TS_GH_BOT }}
 
