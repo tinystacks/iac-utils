@@ -1,3 +1,3 @@
-export * from './allocate-cidr-block';
+export * from './cidr';
 export * from './naming';
 export * from './string-manipulation';

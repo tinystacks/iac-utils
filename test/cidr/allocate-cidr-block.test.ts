@@ -1,4 +1,4 @@
-import { allocateCidrBlock } from '../src';
+import { allocateCidrBlock } from '../../src';
 
 describe('Allocate CIDR Block', () => {
   it('returns same cidr block given the same seed value', () => {
