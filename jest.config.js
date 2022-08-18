@@ -3,6 +3,7 @@ module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
   testPathIgnorePatterns: ['.d.ts', '.js'],
+  verbose: true,
   coverageThreshold: {
     global: {
       branches: 75,
