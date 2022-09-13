@@ -1,6 +1,6 @@
 {
   "name": "@tinystacks/iac-utils",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Stateless utility methods whose scope is outside of the TinyStacks domain.",
   "main": "dist/index.js",
   "files": [
