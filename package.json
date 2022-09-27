@@ -26,7 +26,7 @@
     "qa": "npm run lint && npm run test-cov",
     "test": "jest",
     "test-cov": "jest --coverage",
-    "test-file": "jest ./test/cidr/allocate-subnet-mask.test.ts",
+    "test-file": "jest ./test/string-manipulation/kebab-case.test.ts",
     "view-test-cov": "jest --coverage && open coverage/lcov-report/index.html"
   },
   "repository": {
