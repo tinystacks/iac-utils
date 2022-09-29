@@ -39,7 +39,7 @@ function generateName (args: {
       characterRestrictions,
       characterLimit
     } = nameRestriction;
-    return truncateWithSemiHash(name.replace(characterRestrictions, ''), characterLimit);
+    return truncateWithSemiHash(name.replace(new RegExp(characterRestrictions, 'g'), ''), characterLimit);
   }
   return name;
 }

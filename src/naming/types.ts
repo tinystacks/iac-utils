@@ -7,8 +7,10 @@ enum Casing {
 }
 
 interface NameRestriction {
+  minimumLength?: number;
   characterLimit?: number;
   characterRestrictions?: RegExp;
+  allowedCharacterTypes?: string;
 }
 
 export {
