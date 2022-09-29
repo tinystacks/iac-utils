@@ -36,5 +36,6 @@ function validateName (name = '', nameRestriction: NameRestriction = {}, label =
 }
 
 export {
+  NameValidationResponse,
   validateName
 };

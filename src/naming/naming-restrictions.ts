@@ -55,6 +55,7 @@ const resourceNameRules: {
   },
   TinyStacks: {
     iacStackName: {
+      minimumLength: 2,
       characterLimit: 64,
       characterRestrictions: alphaNumericAndHyphen,
       allowedCharacterTypes: alphaNumericAndHyphenAllowedCharacterTypes
