@@ -26,7 +26,7 @@
     "qa": "npm run lint && npm run test-cov",
     "test": "jest",
     "test-cov": "jest --coverage",
-    "test-file": "jest ./test/cidr/allocate-subnet-mask.test.ts",
+    "test-file": "jest ./test/naming/validate-name.test.ts",
     "view-test-cov": "jest --coverage && open coverage/lcov-report/index.html"
   },
   "repository": {
@@ -42,12 +42,7 @@
   "devDependencies": {
     "@types/jest": "^28.1.7",
     "@types/lodash.camelcase": "^4.3.7",
-    "@types/lodash.clonedeep": "^4.5.7",
-    "@types/lodash.get": "^4.4.7",
     "@types/lodash.isempty": "^4.4.7",
-    "@types/lodash.isnil": "^4.0.7",
-    "@types/lodash.isplainobject": "^4.0.7",
-    "@types/lodash.kebabcase": "^4.1.7",
     "@types/lodash.snakecase": "^4.1.7",
     "@types/lodash.uniq": "^4.5.7",
     "@types/lodash.upperfirst": "^4.3.7",
@@ -65,12 +60,7 @@
   },
   "dependencies": {
     "lodash.camelcase": "^4.3.0",
-    "lodash.clonedeep": "^4.5.0",
-    "lodash.get": "^4.4.2",
     "lodash.isempty": "^4.4.0",
-    "lodash.isnil": "^4.0.0",
-    "lodash.isplainobject": "^4.0.6",
-    "lodash.kebabcase": "^4.1.1",
     "lodash.snakecase": "^4.1.1",
     "lodash.uniq": "^4.5.0",
     "lodash.upperfirst": "^4.3.1",

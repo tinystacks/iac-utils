@@ -1,11 +1,10 @@
 import camelCase from 'lodash.camelcase';
 import snakeCase from 'lodash.snakecase';
-import kebabCase from 'lodash.kebabcase';
 import isEmpty = require('lodash.isempty');
 import uniq = require('lodash.uniq');
 import { Casing, NameRestriction } from './types';
 import { truncateWithSemiHash } from './truncate-w-hash';
-import { titleCase, constantCase } from '../string-manipulation';
+import { titleCase, constantCase, kebabCase } from '../string-manipulation';
 
 function doNothing (input: any) {
   return input;
@@ -40,7 +39,7 @@ function generateName (args: {
       characterRestrictions,
       characterLimit
     } = nameRestriction;
-    return truncateWithSemiHash(name.replace(characterRestrictions, ''), characterLimit);
+    return truncateWithSemiHash(name.replace(new RegExp(characterRestrictions, 'g'), ''), characterLimit);
   }
   return name;
 }

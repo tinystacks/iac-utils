@@ -11,7 +11,7 @@ describe('name-utils', () => {
       expect(name).toEqual('abc&123');
     });
     it('replaces disallowed characters if restrictions are passed', () => {
-      const identifiers = ['ab.c', '12$3'];
+      const identifiers = ['a@b.c', '1#2$3'];
       const name = generateName({
         identifiers,
         nameRestriction: {
