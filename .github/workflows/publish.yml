@@ -16,8 +16,8 @@ jobs:
         with:
           node-version: 16
           cache: 'npm'
-          registry-url: 'https://npm.pkg.github.com'
-          token: ${{ secrets.TS_GH_BOT }}
+          registry-url: 'https://registry.npmjs.org'
+          token: ${{ secrets.NPM_DEPLOY_KEY }}
       - run: |
           npm ci;
         env:
