@@ -21,7 +21,7 @@ jobs:
       - run: |
           npm ci;
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.TS_GH_BOT }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_DEPLOY_KEY }}
       - name: Submit PR for version change
         run: |
           git config --global user.email "zaydsimjee@gmail.com"
@@ -35,7 +35,7 @@ jobs:
           git push --set-upstream origin "$versionChange"
           gh pr create --title "$versionChange" --body "update version to $versionChange"
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_DEPLOY_KEY }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Approve version change PR and merge
         run: |
@@ -45,7 +45,7 @@ jobs:
           gh pr merge "$versionChange" --admin --squash
           sleep 2s
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_DEPLOY_KEY }}
           GH_TOKEN: ${{ secrets.APPROVER_TOKEN }}
       - name: Checkout main and publish module
         run: |
