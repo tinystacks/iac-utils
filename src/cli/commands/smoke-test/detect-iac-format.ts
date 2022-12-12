@@ -2,7 +2,7 @@ import { resolve as resolvePath } from 'path';
 import { readdirSync } from 'fs';
 import { CustomError, IacFormat } from '../../types';
 
-function detectIacFormat () {
+function detectIacFormat (): IacFormat {
   const files = readdirSync(resolvePath('./'));
   const cdkJson = 'cdk.json';
   const isCdkProject = files.includes(cdkJson);

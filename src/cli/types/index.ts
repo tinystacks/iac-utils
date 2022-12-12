@@ -16,6 +16,12 @@ enum IacFormat {
   awsCdk = 'aws-cdk'
 }
 
+interface OsOutput {
+  stdout: string;
+  stderr: string;
+  exitCode: number;
+}
+
 interface SmokeTestOptions {
   format?: IacFormat
 }
@@ -23,5 +29,6 @@ interface SmokeTestOptions {
 export {
   CustomError,
   IacFormat,
+  OsOutput,
   SmokeTestOptions
 };

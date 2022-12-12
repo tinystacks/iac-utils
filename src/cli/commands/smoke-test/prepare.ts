@@ -1,4 +1,4 @@
-import { IacFormat } from "../../types";
+import { IacFormat } from '../../types';
 
 function prepareCdk () {
   // cdk diff
