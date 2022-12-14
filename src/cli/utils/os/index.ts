@@ -26,6 +26,16 @@ async function runCommand (command: string, opts?: ExecOptions, retry = false, m
         }
       });
 
+      childProcess.stdout.on('data', (data) => {
+        console.log(data);
+        standardOut.push(data);
+      });
+      
+      childProcess.stderr.on('data', (data) => {
+        console.log(data);
+        standardError.push(data);
+      });
+
       childProcess.on('error', (error: Error) => {
         throw error;
       });
@@ -33,12 +43,11 @@ async function runCommand (command: string, opts?: ExecOptions, retry = false, m
       childProcess.on('exit', (code: number, signal: string) => {
         if (signal) console.log(`Exited due to signal: ${signal}`);
         exitCode = code;
-      });
-
-      return resolve({
-        stdout: standardOut.join('\n'),
-        stderr: standardError.join('\n'),
-        exitCode
+        return resolve({
+          stdout: standardOut.join('\n'),
+          stderr: standardError.join('\n'),
+          exitCode
+        });
       });
     } catch (error) {
       console.error(`Failed to execute command "${command}"`, error);
@@ -47,7 +56,7 @@ async function runCommand (command: string, opts?: ExecOptions, retry = false, m
         console.log(`Retrying command "${command}" for the ${nextRetry}${getOrdinalSuffix(nextRetry)} time.`);
         return runCommand(command, opts, retry, maxRetries, nextRetry);
       }
-      reject(error);
+      return reject(error);
     }
   });
 }
