@@ -19,16 +19,15 @@ function detectIacFormat (): IacFormat {
     );
   }
 
-  if (!isCdkProject && !isTfProject) {
-    throw new CustomError(
-      'Cannot determine IaC format!',
-      'Neither AWS cdk nor terraform files exist in this repository.',
-      'Are you running this command in the correct directory?',
-      'You can specify which format to use via the "--format" flag'
-    );
-  }
+  if (isCdkProject) return IacFormat.awsCdk;
+  if (isTfProject) return IacFormat.tf;
 
-  return isCdkProject ? IacFormat.awsCdk : IacFormat.tf;
+  throw new CustomError(
+    'Cannot determine IaC format!',
+    'Neither AWS cdk nor terraform files exist in this repository.',
+    'Are you running this command in the correct directory?',
+    'You can specify which format to use via the "--format" flag'
+  );
 } 
 
 export {
