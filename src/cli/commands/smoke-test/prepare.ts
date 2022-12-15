@@ -4,8 +4,8 @@ import {
   writeFileSync
 } from 'fs';
 import { TMP_DIRECTORY } from '../../constants';
+import { CustomError } from '../../errors';
 import {
-  CustomError,
   IacFormat,
   OsOutput,
   ResourceDiffRecord

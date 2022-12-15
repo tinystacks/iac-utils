@@ -3,9 +3,9 @@
 import { Command, Option } from 'commander';
 import * as colors from 'colors';
 import { smokeTest } from './commands';
-import { CustomError } from './types';
 import * as logger from './logger';
 import { cleanupTmpDirectory } from './hooks';
+import { CustomError } from './errors';
 const program = new Command();
 // eslint-disable-next-line
 const { version } = require('../../package.json');

@@ -3,10 +3,11 @@ import * as logger from '../../logger';
 import { IacFormat, ResourceDiffRecord, SmokeTestOptions } from '../../types';
 import { detectIacFormat } from './detect-iac-format';
 import { prepareForSmokeTest } from './prepare';
+import { smokeTestAwsResource } from './resource-smoke-tests';
 
 async function smokeTestResource (resource: ResourceDiffRecord, format: IacFormat) {
   const isAwsResource = format === IacFormat.awsCdk || (format === IacFormat.tf && resource.resourceRecord.tfProviderName === AWS_TF_PROVIDER_NAME);
-  if (isAwsResource) return; // smokeTestAwsResource(resource, format);
+  if (isAwsResource) return smokeTestAwsResource(resource);
 }
 
 async function smokeTest (options: SmokeTestOptions) {
@@ -20,6 +21,7 @@ async function smokeTest (options: SmokeTestOptions) {
   for (const resource of resourceDiffRecords) {
     await smokeTestResource(resource, format);
   }
+  logger.success('Smoke test passed!');
 }
 
 export {

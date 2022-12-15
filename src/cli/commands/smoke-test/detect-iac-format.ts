@@ -1,6 +1,7 @@
 import { resolve as resolvePath } from 'path';
 import { readdirSync } from 'fs';
-import { CustomError, IacFormat } from '../../types';
+import { IacFormat } from '../../types';
+import { CustomError } from '../../errors';
 
 function detectIacFormat (): IacFormat {
   const files = readdirSync(resolvePath('./'));
