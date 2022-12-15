@@ -1,7 +1,17 @@
+import * as logger from '../../logger';
 import { exec, ExecOptions, ExecException } from 'child_process';
 import { getOrdinalSuffix } from '..';
 import { OsOutput } from '../../types';
 
+function handleError (error: Error | unknown, reject: (reason?: any) => void, command: string, opts?: ExecOptions, retry?: boolean, maxRetries?: number, retryCount?: number) {
+  console.error(`Failed to execute command "${command}"`, error);
+  const nextRetry = retryCount + 1;
+  if (retry && nextRetry <= maxRetries) {
+    console.log(`Retrying command "${command}" for the ${nextRetry}${getOrdinalSuffix(nextRetry)} time.`);
+    return runCommand(command, opts, retry, maxRetries, nextRetry);
+  }
+  return reject(error);
+}
 
 async function runCommand (command: string, opts?: ExecOptions, retry = false, maxRetries = 0, retryCount = 0): Promise<OsOutput> {
   return new Promise((resolve, reject) => {
@@ -14,16 +24,9 @@ async function runCommand (command: string, opts?: ExecOptions, retry = false, m
       const standardError: string[] = [];
       let exitCode: number;
       
-      const childProcess = exec(command, opts, (error: ExecException, stdout: string, stderr: string) => {
-        if (error) throw error;
-        if (stdout) {
-          console.log(stdout);
-          standardOut.push(stdout);
-        }
-        if (stderr) {
-          console.error(stderr);
-          standardError.push(stderr);
-        }
+      logger.log(command);
+      const childProcess = exec(command, opts, (error: ExecException, _stdout: string, _stderr: string) => {
+        if (error) return handleError(error, reject, command, opts, retry, maxRetries, retryCount);
       });
 
       childProcess.stdout.on('data', (data) => {
@@ -32,12 +35,14 @@ async function runCommand (command: string, opts?: ExecOptions, retry = false, m
       });
       
       childProcess.stderr.on('data', (data) => {
-        console.log(data);
+        console.error(data);
         standardError.push(data);
       });
 
+      process.stdin.pipe(childProcess.stdin);
+
       childProcess.on('error', (error: Error) => {
-        throw error;
+        return handleError(error, reject, command, opts, retry, maxRetries, retryCount);
       });
       
       childProcess.on('exit', (code: number, signal: string) => {
@@ -50,13 +55,7 @@ async function runCommand (command: string, opts?: ExecOptions, retry = false, m
         });
       });
     } catch (error) {
-      console.error(`Failed to execute command "${command}"`, error);
-      const nextRetry = retryCount + 1;
-      if (retry && nextRetry <= maxRetries) {
-        console.log(`Retrying command "${command}" for the ${nextRetry}${getOrdinalSuffix(nextRetry)} time.`);
-        return runCommand(command, opts, retry, maxRetries, nextRetry);
-      }
-      return reject(error);
+      return handleError(error, reject, command, opts, retry, maxRetries, retryCount);
     }
   });
 }

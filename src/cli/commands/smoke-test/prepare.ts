@@ -1,25 +1,59 @@
-import { IacFormat } from '../../types';
+import {
+  existsSync,
+  mkdirSync,
+  writeFileSync
+} from 'fs';
+import { TMP_DIRECTORY } from '../../constants';
+import {
+  CustomError,
+  IacFormat,
+  OsOutput,
+  ResourceDiffRecord
+} from '../../types';
+import { runCommand } from '../../utils';
+import { parseCdkDiff, parseTerraformDiff } from './parser';
 
-function prepareCdk () {
-  // cdk diff
-  // parse diff
-  // extract resources with action types
+function createTmpDirectory () {
+  if (!existsSync(TMP_DIRECTORY)){
+    mkdirSync(TMP_DIRECTORY, { recursive: true });
+  }
 }
 
-function prepareTf () {
-  // terraform plan -out=tfplan
-  // terraform show -no-color -json tfplan > plan.json
-  // extract resources with action types
+function handleNonZeroExitCode (output: OsOutput, process: string) {
+  if (output?.exitCode !== 0) {
+    throw new CustomError(`${process} failed with exit code ${output?.exitCode}`);
+  }
 }
 
-function prepareForSmokeTest (format: IacFormat) {
+async function prepareCdk (): Promise<ResourceDiffRecord[]> {
+  const output: OsOutput = await runCommand('cdk diff');
+  handleNonZeroExitCode(output, 'cdk diff');
+  const diffFileName = `${TMP_DIRECTORY}/diff.txt`;
+  writeFileSync(diffFileName, output.stderr);
+  return parseCdkDiff(diffFileName);
+}
+
+async function prepareTf (): Promise<ResourceDiffRecord[]> {
+  const initOutput: OsOutput = await runCommand('terraform init');
+  handleNonZeroExitCode(initOutput, 'terraform init');
+  const planOutput: OsOutput = await runCommand(`terraform plan -out=${TMP_DIRECTORY}/tfplan`);
+  handleNonZeroExitCode(planOutput, 'terraform plan');
+  const planFileName = `${TMP_DIRECTORY}/plan.json`;
+  const showOutput: OsOutput = await runCommand(`terraform show -no-color -json ${TMP_DIRECTORY}/tfplan > ${planFileName}`);
+  handleNonZeroExitCode(showOutput, 'terraform show');
+  return parseTerraformDiff(planFileName);
+}
+
+async function prepareForSmokeTest (format: IacFormat): Promise<ResourceDiffRecord[]> {
+  createTmpDirectory();
+  let resourceDiffRecords: ResourceDiffRecord[] = [];
   if (format === IacFormat.awsCdk) {
-    prepareCdk();
+    resourceDiffRecords = await prepareCdk();
   }
   if (format === IacFormat.tf) {
-    prepareTf();
+    resourceDiffRecords =await prepareTf();
   }
-  return;
+  return resourceDiffRecords;
 }
 
 export {
