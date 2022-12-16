@@ -13,6 +13,13 @@ import { detectIacFormat } from '../../../../src/cli/commands/smoke-test/detect-
 import { IacFormat } from '../../../../src/cli/types';
 
 describe('detectIacFormat', () => {
+  afterEach(() => {
+    // for mocks
+    jest.resetAllMocks();
+    // for spies
+    jest.restoreAllMocks();
+  });
+  
   it('returns aws-cdk if cdk.json is detected', () => {
     mockReadDirSync.mockReturnValue(['cdk.json']);
 

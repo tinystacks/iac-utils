@@ -29,7 +29,7 @@
     "qa": "npm run lint && npm run test-cov",
     "test": "jest",
     "test-cov": "jest --coverage",
-    "test-file": "jest ./test/cli/commands/smoke-test/detect-iac-format.test.ts",
+    "test-file": "jest ./test/cli/commands/smoke-test/prepare.test.ts",
     "view-test-cov": "jest --coverage && open coverage/lcov-report/index.html",
     "mt": "ts-node mt.ts"
   },

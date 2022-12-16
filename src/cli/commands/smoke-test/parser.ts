@@ -1,6 +1,14 @@
 import { readFileSync } from 'fs';
 import { resolve as resolvePath } from 'path';
-import { CDK_DIFF_CREATE_SYMBOL, CDK_DIFF_DELETE_SYMBOL, CDK_DIFF_UPDATE_SYMBOL, TF_DIFF_CREATE_ACTION, TF_DIFF_DELETE_ACTION, TF_DIFF_NO_OP_ACTION, TF_DIFF_UPDATE_ACTION } from '../../constants';
+import {
+  CDK_DIFF_CREATE_SYMBOL,
+  CDK_DIFF_DELETE_SYMBOL,
+  CDK_DIFF_UPDATE_SYMBOL,
+  TF_DIFF_CREATE_ACTION,
+  TF_DIFF_DELETE_ACTION,
+  TF_DIFF_NO_OP_ACTION,
+  TF_DIFF_UPDATE_ACTION
+} from '../../constants';
 import {
   CdkDiff,
   ChangeType,
@@ -40,14 +48,14 @@ function separateStacks (diff: string[]): DiffSection[] {
 
 function getChangeTypeForCdkDiff (changeTypeSymbol: string): ChangeType {
   switch (changeTypeSymbol) {
-  case CDK_DIFF_CREATE_SYMBOL:
-    return ChangeType.CREATE;
-  case CDK_DIFF_UPDATE_SYMBOL:
-    return ChangeType.UPDATE;
-  case CDK_DIFF_DELETE_SYMBOL:
-    return ChangeType.DELETE;
-  default:
-    return ChangeType.UNKNOWN;
+    case CDK_DIFF_CREATE_SYMBOL:
+      return ChangeType.CREATE;
+    case CDK_DIFF_UPDATE_SYMBOL:
+      return ChangeType.UPDATE;
+    case CDK_DIFF_DELETE_SYMBOL:
+      return ChangeType.DELETE;
+    default:
+      return ChangeType.UNKNOWN;
   }
 }
 
@@ -114,16 +122,16 @@ function parseCdkDiff (diffFile: string): ResourceDiffRecord[] {
 
 function getChangeTypeForTerraformDiff (tfChangeType: string): ChangeType {
   switch (tfChangeType) {
-  case TF_DIFF_CREATE_ACTION:
-    return ChangeType.CREATE;
-  case TF_DIFF_UPDATE_ACTION:
-    return ChangeType.UPDATE;
-  case TF_DIFF_DELETE_ACTION:
-    return ChangeType.DELETE;
-  case TF_DIFF_NO_OP_ACTION:
-    return ChangeType.NO_CHANGES;
-  default:
-    return ChangeType.UNKNOWN;
+    case TF_DIFF_CREATE_ACTION:
+      return ChangeType.CREATE;
+    case TF_DIFF_UPDATE_ACTION:
+      return ChangeType.UPDATE;
+    case TF_DIFF_DELETE_ACTION:
+      return ChangeType.DELETE;
+    case TF_DIFF_NO_OP_ACTION:
+      return ChangeType.NO_CHANGES;
+    default:
+      return ChangeType.UNKNOWN;
   }
 }
 

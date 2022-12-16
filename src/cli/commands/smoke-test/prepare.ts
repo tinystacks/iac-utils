@@ -11,7 +11,10 @@ import {
   ResourceDiffRecord
 } from '../../types';
 import { runCommand } from '../../utils';
-import { parseCdkDiff, parseTerraformDiff } from './parser';
+import {
+  parseCdkDiff,
+  parseTerraformDiff
+} from './parser';
 
 function createTmpDirectory () {
   if (!existsSync(TMP_DIRECTORY)){
@@ -46,14 +49,14 @@ async function prepareTf (): Promise<ResourceDiffRecord[]> {
 
 async function prepareForSmokeTest (format: IacFormat): Promise<ResourceDiffRecord[]> {
   createTmpDirectory();
-  let resourceDiffRecords: ResourceDiffRecord[] = [];
-  if (format === IacFormat.awsCdk) {
-    resourceDiffRecords = await prepareCdk();
+  switch (format) {
+    case IacFormat.awsCdk:
+      return prepareCdk();
+    case IacFormat.tf:
+      return prepareTf();
+    default:
+      return [];
   }
-  if (format === IacFormat.tf) {
-    resourceDiffRecords =await prepareTf();
-  }
-  return resourceDiffRecords;
 }
 
 export {
