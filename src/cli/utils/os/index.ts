@@ -60,21 +60,6 @@ async function runCommand (command: string, opts?: ExecOptions, retry = false, m
   });
 }
 
-// export const createExecOptions = function (workingDirectory: string, creds?: Credentials, region?: string) {
-//   const environmentVariables = {
-//     AWS_ACCESS_KEY_ID: creds?.AccessKeyId,
-//     AWS_SECRET_ACCESS_KEY: creds?.SecretAccessKey,
-//     AWS_SESSION_TOKEN: creds?.SessionToken,
-//     AWS_DEFAULT_REGION: region
-//   };
-
-//   const execOpts = {
-//     cwd: workingDirectory,
-//     env: environmentVariables
-//   };
-//   return execOpts;
-// }
-
 export {
   runCommand
 };
