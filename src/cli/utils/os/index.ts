@@ -1,19 +1,8 @@
 import * as logger from '../../logger';
-import { exec, ExecOptions, ExecException } from 'child_process';
-import { getOrdinalSuffix } from '..';
+import { exec, ExecOptions } from 'child_process';
 import { OsOutput } from '../../types';
 
-function handleError (error: Error | unknown, reject: (reason?: any) => void, command: string, opts?: ExecOptions, retry?: boolean, maxRetries?: number, retryCount?: number) {
-  console.error(`Failed to execute command "${command}"`, error);
-  const nextRetry = retryCount + 1;
-  if (retry && nextRetry <= maxRetries) {
-    console.log(`Retrying command "${command}" for the ${nextRetry}${getOrdinalSuffix(nextRetry)} time.`);
-    return runCommand(command, opts, retry, maxRetries, nextRetry);
-  }
-  return reject(error);
-}
-
-async function runCommand (command: string, opts?: ExecOptions, retry = false, maxRetries = 0, retryCount = 0): Promise<OsOutput> {
+async function runCommand (command: string, opts?: ExecOptions): Promise<OsOutput> {
   return new Promise((resolve, reject) => {
     try {
       // we "return await" here so that errors can be handled within this function to execute retry logic
@@ -25,9 +14,7 @@ async function runCommand (command: string, opts?: ExecOptions, retry = false, m
       let exitCode: number;
       
       logger.log(command);
-      const childProcess = exec(command, opts, (error: ExecException, _stdout: string, _stderr: string) => {
-        if (error) return handleError(error, reject, command, opts, retry, maxRetries, retryCount);
-      });
+      const childProcess = exec(command, opts);
 
       childProcess.stdout.on('data', (data) => {
         console.log(data);
@@ -42,20 +29,22 @@ async function runCommand (command: string, opts?: ExecOptions, retry = false, m
       process.stdin.pipe(childProcess.stdin);
 
       childProcess.on('error', (error: Error) => {
-        return handleError(error, reject, command, opts, retry, maxRetries, retryCount);
+        logger.error(`Failed to execute command "${command}"`);
+        reject(error);
       });
       
       childProcess.on('exit', (code: number, signal: string) => {
-        if (signal) console.log(`Exited due to signal: ${signal}`);
+        if (signal) logger.info(`Exited due to signal: ${signal}`);
         exitCode = code;
-        return resolve({
+        resolve({
           stdout: standardOut.join('\n'),
           stderr: standardError.join('\n'),
           exitCode
         });
       });
     } catch (error) {
-      return handleError(error, reject, command, opts, retry, maxRetries, retryCount);
+      logger.error(`Failed to execute command "${command}"`);
+      reject(error);
     }
   });
 }
