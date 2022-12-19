@@ -3,20 +3,25 @@ import { Json } from '../../../../types';
 // Standard Types
 const SQS_QUEUE = 'SQS_QUEUE';
 const S3_BUCKET = 'S3_BUCKET';
+const VPC = 'VPC';
 
 // Cloudformation Types
 const CFN_SQS_QUEUE = 'AWS::SQS::Queue';
 const CFN_S3_BUCKET = 'AWS::S3::Bucket';
+const CFN_VPC = 'AWS::EC2::VPC';
 
 // Terraform Types
 const TF_SQS_QUEUE = 'aws_sqs_queue';
 const TF_S3_BUCKET = 'aws_s3_bucket';
+const TF_VPC = 'aws_vpc';
 
 const resourceTypeMap: Json = {
   [CFN_SQS_QUEUE]: SQS_QUEUE,
   [TF_SQS_QUEUE]: SQS_QUEUE,
   [CFN_S3_BUCKET]: S3_BUCKET,
-  [TF_S3_BUCKET]: S3_BUCKET
+  [TF_S3_BUCKET]: S3_BUCKET,
+  [CFN_VPC]: VPC,
+  [TF_VPC]: VPC
 };
 
 function getStandardResourceType (type: string): string {
@@ -26,5 +31,6 @@ function getStandardResourceType (type: string): string {
 export {
   SQS_QUEUE,
   S3_BUCKET,
+  VPC,
   getStandardResourceType
 };

@@ -7,7 +7,6 @@ import { getCredentials } from '../../../../../utils/aws';
 import { QuotaError } from '../../../../../errors/quota-error';
 import { S3_BUCKET, getStandardResourceType } from '../resources';
 
-// TODO: validate against all S3 bucket resources instead of each individually
 async function validateS3Quota (newBucketCount: number) {
   logger.info('Checking S3 bucket service quota...');
   const DEFAULT_BUCKET_QUOTA = 100;
