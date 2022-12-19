@@ -69,8 +69,8 @@ describe('smokeTest', () => {
     expect(mockLoggerInfo).not.toBeCalled();
     expect(mockPrepareForSmokeTest).toBeCalledWith(IacFormat.awsCdk);
     expect(mockSmokeTestAwsResource).toBeCalledTimes(2);
-    expect(mockSmokeTestAwsResource).toBeCalledWith(mockSqs);
-    expect(mockSmokeTestAwsResource).toBeCalledWith(mockVpc);
+    expect(mockSmokeTestAwsResource).toBeCalledWith(mockSqs, [mockSqs, mockVpc]);
+    expect(mockSmokeTestAwsResource).toBeCalledWith(mockVpc, [mockSqs, mockVpc]);
     expect(mockLoggerSuccess).toBeCalledWith('Smoke test passed!');
   });
 });

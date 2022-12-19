@@ -10,16 +10,16 @@ import {
 } from './smoke-tests';
 
 const smokeTests: {
-  [key: string]: (resource: ResourceDiffRecord) => Promise<void>
+  [key: string]: (resource: ResourceDiffRecord, allResources: ResourceDiffRecord[]) => Promise<void>
 } = {
   [SQS_QUEUE]: sqsQueueSmokeTest,
   [S3_BUCKET]: s3BucketSmokeTest
 };
 
-async function smokeTestAwsResource (resource: ResourceDiffRecord) {
+async function smokeTestAwsResource (resource: ResourceDiffRecord, allResources: ResourceDiffRecord[]) {
   const resourceType = getStandardResourceType(resource.resourceType);
   const smokeTest = smokeTests[resourceType];
-  return smokeTest(resource);
+  return smokeTest(resource, allResources);
 }
 
 export {

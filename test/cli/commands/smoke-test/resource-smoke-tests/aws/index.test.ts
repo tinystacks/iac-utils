@@ -12,7 +12,7 @@ test('smokeTestAwsResource', async () => {
     resourceType: 'AWS::SQS::Queue'
   } as ResourceDiffRecord;
   
-  await smokeTestAwsResource(mockResource)
+  await smokeTestAwsResource(mockResource, [mockResource]);
 
   expect(mockSqsQueueSmokeTest).toBeCalled();
 });

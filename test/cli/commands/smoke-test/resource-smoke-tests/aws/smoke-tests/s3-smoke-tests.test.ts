@@ -55,7 +55,7 @@ describe('s3 smoke tests', () => {
         changeType: ChangeType.UPDATE
       } as ResourceDiffRecord;
 
-      await s3BucketSmokeTest(resource);
+      await s3BucketSmokeTest(resource, [resource]);
 
       expect(mockLoggerInfo).not.toBeCalled();
       expect(mockGetCredentials).not.toBeCalled();
@@ -67,6 +67,7 @@ describe('s3 smoke tests', () => {
       const resource = {
         changeType: ChangeType.CREATE,
         format: IacFormat.awsCdk,
+        resourceType: 'AWS::S3::Bucket',
         resourceRecord: {
           properties: {
             BucketName: 'mock-bucket'
@@ -80,7 +81,7 @@ describe('s3 smoke tests', () => {
         }
       });
       mockListBuckets.mockResolvedValueOnce({
-        Buckets: Array(99)
+        Buckets: Array(98)
       });
       mockHeadBucket.mockRejectedValueOnce({
         '$metadata': {
@@ -88,7 +89,7 @@ describe('s3 smoke tests', () => {
         }
       });
 
-      await s3BucketSmokeTest(resource);
+      await s3BucketSmokeTest(resource, [resource, resource]);
 
       expect(mockLoggerInfo).toBeCalledTimes(2);
       expect(mockLoggerInfo).toBeCalledWith('Checking S3 bucket service quota...');
@@ -105,6 +106,7 @@ describe('s3 smoke tests', () => {
       const resource = {
         changeType: ChangeType.CREATE,
         format: IacFormat.tf,
+        resourceType: 'aws_s3_bucket',
         resourceRecord: {
           properties: {
             bucket: 'mock-bucket'
@@ -123,7 +125,7 @@ describe('s3 smoke tests', () => {
 
       let thrownError;
       try {
-        await s3BucketSmokeTest(resource);
+        await s3BucketSmokeTest(resource, [resource]);
       } catch (error) {
         thrownError = error;
       } finally {
@@ -137,13 +139,14 @@ describe('s3 smoke tests', () => {
         expect(thrownError).not.toBeUndefined();
         expect(thrownError).toHaveProperty('name', 'CustomError');
         expect(thrownError).toHaveProperty('message', 'Quota Limit Reached!');
-        expect(thrownError).toHaveProperty('reason', 'Your AWS account is already using the max bucket count of 100, which is the S3 quota for your region.');
+        expect(thrownError).toHaveProperty('reason', 'This stack needs to create 1 S3 bucket(s), but only 0 more can be created with the current quota limit!  Request a quota increase to continue.');
       }
     });
     it('throws a ConflictError if user already has a bucket with the same name', async () => {
       const resource = {
         changeType: ChangeType.CREATE,
         format: IacFormat.awsCdk,
+        resourceType: 'AWS::S3::Bucket',
         resourceRecord: {
           properties: {
             BucketName: 'mock-bucket'
@@ -163,7 +166,7 @@ describe('s3 smoke tests', () => {
 
       let thrownError;
       try {
-        await s3BucketSmokeTest(resource);
+        await s3BucketSmokeTest(resource, [resource]);
       } catch (error) {
         thrownError = error;
       } finally {
@@ -188,6 +191,7 @@ describe('s3 smoke tests', () => {
       const resource = {
         changeType: ChangeType.CREATE,
         format: IacFormat.awsCdk,
+        resourceType: 'AWS::S3::Bucket',
         resourceRecord: {
           properties: {
             BucketName: 'mock-bucket'
@@ -211,7 +215,7 @@ describe('s3 smoke tests', () => {
 
       let thrownError;
       try {
-        await s3BucketSmokeTest(resource);
+        await s3BucketSmokeTest(resource, [resource]);
       } catch (error) {
         thrownError = error;
       } finally {
@@ -250,7 +254,7 @@ describe('s3 smoke tests', () => {
         Buckets: Array(99)
       });
 
-      await s3BucketSmokeTest(resource);
+      await s3BucketSmokeTest(resource, [resource]);
 
       expect(mockLoggerInfo).toBeCalledTimes(1);
       expect(mockLoggerInfo).toBeCalledWith('Checking S3 bucket service quota...');

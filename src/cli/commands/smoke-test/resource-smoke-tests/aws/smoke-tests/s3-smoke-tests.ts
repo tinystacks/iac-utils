@@ -5,9 +5,10 @@ import { ConflictError } from '../../../../../errors';
 import { ChangeType, IacFormat, ResourceDiffRecord } from '../../../../../types';
 import { getCredentials } from '../../../../../utils/aws';
 import { QuotaError } from '../../../../../errors/quota-error';
+import { S3_BUCKET, getStandardResourceType } from '../resources';
 
 // TODO: validate against all S3 bucket resources instead of each individually
-async function validateS3Quota () {
+async function validateS3Quota (newBucketCount: number) {
   logger.info('Checking S3 bucket service quota...');
   const DEFAULT_BUCKET_QUOTA = 100;
   const DEFAULT_NUMBER_OF_BUCKETS = 1;
@@ -27,10 +28,11 @@ async function validateS3Quota () {
   const s3Client = new S3(config);
   const s3Response = await s3Client.listBuckets({});
   
-  const numberOfBuckets = s3Response?.Buckets?.length || DEFAULT_NUMBER_OF_BUCKETS;
-
-  if (s3Quota <= numberOfBuckets) {
-    throw new QuotaError(`Your AWS account is already using the max bucket count of ${s3Quota}, which is the S3 quota for your region.`);
+  const currentNumberOfBuckets = s3Response?.Buckets?.length || DEFAULT_NUMBER_OF_BUCKETS;
+  const remainingNumberOfBuckets = s3Quota - currentNumberOfBuckets;
+  const proposedNumberOfBuckets = currentNumberOfBuckets + newBucketCount;
+  if (s3Quota < proposedNumberOfBuckets) {
+    throw new QuotaError(`This stack needs to create ${newBucketCount} S3 bucket(s), but only ${remainingNumberOfBuckets} more can be created with the current quota limit!  Request a quota increase to continue.`);
   } 
 }
 
@@ -74,10 +76,14 @@ function standardizeBucketProperties (resource: ResourceDiffRecord): StandardS3B
   }
 }
 
-async function s3BucketSmokeTest (resource: ResourceDiffRecord) {
+async function s3BucketSmokeTest (resource: ResourceDiffRecord, allResources: ResourceDiffRecord[]) {
   if (resource.changeType === ChangeType.CREATE) {
     const standardBucket = standardizeBucketProperties(resource);
-    await validateS3Quota();
+    const newBucketsFromStack = allResources.filter(resource =>
+      getStandardResourceType(resource.resourceType) === S3_BUCKET &&
+      resource.changeType === ChangeType.CREATE
+    );
+    await validateS3Quota(newBucketsFromStack.length);
     if (standardBucket.bucketName) await validateBucketNameIsUnique(standardBucket.bucketName);
   }
 }

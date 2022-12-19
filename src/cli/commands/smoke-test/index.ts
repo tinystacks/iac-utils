@@ -5,9 +5,9 @@ import { detectIacFormat } from './detect-iac-format';
 import { prepareForSmokeTest } from './prepare';
 import { smokeTestAwsResource } from './resource-smoke-tests';
 
-async function smokeTestResource (resource: ResourceDiffRecord, format: IacFormat) {
+async function smokeTestResource (resource: ResourceDiffRecord, format: IacFormat, allResources: ResourceDiffRecord[]) {
   const isAwsResource = format === IacFormat.awsCdk || (format === IacFormat.tf && resource.resourceRecord.tfProviderName === AWS_TF_PROVIDER_NAME);
-  if (isAwsResource) return smokeTestAwsResource(resource);
+  if (isAwsResource) return smokeTestAwsResource(resource, allResources);
 }
 
 async function smokeTest (options: SmokeTestOptions) {
@@ -19,7 +19,7 @@ async function smokeTest (options: SmokeTestOptions) {
 
   const resourceDiffRecords = await prepareForSmokeTest(format);
   for (const resource of resourceDiffRecords) {
-    await smokeTestResource(resource, format);
+    await smokeTestResource(resource, format, resourceDiffRecords);
   }
   logger.success('Smoke test passed!');
 }
