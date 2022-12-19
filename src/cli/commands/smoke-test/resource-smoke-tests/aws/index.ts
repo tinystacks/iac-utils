@@ -3,12 +3,14 @@ import {
   SQS_QUEUE,
   S3_BUCKET,
   getStandardResourceType,
-  VPC
+  VPC,
+  NAT_GATEWAY
 } from './resources';
 import {
   s3BucketSmokeTest,
   sqsQueueSmokeTest
 } from './smoke-tests';
+import { natGatewaySmokeTest } from './smoke-tests/nat-gateway-smoke-tests';
 import { vpcSmokeTest } from './smoke-tests/vpc-smoke-tests';
 
 const smokeTests: {
@@ -16,13 +18,14 @@ const smokeTests: {
 } = {
   [SQS_QUEUE]: sqsQueueSmokeTest,
   [S3_BUCKET]: s3BucketSmokeTest,
-  [VPC]: vpcSmokeTest
+  [VPC]: vpcSmokeTest,
+  [NAT_GATEWAY]: natGatewaySmokeTest
 };
 
 async function smokeTestAwsResource (resource: ResourceDiffRecord, allResources: ResourceDiffRecord[]) {
   const resourceType = getStandardResourceType(resource.resourceType);
   const smokeTest = smokeTests[resourceType];
-  return smokeTest(resource, allResources);
+  if (smokeTest) return smokeTest(resource, allResources);
 }
 
 export {
