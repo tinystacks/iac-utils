@@ -178,5 +178,6 @@ function allocateCidrBlock (args: AllocateCidrBlockArguments): CidrBlockAllocati
 
 export {
   allocateCidrBlock,
-  CidrBlockAllocation
+  CidrBlockAllocation,
+  AllocateCidrBlockArguments
 };
