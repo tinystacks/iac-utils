@@ -27,10 +27,10 @@ import {
   ChangeType, IacFormat, ResourceDiffRecord
 } from '../../../../../../../src/cli/types';
 import {
-  natGatewaySmokeTest
+  eipSmokeTest
 } from '../../../../../../../src/cli/commands/smoke-test/resource-smoke-tests/aws/smoke-tests';
 
-describe('nat gateway smoke tests', () => {
+describe('eip smoke tests', () => {
   beforeEach(() => {
     mockEc2.mockReturnValue({
       describeAddresses: mockDescribeAddresses
@@ -47,13 +47,13 @@ describe('nat gateway smoke tests', () => {
     jest.restoreAllMocks();
   });
 
-  describe('natGatewaySmokeTest', () => {
+  describe('eipSmokeTest', () => {
     it('does nothing if change type is not create', async () => {
       const resource = {
         changeType: ChangeType.UPDATE
       } as ResourceDiffRecord;
 
-      await natGatewaySmokeTest(resource, [resource]);
+      await eipSmokeTest(resource, [resource]);
 
       expect(mockLoggerInfo).not.toBeCalled();
       expect(mockGetCredentials).not.toBeCalled();
@@ -66,7 +66,7 @@ describe('nat gateway smoke tests', () => {
       const resource = {
         changeType: ChangeType.CREATE,
         format: IacFormat.awsCdk,
-        resourceType: 'AWS::EC2::NatGateway',
+        resourceType: 'AWS::EC2::EIP',
         resourceRecord: {
           properties: {}
         }
@@ -82,7 +82,7 @@ describe('nat gateway smoke tests', () => {
       });
       
 
-      await natGatewaySmokeTest(resource, [resource, resource]);
+      await eipSmokeTest(resource, [resource, resource]);
 
       expect(mockLoggerInfo).toBeCalled();
       expect(mockLoggerInfo).toBeCalledWith('Checking Elastic IP service quota...');
@@ -94,7 +94,7 @@ describe('nat gateway smoke tests', () => {
       const resource = {
         changeType: ChangeType.CREATE,
         format: IacFormat.tf,
-        resourceType: 'aws_nat_gateway',
+        resourceType: 'aws_eip',
         resourceRecord: {
           properties: {}
         }
@@ -111,7 +111,7 @@ describe('nat gateway smoke tests', () => {
 
       let thrownError;
       try {
-        await natGatewaySmokeTest(resource, [resource]);
+        await eipSmokeTest(resource, [resource]);
       } catch (error) {
         thrownError = error;
       } finally {

@@ -4,7 +4,7 @@ import { ServiceQuotas } from '@aws-sdk/client-service-quotas';
 import { ChangeType, ResourceDiffRecord } from '../../../../../types';
 import { getCredentials } from '../../../../../utils/aws';
 import { QuotaError } from '../../../../../errors/quota-error';
-import { NAT_GATEWAY, getStandardResourceType } from '../resources';
+import { EIP, getStandardResourceType } from '../resources';
 
 async function validateEipQuota (newEipCount: number) {
   logger.info('Checking Elastic IP service quota...');
@@ -32,10 +32,10 @@ async function validateEipQuota (newEipCount: number) {
   }
 }
 
-async function natGatewaySmokeTest (resource: ResourceDiffRecord, allResources: ResourceDiffRecord[]) {
+async function eipSmokeTest (resource: ResourceDiffRecord, allResources: ResourceDiffRecord[]) {
   if (resource.changeType === ChangeType.CREATE) {
     const newNatsFromStack = allResources.filter(resource =>
-      getStandardResourceType(resource.resourceType) === NAT_GATEWAY &&
+      getStandardResourceType(resource.resourceType) === EIP &&
       resource.changeType === ChangeType.CREATE
     );
     await validateEipQuota(newNatsFromStack.length);
@@ -43,5 +43,5 @@ async function natGatewaySmokeTest (resource: ResourceDiffRecord, allResources: 
 }
 
 export {
-  natGatewaySmokeTest
+  eipSmokeTest
 };

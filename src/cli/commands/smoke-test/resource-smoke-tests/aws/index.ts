@@ -4,13 +4,13 @@ import {
   S3_BUCKET,
   getStandardResourceType,
   VPC,
-  NAT_GATEWAY
+  EIP
 } from './resources';
 import {
   s3BucketSmokeTest,
   sqsQueueSmokeTest,
   vpcSmokeTest,
-  natGatewaySmokeTest
+  eipSmokeTest
 } from './smoke-tests';
 
 const smokeTests: {
@@ -19,7 +19,7 @@ const smokeTests: {
   [SQS_QUEUE]: sqsQueueSmokeTest,
   [S3_BUCKET]: s3BucketSmokeTest,
   [VPC]: vpcSmokeTest,
-  [NAT_GATEWAY]: natGatewaySmokeTest
+  [EIP]: eipSmokeTest
 };
 
 async function smokeTestAwsResource (resource: ResourceDiffRecord, allResources: ResourceDiffRecord[]) {
