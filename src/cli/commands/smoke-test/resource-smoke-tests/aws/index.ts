@@ -8,10 +8,10 @@ import {
 } from './resources';
 import {
   s3BucketSmokeTest,
-  sqsQueueSmokeTest
+  sqsQueueSmokeTest,
+  vpcSmokeTest,
+  natGatewaySmokeTest
 } from './smoke-tests';
-import { natGatewaySmokeTest } from './smoke-tests/nat-gateway-smoke-tests';
-import { vpcSmokeTest } from './smoke-tests/vpc-smoke-tests';
 
 const smokeTests: {
   [key: string]: (resource: ResourceDiffRecord, allResources: ResourceDiffRecord[]) => Promise<void>
