@@ -27,8 +27,8 @@ import {
   ChangeType, IacFormat, ResourceDiffRecord
 } from '../../../../../../../src/cli/types';
 import {
-  eipSmokeTest
-} from '../../../../../../../src/cli/commands/smoke-test/resource-smoke-tests/aws/smoke-tests';
+  checkEipQuota
+} from '../../../../../../../src/cli/commands/smoke-test/smoke-tests/aws/resource-tests';
 
 describe('eip smoke tests', () => {
   beforeEach(() => {
@@ -47,13 +47,13 @@ describe('eip smoke tests', () => {
     jest.restoreAllMocks();
   });
 
-  describe('eipSmokeTest', () => {
-    it('does nothing if change type is not create', async () => {
+  describe('checkEipQuota', () => {
+    it('does nothing if no resource has a change type of create', async () => {
       const resource = {
         changeType: ChangeType.UPDATE
       } as ResourceDiffRecord;
 
-      await eipSmokeTest(resource, [resource]);
+      await checkEipQuota([resource]);
 
       expect(mockLoggerInfo).not.toBeCalled();
       expect(mockGetCredentials).not.toBeCalled();
@@ -82,7 +82,7 @@ describe('eip smoke tests', () => {
       });
       
 
-      await eipSmokeTest(resource, [resource, resource]);
+      await checkEipQuota([resource, resource]);
 
       expect(mockLoggerInfo).toBeCalled();
       expect(mockLoggerInfo).toBeCalledWith('Checking Elastic IP service quota...');
@@ -111,7 +111,7 @@ describe('eip smoke tests', () => {
 
       let thrownError;
       try {
-        await eipSmokeTest(resource, [resource]);
+        await checkEipQuota([resource]);
       } catch (error) {
         thrownError = error;
       } finally {

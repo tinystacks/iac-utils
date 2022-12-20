@@ -6,7 +6,14 @@ import { getCredentials } from '../../../../../utils/aws';
 import { QuotaError } from '../../../../../errors/quota-error';
 import { VPC, getStandardResourceType } from '../resources';
 
-async function validateVpcQuota (newVpcCount: number) {
+async function checkVpcQuota (resources: ResourceDiffRecord[]) {
+  const newVpcCount = resources.filter(resource =>
+    getStandardResourceType(resource.resourceType) === VPC &&
+    resource.changeType === ChangeType.CREATE
+  ).length;
+
+  if (newVpcCount === 0) return;
+
   logger.info('Checking VPC service quota...');
   const DEFAULT_VPC_QUOTA = 5;
   const DEFAULT_NUMBER_OF_VPCS = 1;
@@ -32,16 +39,7 @@ async function validateVpcQuota (newVpcCount: number) {
   }
 }
 
-async function vpcSmokeTest (resource: ResourceDiffRecord, allResources: ResourceDiffRecord[]) {
-  if (resource.changeType === ChangeType.CREATE) {
-    const newBucketsFromStack = allResources.filter(resource =>
-      getStandardResourceType(resource.resourceType) === VPC &&
-      resource.changeType === ChangeType.CREATE
-    );
-    await validateVpcQuota(newBucketsFromStack.length);
-  }
-}
 
 export {
-  vpcSmokeTest
+  checkVpcQuota
 };

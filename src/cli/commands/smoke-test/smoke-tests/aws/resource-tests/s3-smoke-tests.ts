@@ -7,7 +7,14 @@ import { getCredentials } from '../../../../../utils/aws';
 import { QuotaError } from '../../../../../errors/quota-error';
 import { S3_BUCKET, getStandardResourceType } from '../resources';
 
-async function validateS3Quota (newBucketCount: number) {
+async function checkS3Quota (resources: ResourceDiffRecord[]) {
+  const newBucketCount = resources.filter(resource =>
+    getStandardResourceType(resource.resourceType) === S3_BUCKET &&
+    resource.changeType === ChangeType.CREATE
+  ).length;
+
+  if (newBucketCount === 0) return;
+  
   logger.info('Checking S3 bucket service quota...');
   const DEFAULT_BUCKET_QUOTA = 100;
   const DEFAULT_NUMBER_OF_BUCKETS = 1;
@@ -75,18 +82,14 @@ function standardizeBucketProperties (resource: ResourceDiffRecord): StandardS3B
   }
 }
 
-async function s3BucketSmokeTest (resource: ResourceDiffRecord, allResources: ResourceDiffRecord[]) {
+async function s3BucketSmokeTest (resource: ResourceDiffRecord, _allResources: ResourceDiffRecord[]) {
   if (resource.changeType === ChangeType.CREATE) {
     const standardBucket = standardizeBucketProperties(resource);
-    const newBucketsFromStack = allResources.filter(resource =>
-      getStandardResourceType(resource.resourceType) === S3_BUCKET &&
-      resource.changeType === ChangeType.CREATE
-    );
-    await validateS3Quota(newBucketsFromStack.length);
     if (standardBucket.bucketName) await validateBucketNameIsUnique(standardBucket.bucketName);
   }
 }
 
 export {
+  checkS3Quota,
   s3BucketSmokeTest
 };

@@ -6,7 +6,14 @@ import { getCredentials } from '../../../../../utils/aws';
 import { QuotaError } from '../../../../../errors/quota-error';
 import { EIP, getStandardResourceType } from '../resources';
 
-async function validateEipQuota (newEipCount: number) {
+async function checkEipQuota (resources: ResourceDiffRecord[]) {
+  const newEipCount = resources.filter(resource =>
+    getStandardResourceType(resource.resourceType) === EIP &&
+    resource.changeType === ChangeType.CREATE
+  ).length;
+  
+  if (newEipCount === 0) return;
+    
   logger.info('Checking Elastic IP service quota...');
   const DEFAULT_EIP_QUOTA = 5;
   const DEFAULT_NUMBER_OF_EIPS = 1;
@@ -32,16 +39,6 @@ async function validateEipQuota (newEipCount: number) {
   }
 }
 
-async function eipSmokeTest (resource: ResourceDiffRecord, allResources: ResourceDiffRecord[]) {
-  if (resource.changeType === ChangeType.CREATE) {
-    const newNatsFromStack = allResources.filter(resource =>
-      getStandardResourceType(resource.resourceType) === EIP &&
-      resource.changeType === ChangeType.CREATE
-    );
-    await validateEipQuota(newNatsFromStack.length);
-  }
-}
-
 export {
-  eipSmokeTest
+  checkEipQuota
 };

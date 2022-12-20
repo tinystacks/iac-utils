@@ -22,14 +22,19 @@ const TF_NAT_GATEWAY = 'aws_nat_gateway';
 const TF_EIP = 'aws_eip';
 
 const resourceTypeMap: Json = {
+  [SQS_QUEUE]: SQS_QUEUE,
   [CFN_SQS_QUEUE]: SQS_QUEUE,
   [TF_SQS_QUEUE]: SQS_QUEUE,
+  [S3_BUCKET]: S3_BUCKET,
   [CFN_S3_BUCKET]: S3_BUCKET,
   [TF_S3_BUCKET]: S3_BUCKET,
+  [VPC]: VPC,
   [CFN_VPC]: VPC,
   [TF_VPC]: VPC,
+  [NAT_GATEWAY]: NAT_GATEWAY,
   [CFN_NAT_GATEWAY]: NAT_GATEWAY,
   [TF_NAT_GATEWAY]: NAT_GATEWAY,
+  [EIP]: EIP,
   [CFN_EIP]: EIP,
   [TF_EIP]: EIP
 };

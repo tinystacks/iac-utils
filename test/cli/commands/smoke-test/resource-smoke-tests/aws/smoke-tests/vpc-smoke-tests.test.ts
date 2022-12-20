@@ -27,8 +27,8 @@ import {
   ChangeType, IacFormat, ResourceDiffRecord
 } from '../../../../../../../src/cli/types';
 import {
-  vpcSmokeTest
-} from '../../../../../../../src/cli/commands/smoke-test/resource-smoke-tests/aws/smoke-tests';
+  checkVpcQuota
+} from '../../../../../../../src/cli/commands/smoke-test/smoke-tests/aws/resource-tests';
 
 describe('vpc smoke tests', () => {
   beforeEach(() => {
@@ -47,13 +47,13 @@ describe('vpc smoke tests', () => {
     jest.restoreAllMocks();
   });
 
-  describe('vpcSmokeTest', () => {
+  describe('checkVpcQuota', () => {
     it('does nothing if change type is not create', async () => {
       const resource = {
         changeType: ChangeType.UPDATE
       } as ResourceDiffRecord;
 
-      await vpcSmokeTest(resource, [resource]);
+      await checkVpcQuota([resource]);
 
       expect(mockLoggerInfo).not.toBeCalled();
       expect(mockGetCredentials).not.toBeCalled();
@@ -82,7 +82,7 @@ describe('vpc smoke tests', () => {
       });
       
 
-      await vpcSmokeTest(resource, [resource, resource]);
+      await checkVpcQuota([resource, resource]);
 
       expect(mockLoggerInfo).toBeCalled();
       expect(mockLoggerInfo).toBeCalledWith('Checking VPC service quota...');
@@ -111,7 +111,7 @@ describe('vpc smoke tests', () => {
 
       let thrownError;
       try {
-        await vpcSmokeTest(resource, [resource]);
+        await checkVpcQuota([resource]);
       } catch (error) {
         thrownError = error;
       } finally {

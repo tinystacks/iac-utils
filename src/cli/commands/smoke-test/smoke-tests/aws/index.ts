@@ -7,19 +7,26 @@ import {
   EIP
 } from './resources';
 import {
+  checkEipQuota,
+  checkS3Quota,
+  checkVpcQuota,
   s3BucketSmokeTest,
-  sqsQueueSmokeTest,
-  vpcSmokeTest,
-  eipSmokeTest
-} from './smoke-tests';
+  sqsQueueSmokeTest
+} from './resource-tests';
 
 const smokeTests: {
   [key: string]: (resource: ResourceDiffRecord, allResources: ResourceDiffRecord[]) => Promise<void>
 } = {
   [SQS_QUEUE]: sqsQueueSmokeTest,
-  [S3_BUCKET]: s3BucketSmokeTest,
-  [VPC]: vpcSmokeTest,
-  [EIP]: eipSmokeTest
+  [S3_BUCKET]: s3BucketSmokeTest
+};
+
+const quotaChecks: {
+  [key: string]: (resources: ResourceDiffRecord[]) => Promise<void>
+} = {
+  [S3_BUCKET]: checkS3Quota,
+  [VPC]: checkVpcQuota,
+  [EIP]: checkEipQuota
 };
 
 async function smokeTestAwsResource (resource: ResourceDiffRecord, allResources: ResourceDiffRecord[]) {
@@ -28,6 +35,13 @@ async function smokeTestAwsResource (resource: ResourceDiffRecord, allResources:
   if (smokeTest) return smokeTest(resource, allResources);
 }
 
+async function checkAwsQuotas (resourceType: string, resources: ResourceDiffRecord[]) {
+  const standardResourceType = getStandardResourceType(resourceType);
+  const quotaCheck = quotaChecks[standardResourceType];
+  if (quotaCheck) return quotaCheck(resources);
+}
+
 export {
-  smokeTestAwsResource
+  smokeTestAwsResource,
+  checkAwsQuotas
 };

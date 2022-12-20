@@ -21,7 +21,7 @@ import {
 } from '../../../../../../../src/cli/types';
 import {
   sqsQueueSmokeTest
-} from '../../../../../../../src/cli/commands/smoke-test/resource-smoke-tests/aws/smoke-tests';
+} from '../../../../../../../src/cli/commands/smoke-test/smoke-tests/aws/resource-tests';
 
 describe('sqs smoke tests', () => {
   beforeEach(() => {
@@ -101,7 +101,6 @@ describe('sqs smoke tests', () => {
         expect(thrownError).toHaveProperty('message', 'Conflict!');
         expect(thrownError).toHaveProperty('reason', 'An SQS queue with name mock-queue already exists!');
       }
-
     });
   });
 });
