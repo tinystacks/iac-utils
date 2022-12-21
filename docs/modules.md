@@ -47,7 +47,7 @@
 
 #### Defined in
 
-[naming/naming-restrictions.ts:3](https://github.com/tinystacks/iac-utils/blob/bd3bb7b/src/naming/naming-restrictions.ts#L3)
+[naming/naming-restrictions.ts:3](https://github.com/tinystacks/iac-utils/blob/a4b1b24/src/naming/naming-restrictions.ts#L3)
 
 ___
 
@@ -57,7 +57,7 @@ ___
 
 #### Defined in
 
-[naming/naming-restrictions.ts:4](https://github.com/tinystacks/iac-utils/blob/bd3bb7b/src/naming/naming-restrictions.ts#L4)
+[naming/naming-restrictions.ts:4](https://github.com/tinystacks/iac-utils/blob/a4b1b24/src/naming/naming-restrictions.ts#L4)
 
 ___
 
@@ -67,7 +67,7 @@ ___
 
 #### Defined in
 
-[naming/naming-restrictions.ts:5](https://github.com/tinystacks/iac-utils/blob/bd3bb7b/src/naming/naming-restrictions.ts#L5)
+[naming/naming-restrictions.ts:5](https://github.com/tinystacks/iac-utils/blob/a4b1b24/src/naming/naming-restrictions.ts#L5)
 
 ___
 
@@ -77,7 +77,7 @@ ___
 
 #### Defined in
 
-[naming/naming-restrictions.ts:6](https://github.com/tinystacks/iac-utils/blob/bd3bb7b/src/naming/naming-restrictions.ts#L6)
+[naming/naming-restrictions.ts:6](https://github.com/tinystacks/iac-utils/blob/a4b1b24/src/naming/naming-restrictions.ts#L6)
 
 ___
 
@@ -91,7 +91,7 @@ ___
 
 #### Defined in
 
-[naming/naming-restrictions.ts:8](https://github.com/tinystacks/iac-utils/blob/bd3bb7b/src/naming/naming-restrictions.ts#L8)
+[naming/naming-restrictions.ts:8](https://github.com/tinystacks/iac-utils/blob/a4b1b24/src/naming/naming-restrictions.ts#L8)
 
 ## Functions
 
@@ -120,7 +120,7 @@ CidrBlockAllocation - [CidrBlockAllocation](interfaces/CidrBlockAllocation.md)
 
 #### Defined in
 
-[cidr/allocate-cidr-block.ts:173](https://github.com/tinystacks/iac-utils/blob/bd3bb7b/src/cidr/allocate-cidr-block.ts#L173)
+[cidr/allocate-cidr-block.ts:173](https://github.com/tinystacks/iac-utils/blob/a4b1b24/src/cidr/allocate-cidr-block.ts#L173)
 
 ___
 
@@ -153,7 +153,7 @@ number
 
 #### Defined in
 
-[cidr/allocate-subnet-mask.ts:13](https://github.com/tinystacks/iac-utils/blob/bd3bb7b/src/cidr/allocate-subnet-mask.ts#L13)
+[cidr/allocate-subnet-mask.ts:13](https://github.com/tinystacks/iac-utils/blob/a4b1b24/src/cidr/allocate-subnet-mask.ts#L13)
 
 ___
 
@@ -181,7 +181,7 @@ string
 
 #### Defined in
 
-[string-manipulation/constant-case.ts:9](https://github.com/tinystacks/iac-utils/blob/bd3bb7b/src/string-manipulation/constant-case.ts#L9)
+[string-manipulation/constant-case.ts:9](https://github.com/tinystacks/iac-utils/blob/a4b1b24/src/string-manipulation/constant-case.ts#L9)
 
 ___
 
@@ -205,7 +205,7 @@ constructId - string
 
 #### Defined in
 
-[naming/construct-id.ts:9](https://github.com/tinystacks/iac-utils/blob/bd3bb7b/src/naming/construct-id.ts#L9)
+[naming/construct-id.ts:9](https://github.com/tinystacks/iac-utils/blob/a4b1b24/src/naming/construct-id.ts#L9)
 
 ___
 
@@ -233,7 +233,7 @@ string
 
 #### Defined in
 
-[naming/generate-name.ts:38](https://github.com/tinystacks/iac-utils/blob/bd3bb7b/src/naming/generate-name.ts#L38)
+[naming/generate-name.ts:38](https://github.com/tinystacks/iac-utils/blob/a4b1b24/src/naming/generate-name.ts#L38)
 
 ___
 
@@ -261,7 +261,7 @@ string
 
 #### Defined in
 
-[string-manipulation/kebab-case.ts:7](https://github.com/tinystacks/iac-utils/blob/bd3bb7b/src/string-manipulation/kebab-case.ts#L7)
+[string-manipulation/kebab-case.ts:7](https://github.com/tinystacks/iac-utils/blob/a4b1b24/src/string-manipulation/kebab-case.ts#L7)
 
 ___
 
@@ -289,7 +289,7 @@ string
 
 #### Defined in
 
-[string-manipulation/title-case.ts:10](https://github.com/tinystacks/iac-utils/blob/bd3bb7b/src/string-manipulation/title-case.ts#L10)
+[string-manipulation/title-case.ts:10](https://github.com/tinystacks/iac-utils/blob/a4b1b24/src/string-manipulation/title-case.ts#L10)
 
 ___
 
@@ -315,7 +315,7 @@ string
 
 #### Defined in
 
-[naming/truncate-w-hash.ts:10](https://github.com/tinystacks/iac-utils/blob/bd3bb7b/src/naming/truncate-w-hash.ts#L10)
+[naming/truncate-w-hash.ts:10](https://github.com/tinystacks/iac-utils/blob/a4b1b24/src/naming/truncate-w-hash.ts#L10)
 
 ___
 
@@ -340,4 +340,4 @@ Returns a response with a boolean property indicating validity and a string prop
 
 #### Defined in
 
-[naming/validate-name.ts:19](https://github.com/tinystacks/iac-utils/blob/bd3bb7b/src/naming/validate-name.ts#L19)
+[naming/validate-name.ts:19](https://github.com/tinystacks/iac-utils/blob/a4b1b24/src/naming/validate-name.ts#L19)

@@ -29,7 +29,7 @@ The CIDR range that was generated.
 
 #### Defined in
 
-[cidr/allocate-cidr-block.ts:12](https://github.com/tinystacks/iac-utils/blob/bd3bb7b/src/cidr/allocate-cidr-block.ts#L12)
+[cidr/allocate-cidr-block.ts:12](https://github.com/tinystacks/iac-utils/blob/a4b1b24/src/cidr/allocate-cidr-block.ts#L12)
 
 ___
 
@@ -47,7 +47,7 @@ The network mask of the CIDR range (integer representing the range of the CIDR b
 
 #### Defined in
 
-[cidr/allocate-cidr-block.ts:28](https://github.com/tinystacks/iac-utils/blob/bd3bb7b/src/cidr/allocate-cidr-block.ts#L28)
+[cidr/allocate-cidr-block.ts:28](https://github.com/tinystacks/iac-utils/blob/a4b1b24/src/cidr/allocate-cidr-block.ts#L28)
 
 ___
 
@@ -65,7 +65,7 @@ The IP prefix of the CIDR range (IPv4 address of the start of the range).
 
 #### Defined in
 
-[cidr/allocate-cidr-block.ts:22](https://github.com/tinystacks/iac-utils/blob/bd3bb7b/src/cidr/allocate-cidr-block.ts#L22)
+[cidr/allocate-cidr-block.ts:22](https://github.com/tinystacks/iac-utils/blob/a4b1b24/src/cidr/allocate-cidr-block.ts#L22)
 
 ___
 
@@ -77,4 +77,4 @@ The seed used to generate this CIDR block.
 
 #### Defined in
 
-[cidr/allocate-cidr-block.ts:16](https://github.com/tinystacks/iac-utils/blob/bd3bb7b/src/cidr/allocate-cidr-block.ts#L16)
+[cidr/allocate-cidr-block.ts:16](https://github.com/tinystacks/iac-utils/blob/a4b1b24/src/cidr/allocate-cidr-block.ts#L16)

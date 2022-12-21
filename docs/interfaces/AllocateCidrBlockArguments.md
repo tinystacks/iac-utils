@@ -28,7 +28,7 @@ Note that for a given prefix and network mask, only 256 unique CIDR blocks can b
 
 #### Defined in
 
-[cidr/allocate-cidr-block.ts:69](https://github.com/tinystacks/iac-utils/blob/bd3bb7b/src/cidr/allocate-cidr-block.ts#L69)
+[cidr/allocate-cidr-block.ts:69](https://github.com/tinystacks/iac-utils/blob/a4b1b24/src/cidr/allocate-cidr-block.ts#L69)
 
 ___
 
@@ -48,7 +48,7 @@ This value will determine how many IP addresses are available within your CIDR b
 
 #### Defined in
 
-[cidr/allocate-cidr-block.ts:61](https://github.com/tinystacks/iac-utils/blob/bd3bb7b/src/cidr/allocate-cidr-block.ts#L61)
+[cidr/allocate-cidr-block.ts:61](https://github.com/tinystacks/iac-utils/blob/a4b1b24/src/cidr/allocate-cidr-block.ts#L61)
 
 ___
 
@@ -69,7 +69,7 @@ This should typically be from the Private Address Space defined in RFC 1918 [htt
 
 #### Defined in
 
-[cidr/allocate-cidr-block.ts:52](https://github.com/tinystacks/iac-utils/blob/bd3bb7b/src/cidr/allocate-cidr-block.ts#L52)
+[cidr/allocate-cidr-block.ts:52](https://github.com/tinystacks/iac-utils/blob/a4b1b24/src/cidr/allocate-cidr-block.ts#L52)
 
 ___
 
@@ -86,4 +86,4 @@ If you are generating multiple CIDR blocks and need them to be unique, generate 
 
 #### Defined in
 
-[cidr/allocate-cidr-block.ts:42](https://github.com/tinystacks/iac-utils/blob/bd3bb7b/src/cidr/allocate-cidr-block.ts#L42)
+[cidr/allocate-cidr-block.ts:42](https://github.com/tinystacks/iac-utils/blob/a4b1b24/src/cidr/allocate-cidr-block.ts#L42)
