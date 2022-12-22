@@ -36,10 +36,7 @@ async function checkQuotas (allResources: ResourceDiffRecord[]) {
 }
 
 async function smokeTest (options: SmokeTestOptions) {
-  logger.info(`options: ${JSON.stringify(options)}`);
   const config = getConfig(options);
-  logger.info(`config: ${JSON.stringify(config)}`);
-  logger.info(`requirePrivateSubnet: ${config.requirePrivateSubnet}`);
   let { format } = config;
   if (!format) {
     format = detectIacFormat();
