@@ -172,6 +172,7 @@ function getSubnetsForVpc (resource: ResourceDiffRecord, allResources: ResourceD
 }
 
 async function verifyVpcHasPrivateSubnets (resource: ResourceDiffRecord, allResources: ResourceDiffRecord[]) {
+  logger.info('Verifying subnet configuration...');
   const subnets = getSubnetsForVpc(resource, allResources);
   const privateSubnets = subnets.filter((subnet: SubnetRecord) => subnet.type === SubnetType.PRIVATE);
   if (privateSubnets.length === 0) {

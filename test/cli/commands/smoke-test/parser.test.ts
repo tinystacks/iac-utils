@@ -31,7 +31,8 @@ const mockCdkDiff = fs.realRFS(path.realResolve(__dirname, './test-data/simple-s
 const mockCdkTemplate = fs.realRFS(path.realResolve(__dirname, './test-data/simple-sqs-stack/MockCdkTemplate.json'));
 
  // TODO: update test data with a tf plan that performs a replacement to test "afterAction" branch
- const mockTfPlan = fs.realRFS(path.realResolve(__dirname, './test-data/simple-sqs-stack/MockTfPlan.json'));
+ const mockSimpleTfPlan = fs.realRFS(path.realResolve(__dirname, './test-data/simple-sqs-stack/MockTfPlan.json'));
+ const mockComplexTfPlan = fs.realRFS(path.realResolve(__dirname, './test-data/tf-module-stack/MockTfPlan.json'));
 
 describe('parser', () => {
   afterEach(() => {
@@ -68,27 +69,44 @@ describe('parser', () => {
     expect(result[2]).toHaveProperty('changeType', ChangeType.UPDATE);
     expect(result[2]).toHaveProperty('resourceRecord');
   });
-  it('parseTerraformDiff', () => {
-    mockReadFileSync.mockReturnValueOnce(mockTfPlan);
+  describe('parseTerraformDiff', () => {
+    it ('capture resource type and change type correctly', () => {
+      mockReadFileSync.mockReturnValueOnce(mockSimpleTfPlan);
+      
+      const result = parseTerraformDiff('mock-file');
+      
+      expect(Array.isArray(result)).toEqual(true);
+      expect(result.length).toEqual(3);
+      
+      expect(result[0]).toHaveProperty('format', IacFormat.tf);
+      expect(result[0]).toHaveProperty('resourceType', 'aws_sqs_queue');
+      expect(result[0]).toHaveProperty('changeType', ChangeType.UPDATE);
+      expect(result[0]).toHaveProperty('resourceRecord');
+      
+      expect(result[1]).toHaveProperty('format', IacFormat.tf);
+      expect(result[1]).toHaveProperty('resourceType', 'aws_sqs_queue');
+      expect(result[1]).toHaveProperty('changeType', ChangeType.DELETE);
+      expect(result[1]).toHaveProperty('resourceRecord');
+      
+      expect(result[2]).toHaveProperty('format', IacFormat.tf);
+      expect(result[2]).toHaveProperty('resourceType', 'aws_sqs_queue');
+      expect(result[2]).toHaveProperty('changeType', ChangeType.CREATE);
+      expect(result[2]).toHaveProperty('resourceRecord');
+    });
+    it('captures references and parses modules', () => {
+      mockReadFileSync.mockReturnValueOnce(mockComplexTfPlan);
+      
+      const result = parseTerraformDiff('mock-file');
 
-    const result = parseTerraformDiff('mock-file');
+      expect(Array.isArray(result)).toEqual(true);
+      expect(result.length).toEqual(25);
 
-    expect(Array.isArray(result)).toEqual(true);
-    expect(result.length).toEqual(3);
-    
-    expect(result[0]).toHaveProperty('format', IacFormat.tf);
-    expect(result[0]).toHaveProperty('resourceType', 'aws_sqs_queue');
-    expect(result[0]).toHaveProperty('changeType', ChangeType.UPDATE);
-    expect(result[0]).toHaveProperty('resourceRecord');
-
-    expect(result[1]).toHaveProperty('format', IacFormat.tf);
-    expect(result[1]).toHaveProperty('resourceType', 'aws_sqs_queue');
-    expect(result[1]).toHaveProperty('changeType', ChangeType.DELETE);
-    expect(result[1]).toHaveProperty('resourceRecord');
-    
-    expect(result[2]).toHaveProperty('format', IacFormat.tf);
-    expect(result[2]).toHaveProperty('resourceType', 'aws_sqs_queue');
-    expect(result[2]).toHaveProperty('changeType', ChangeType.CREATE);
-    expect(result[2]).toHaveProperty('resourceRecord');
+      expect(result[0]).toHaveProperty('resourceRecord');
+      expect(result[0].resourceRecord).toHaveProperty('address');
+      expect(result[0].resourceRecord.address.startsWith('module.')).toBe(true);
+      expect(result[0].resourceRecord).toHaveProperty('tfReferences');
+      expect(result[0].resourceRecord.tfReferences?.at(0)).toHaveProperty('property');
+      expect(result[0].resourceRecord.tfReferences?.at(0)).toHaveProperty('reference');
+    });
   });
 });

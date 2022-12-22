@@ -29,7 +29,7 @@
     "qa": "npm run lint && npm run test-cov",
     "test": "jest",
     "test-cov": "jest --coverage",
-    "test-file": "jest ./test/cli/commands/smoke-test/resource-smoke-tests/aws/smoke-tests/nat-gateway-smoke-tests.test.ts",
+    "test-file": "jest ./test/cli/commands/smoke-test/smoke-tests/aws/resource-tests/vpc-smoke-tests.test.ts",
     "view-test-cov": "jest --coverage && open coverage/lcov-report/index.html",
     "mt": "ts-node mt.ts"
   },
