@@ -33,7 +33,9 @@ async function prepareCdk (): Promise<ResourceDiffRecord[]> {
   handleNonZeroExitCode(output, 'cdk diff');
   const diffFileName = `${TMP_DIRECTORY}/diff.txt`;
   writeFileSync(diffFileName, output.stderr);
-  return parseCdkDiff(diffFileName);
+  const parsedDiff = parseCdkDiff(diffFileName);
+  writeFileSync(`${TMP_DIRECTORY}/aws-cdk-diff.json`, JSON.stringify(parsedDiff, null, 2));
+  return parsedDiff;
 }
 
 async function prepareTf (): Promise<ResourceDiffRecord[]> {
@@ -44,7 +46,10 @@ async function prepareTf (): Promise<ResourceDiffRecord[]> {
   const planFileName = `${TMP_DIRECTORY}/plan.json`;
   const showOutput: OsOutput = await runCommand(`terraform show -no-color -json ${TMP_DIRECTORY}/tfplan > ${planFileName}`);
   handleNonZeroExitCode(showOutput, 'terraform show');
-  return parseTerraformDiff(planFileName);
+  const parsedDiff = parseTerraformDiff(planFileName);
+  writeFileSync(`${TMP_DIRECTORY}/tf-diff.json`, JSON.stringify(parsedDiff, null, 2));
+  return parsedDiff;
+
 }
 
 async function prepareForSmokeTest (format: IacFormat): Promise<ResourceDiffRecord[]> {

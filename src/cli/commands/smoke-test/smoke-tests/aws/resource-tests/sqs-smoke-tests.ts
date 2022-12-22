@@ -1,7 +1,7 @@
 import * as logger from '../../../../../logger';
 import { SQS } from '@aws-sdk/client-sqs';
 import { ConflictError } from '../../../../../errors';
-import { ChangeType, ResourceDiffRecord } from '../../../../../types';
+import { ChangeType, ResourceDiffRecord, SmokeTestOptions } from '../../../../../types';
 import { getCredentials } from '../../../../../utils/aws';
 
 async function validateQueueNameIsUnique (queueName: string) {
@@ -16,7 +16,7 @@ async function validateQueueNameIsUnique (queueName: string) {
   if (QueueUrls.some(url => url.endsWith(`/${queueName}`))) throw new ConflictError(`An SQS queue with name ${queueName} already exists!`);
 }
 
-async function sqsQueueSmokeTest (resource: ResourceDiffRecord, _allResources?: ResourceDiffRecord[]) {
+async function sqsQueueSmokeTest (resource: ResourceDiffRecord, _allResources?: ResourceDiffRecord[], _config?: SmokeTestOptions) {
   if (resource.changeType === ChangeType.CREATE) {
     await validateQueueNameIsUnique(resource.resourceRecord.properties.QueueName);
   }

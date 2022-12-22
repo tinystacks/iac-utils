@@ -16,8 +16,10 @@ import {
   Json,
   ResourceDiffRecord,
   DiffSection,
-  ResourceRecord
+  ResourceRecord,
+  TfReference
 } from '../../types';
+import isEmpty from 'lodash.isempty';
 
 function partitionDiff (diff: string[], diffHeaders: string[]): DiffSection[] {
   const headerIndices: { [key: string]: number } = diffHeaders.reduce<{ [key: string]: number }>((acc, header) => {
@@ -84,6 +86,7 @@ function composeCdkResourceDiffRecords (stackName: string, diffs: string[] = [] 
     const resourceRecord: ResourceRecord = {
       address: cdkPath,
       type: cfnEntry.Type || resourceType,
+      logicalId,
       properties: cfnEntry.Properties || {}
     };
     const resourceDiffRecord: ResourceDiffRecord = {
@@ -138,11 +141,67 @@ function getChangeTypeForTerraformDiff (tfChangeType: string): ChangeType {
 function parseTerraformDiff (planFile: string): ResourceDiffRecord[] {
   const planJson: Json = JSON.parse(readFileSync(planFile)?.toString() || '{}');
   const {
-    resource_changes = [] as Json[]
+    resource_changes = [] as Json[],
+    configuration = {} as Json
   } = planJson;
+  
+  const {
+    resources = [],
+    module_calls = {} as Json
+  } = configuration.root_module || {};
+
+  const moduleResources: Json[] = Object.entries(module_calls).reduce((acc: Json[], [moduleName, moduleCall]: [string, Json]) => {
+    const scopedModuleResources = moduleCall.module?.resources?.map((moduleResource: Json) => {
+      moduleResource.address = moduleResource.address.startsWith('module') ? moduleResource.address : `module.${moduleName}.${moduleResource.address}`;
+      moduleResource.expressions = Object.fromEntries(Object.entries(moduleResource.expressions || {}).map(([key, value]: [string, Json]) => {
+        const references: string[] = value.references?.map((reference: string) => reference.startsWith('module') ? reference : `module.${moduleName}.${reference}`) || [];
+        return [key, { references }];
+      }));
+      moduleResource.for_each_expression = { references: moduleResource.for_each_expression?.references.map((reference: string) => reference.startsWith('module') ? reference : `module.${moduleName}.${reference}`) || [] };
+      return moduleResource;
+    });
+    acc.push(...scopedModuleResources);
+    return acc;
+  }, []);
+
+  const allResources: Json[] = [...resources, ...moduleResources];
+
+  const crossResourceReferences: { [address: string]: TfReference[] } = allResources.reduce((crossResourceReferencesAccumulator: { [address: string]: TfReference[] }, resource: Json) => {
+    const {
+      address,
+      expressions = {} as Json,
+      for_each_expression = {} as Json
+    } = resource || {};
+    const resourceReferences: TfReference[] = Object.entries(expressions).reduce((acc: TfReference[], [property, metaData]: [string, Json]) => {
+      const {
+        references = []
+      } = metaData || {};
+      acc.push(...references.map((reference: string) => {
+        return {
+          property,
+          reference
+        };
+      }));
+      return acc;
+    }, []);
+
+    for_each_expression.references?.forEach((reference: string) => {
+      resourceReferences.push({
+        property: 'for_each',
+        reference
+      });
+    });
+
+    crossResourceReferencesAccumulator[address] = crossResourceReferencesAccumulator[address] || [];
+    crossResourceReferencesAccumulator[address].push(...resourceReferences);
+    return crossResourceReferencesAccumulator;
+  }, {});
+
   return resource_changes.reduce((acc: ResourceDiffRecord[], resourceChange: Json): ResourceDiffRecord[] => {
     const {
       address,
+      index,
+      name: logicalId,
       change: {
         before = {},
         after = {},
@@ -162,7 +221,9 @@ function parseTerraformDiff (planFile: string): ResourceDiffRecord[] {
         changeType: getChangeTypeForTerraformDiff(beforeAction),
         resourceRecord: {
           address,
+          index,
           type,
+          logicalId,
           tfProviderName,
           properties: before
         }
@@ -170,14 +231,18 @@ function parseTerraformDiff (planFile: string): ResourceDiffRecord[] {
     }
     const changeType = getChangeTypeForTerraformDiff(afterAction || beforeAction);
     if (changeType !== ChangeType.NO_CHANGES) {
+      const nonIndexedAddress = !isEmpty(index) ? address.replace(`["${index}"]`, ''): address;
       acc.push({
         format: IacFormat.tf,
         resourceType: type,
         changeType,
         resourceRecord: {
           address,
+          index,
           type,
+          logicalId,
           tfProviderName,
+          tfReferences: crossResourceReferences[nonIndexedAddress],
           properties: after
         }
       });

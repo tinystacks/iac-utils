@@ -2,7 +2,7 @@ import * as logger from '../../../../../logger';
 import { S3 } from '@aws-sdk/client-s3';
 import { ServiceQuotas } from '@aws-sdk/client-service-quotas';
 import { ConflictError } from '../../../../../errors';
-import { ChangeType, IacFormat, ResourceDiffRecord } from '../../../../../types';
+import { ChangeType, IacFormat, ResourceDiffRecord, SmokeTestOptions } from '../../../../../types';
 import { getCredentials } from '../../../../../utils/aws';
 import { QuotaError } from '../../../../../errors/quota-error';
 import { S3_BUCKET, getStandardResourceType } from '../resources';
@@ -82,7 +82,7 @@ function standardizeBucketProperties (resource: ResourceDiffRecord): StandardS3B
   }
 }
 
-async function s3BucketSmokeTest (resource: ResourceDiffRecord, _allResources: ResourceDiffRecord[]) {
+async function s3BucketSmokeTest (resource: ResourceDiffRecord, _allResources?: ResourceDiffRecord[], _config?: SmokeTestOptions) {
   if (resource.changeType === ChangeType.CREATE) {
     const standardBucket = standardizeBucketProperties(resource);
     if (standardBucket.bucketName) await validateBucketNameIsUnique(standardBucket.bucketName);

@@ -72,8 +72,8 @@ describe('smokeTest', () => {
     expect(mockLoggerInfo).not.toBeCalled();
     expect(mockPrepareForSmokeTest).toBeCalledWith(IacFormat.awsCdk);
     expect(mockSmokeTestAwsResource).toBeCalledTimes(2);
-    expect(mockSmokeTestAwsResource).toBeCalledWith(mockSqs, [mockSqs, mockVpc]);
-    expect(mockSmokeTestAwsResource).toBeCalledWith(mockVpc, [mockSqs, mockVpc]);
+    expect(mockSmokeTestAwsResource).toBeCalledWith(mockSqs, [mockSqs, mockVpc], { format: IacFormat.awsCdk });
+    expect(mockSmokeTestAwsResource).toBeCalledWith(mockVpc, [mockSqs, mockVpc], { format: IacFormat.awsCdk });
     expect(mockCheckAwsQuotas).toBeCalledTimes(2);
     expect(mockCheckAwsQuotas).toBeCalledWith(SQS_QUEUE, [mockSqs]);
     expect(mockCheckAwsQuotas).toBeCalledWith(VPC, [mockVpc]);

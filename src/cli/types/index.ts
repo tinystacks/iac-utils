@@ -1,8 +1,10 @@
+// eslint-disable-next-line no-shadow
 enum IacFormat {
   tf = 'tf',
   awsCdk = 'aws-cdk'
 }
 
+// eslint-disable-next-line no-shadow
 enum ChangeType {
   CREATE = 'CREATE',
   UPDATE = 'UPDATE',
@@ -18,17 +20,27 @@ interface OsOutput {
 }
 
 interface SmokeTestOptions {
-  format?: IacFormat
+  format?: IacFormat;
+  requirePrivateSubnet?: boolean;
+  configFile?: string;
 }
 
 interface Json {
   [key: string]: any
 }
 
+interface TfReference {
+  property: string;
+  reference: string;
+}
+
 interface ResourceRecord {
   address: string;
+  index?: string;
   type: string;
+  logicalId: string;
   tfProviderName?: string;
+  tfReferences?: TfReference[]
   properties: Json;
 }
 
@@ -58,6 +70,7 @@ export {
   SmokeTestOptions,
   ChangeType,
   Json,
+  TfReference,
   ResourceRecord,
   ResourceDiffRecord,
   CdkDiff,

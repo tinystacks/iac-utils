@@ -81,6 +81,7 @@
         "argsIgnorePattern": "^_"
       }
     ],
-    "import/no-cycle": "error"
+    "import/no-cycle": "error",
+    "no-shadow": "error"
   }
 }
