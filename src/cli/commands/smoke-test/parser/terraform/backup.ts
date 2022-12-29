@@ -1,127 +1,18 @@
+/*
 import { readFileSync } from 'fs';
-import { resolve as resolvePath } from 'path';
 import {
-  CDK_DIFF_CREATE_SYMBOL,
-  CDK_DIFF_DELETE_SYMBOL,
-  CDK_DIFF_UPDATE_SYMBOL,
   TF_DIFF_CREATE_ACTION,
   TF_DIFF_DELETE_ACTION,
   TF_DIFF_NO_OP_ACTION,
   TF_DIFF_UPDATE_ACTION
-} from '../../constants';
+} from '../../../../constants';
 import {
-  CdkDiff,
   ChangeType,
   IacFormat,
   Json,
-  ResourceDiffRecord,
-  DiffSection,
-  ResourceRecord,
-  TfReference
-} from '../../types';
+  ResourceDiffRecord
+} from '../../../../types';
 import isEmpty from 'lodash.isempty';
-
-function partitionDiff (diff: string[], diffHeaders: string[]): DiffSection[] {
-  const headerIndices: { [key: string]: number } = diffHeaders.reduce<{ [key: string]: number }>((acc, header) => {
-    const headerIndex = diff.findIndex(line => line.trim() === header);
-    acc[header] = headerIndex;
-    return acc;
-  }, {});
-
-  const allHeaderIndices: number[] = Object.values(headerIndices).sort();
-  return Object.entries(headerIndices).reduce<DiffSection[]>((acc, [ header, headerIndex ]) => {
-    const sectionName = header.trim().replace('Stack ', '');
-    const nextStackHeaderIndex = allHeaderIndices[allHeaderIndices.indexOf(headerIndex) + 1];
-    
-    const stackDiffLines: string[] = diff.slice(headerIndex + 1, nextStackHeaderIndex);
-
-    acc.push({
-      sectionName,
-      diffLines: stackDiffLines
-    });
-    return acc;
-  }, []);
-}
-
-function separateStacks (diff: string[]): DiffSection[] {
-  const stackHeaders = diff.filter(line => line.trim().startsWith('Stack '));
-  return partitionDiff(diff, stackHeaders);
-}
-
-function getChangeTypeForCdkDiff (changeTypeSymbol: string): ChangeType {
-  switch (changeTypeSymbol) {
-    case CDK_DIFF_CREATE_SYMBOL:
-      return ChangeType.CREATE;
-    case CDK_DIFF_UPDATE_SYMBOL:
-      return ChangeType.UPDATE;
-    case CDK_DIFF_DELETE_SYMBOL:
-      return ChangeType.DELETE;
-    default:
-      return ChangeType.UNKNOWN;
-  }
-}
-
-function parseDiffLine (diff: string): CdkDiff {
-  const [ changeTypeSymbol, resourceType, cdkPath, logicalId ] = diff.trim().replace(/\t/g, '').split(' ').filter(elem => elem.trim().length !== 0);
-  return {
-    changeTypeSymbol,
-    resourceType: resourceType?.indexOf('::') > 0 ? resourceType : undefined,
-    cdkPath,
-    logicalId
-  };
-}
-
-function composeCdkResourceDiffRecords (stackName: string, diffs: string[] = [] ): ResourceDiffRecord[] {
-  const templateJson: Json = JSON.parse(readFileSync(resolvePath(`./cdk.out/${stackName}.template.json`)).toString() || '{}');
-  return diffs.reduce<ResourceDiffRecord[]>((acc: ResourceDiffRecord[], diff: string): ResourceDiffRecord[] => {
-    const {
-      changeTypeSymbol,
-      resourceType,
-      cdkPath,
-      logicalId
-    }: CdkDiff = parseDiffLine(diff);
-    const changeType = getChangeTypeForCdkDiff(changeTypeSymbol);
-    if (changeType === ChangeType.UNKNOWN || !resourceType || !cdkPath || !logicalId) return acc;
-    const [ _logicalId, cfnEntry = {} ] = Object.entries<Json>(templateJson.Resources).find(([key]) => key === logicalId) || [];
-    const resourceRecord: ResourceRecord = {
-      address: cdkPath,
-      type: cfnEntry.Type || resourceType,
-      logicalId,
-      properties: cfnEntry.Properties || {}
-    };
-    const resourceDiffRecord: ResourceDiffRecord = {
-      stackName,
-      format: IacFormat.awsCdk,
-      changeType,
-      resourceType: resourceRecord.type,
-      resourceRecord
-    };
-    acc.push(resourceDiffRecord);
-    return acc;
-  }, []);
-}
-
-function parseStackDiff (stackDiffLines: DiffSection): ResourceDiffRecord[] {
-  const {
-    sectionName: stackName,
-    diffLines
-  } = stackDiffLines;
-  const diffHeaders = ['IAM Statement Changes', 'IAM Policy Changes', 'Parameters', 'Resources', 'Outputs', 'Other Changes'];
-
-  const diffSections = partitionDiff(diffLines, diffHeaders);
-  const resourceDiffs = diffSections.find(diffSection => diffSection.sectionName === 'Resources');
-  return composeCdkResourceDiffRecords(stackName, resourceDiffs?.diffLines);
-}
-
-function parseCdkDiff (diffFile: string): ResourceDiffRecord[] {
-  const diffTxt = readFileSync(diffFile).toString() || '';
-  const diff = diffTxt.split('\n').filter(line => line.trim().length !== 0);
-  const stackDiffLines = separateStacks(diff);
-  return stackDiffLines.reduce<ResourceDiffRecord[]>((acc, stackDiff) => {
-    acc.push(...parseStackDiff(stackDiff));
-    return acc;
-  }, []);
-}
 
 function getChangeTypeForTerraformDiff (tfChangeType: string): ChangeType {
   switch (tfChangeType) {
@@ -252,6 +143,6 @@ function parseTerraformDiff (planFile: string): ResourceDiffRecord[] {
 }
 
 export {
-  parseCdkDiff,
   parseTerraformDiff
 };
+*/

@@ -11,6 +11,9 @@ const TF_DIFF_NO_OP_ACTION = 'no-op';
 
 const AWS_TF_PROVIDER_NAME = 'registry.terraform.io/hashicorp/aws';
 
+const TINYSTACKS_AWS_CDK_PARSER = './tinystacks-aws-cdk-parser';
+const TINYSTACKS_TF_PARSER = './tinystacks-tf-parser';
+
 export {
   TMP_DIRECTORY,
   CDK_DIFF_CREATE_SYMBOL,
@@ -20,5 +23,7 @@ export {
   TF_DIFF_UPDATE_ACTION,
   TF_DIFF_DELETE_ACTION,
   TF_DIFF_NO_OP_ACTION,
-  AWS_TF_PROVIDER_NAME
+  AWS_TF_PROVIDER_NAME,
+  TINYSTACKS_AWS_CDK_PARSER,
+  TINYSTACKS_TF_PARSER
 };
