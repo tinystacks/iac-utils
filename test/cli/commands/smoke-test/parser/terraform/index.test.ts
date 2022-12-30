@@ -39,6 +39,10 @@ const mockSimpleTfPlan = fs.realRFS(path.realResolve(__dirname, '../../test-data
 const mockComplexTfPlan = fs.realRFS(path.realResolve(__dirname, '../../test-data/tf-module-stack/MockTfPlan.json'));
 
 describe('aws-cdk parser', () => {
+  beforeEach(() => {
+    mockParseResource.mockResolvedValue({});
+    mockParseModule.mockResolvedValue({});
+  });
   afterEach(() => {
     // for mocks
     jest.resetAllMocks();
@@ -46,7 +50,7 @@ describe('aws-cdk parser', () => {
     jest.restoreAllMocks();
   });
 
-  xdescribe('parseTerraformDiff', () => {
+  describe('parseTerraformDiff', () => {
     it ('capture resource type and change type correctly', async () => {
       mockReadFileSync.mockReturnValueOnce(mockSimpleTfPlan);
       

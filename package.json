@@ -29,7 +29,7 @@
     "qa": "exit 0; npm run lint && npm run test-cov",
     "test": "jest",
     "test-cov": "jest --coverage",
-    "test-file": "jest ./test/cli/commands/smoke-test/smoke-tests/aws/resource-tests/s3-smoke-tests.test.ts",
+    "test-file": "jest ./test/cli/commands/smoke-test/parser/terraform/index.test.ts",
     "test-file-cov": "jest ./test/cli/commands/smoke-test/smoke-tests/aws/resource-tests/vpc-smoke-tests.test.ts --coverage",
     "view-test-cov": "jest --coverage && open coverage/lcov-report/index.html",
     "mt": "ts-node mt.ts"
