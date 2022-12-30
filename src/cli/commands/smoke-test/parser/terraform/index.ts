@@ -69,60 +69,8 @@ async function parseTerraformDiff (planFile: string, config: SmokeTestOptions): 
   const planJson: Json = JSON.parse(readFileSync(planFile)?.toString() || '{}');
   const {
     resource_changes = [] as Json[]
-    // configuration = {} as Json
   } = planJson;
   
-  // const {
-  //   resources = [],
-  //   module_calls = {} as Json
-  // } = configuration.root_module || {};
-
-  // const moduleResources: Json[] = Object.entries(module_calls).reduce((acc: Json[], [moduleName, moduleCall]: [string, Json]) => {
-  //   const scopedModuleResources = moduleCall.module?.resources?.map((moduleResource: Json) => {
-  //     moduleResource.address = moduleResource.address.startsWith('module') ? moduleResource.address : `module.${moduleName}.${moduleResource.address}`;
-  //     moduleResource.expressions = Object.fromEntries(Object.entries(moduleResource.expressions || {}).map(([key, value]: [string, Json]) => {
-  //       const references: string[] = value.references?.map((reference: string) => reference.startsWith('module') ? reference : `module.${moduleName}.${reference}`) || [];
-  //       return [key, { references }];
-  //     }));
-  //     moduleResource.for_each_expression = { references: moduleResource.for_each_expression?.references.map((reference: string) => reference.startsWith('module') ? reference : `module.${moduleName}.${reference}`) || [] };
-  //     return moduleResource;
-  //   });
-  //   acc.push(...scopedModuleResources);
-  //   return acc;
-  // }, []);
-
-  // const allResources: Json[] = [...resources, ...moduleResources];
-
-  // const crossResourceReferences: { [address: string]: TfReference[] } = allResources.reduce((crossResourceReferencesAccumulator: { [address: string]: TfReference[] }, resource: Json) => {
-  //   const {
-  //     address,
-  //     expressions = {} as Json,
-  //     for_each_expression = {} as Json
-  //   } = resource || {};
-  //   const resourceReferences: TfReference[] = Object.entries(expressions).reduce((acc: TfReference[], [property, metaData]: [string, Json]) => {
-  //     const {
-  //       references = []
-  //     } = metaData || {};
-  //     acc.push(...references.map((reference: string) => {
-  //       return {
-  //         property,
-  //         reference
-  //       };
-  //     }));
-  //     return acc;
-  //   }, []);
-
-  //   for_each_expression.references?.forEach((reference: string) => {
-  //     resourceReferences.push({
-  //       property: 'for_each',
-  //       reference
-  //     });
-  //   });
-
-  //   crossResourceReferencesAccumulator[address] = crossResourceReferencesAccumulator[address] || [];
-  //   crossResourceReferencesAccumulator[address].push(...resourceReferences);
-  //   return crossResourceReferencesAccumulator;
-  // }, {});
   const resources: ResourceDiffRecord[] = [];
   for (const resourceChange of resource_changes) {
     const {

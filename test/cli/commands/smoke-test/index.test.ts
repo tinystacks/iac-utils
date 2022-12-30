@@ -43,7 +43,7 @@ describe('smokeTest', () => {
 
     expect(mockDetectIacFormat).toBeCalled();
     expect(mockLoggerInfo).toBeCalledWith('No IaC format specified. Using detected format: mock-format');
-    expect(mockPrepareForSmokeTest).toBeCalledWith('mock-format');
+    expect(mockPrepareForSmokeTest).toBeCalledWith({ format: 'mock-format' });
   });
   it('runs smoke test on each resource returned', async () => {
     const mockSqs = {
@@ -70,7 +70,7 @@ describe('smokeTest', () => {
 
     expect(mockDetectIacFormat).not.toBeCalled();
     expect(mockLoggerInfo).not.toBeCalled();
-    expect(mockPrepareForSmokeTest).toBeCalledWith(IacFormat.awsCdk);
+    expect(mockPrepareForSmokeTest).toBeCalledWith({ format: IacFormat.awsCdk });
     expect(mockSmokeTestAwsResource).toBeCalledTimes(2);
     expect(mockSmokeTestAwsResource).toBeCalledWith(mockSqs, [mockSqs, mockVpc], { format: IacFormat.awsCdk });
     expect(mockSmokeTestAwsResource).toBeCalledWith(mockVpc, [mockSqs, mockVpc], { format: IacFormat.awsCdk });

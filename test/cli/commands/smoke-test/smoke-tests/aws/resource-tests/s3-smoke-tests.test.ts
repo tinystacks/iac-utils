@@ -68,10 +68,8 @@ describe('s3 smoke tests', () => {
         changeType: ChangeType.CREATE,
         format: IacFormat.awsCdk,
         resourceType: 'AWS::S3::Bucket',
-        resourceRecord: {
-          properties: {
-            BucketName: 'mock-bucket'
-          }
+        properties: {
+          Name: 'mock-bucket'
         }
       } as unknown as ResourceDiffRecord;
       mockHeadBucket.mockResolvedValueOnce({});
@@ -101,10 +99,8 @@ describe('s3 smoke tests', () => {
         changeType: ChangeType.CREATE,
         format: IacFormat.awsCdk,
         resourceType: 'AWS::S3::Bucket',
-        resourceRecord: {
-          properties: {
-            BucketName: 'mock-bucket'
-          }
+        properties: {
+          Name: 'mock-bucket'
         }
       } as unknown as ResourceDiffRecord;
       
@@ -138,9 +134,7 @@ describe('s3 smoke tests', () => {
       const resource = {
         changeType: ChangeType.CREATE,
         format: IacFormat.awsCdk,
-        resourceRecord: {
-          properties: {}
-        }
+        properties: {}
       } as unknown as ResourceDiffRecord;
 
       await s3BucketSmokeTest(resource, [resource]);
@@ -154,10 +148,8 @@ describe('s3 smoke tests', () => {
         changeType: ChangeType.CREATE,
         format: IacFormat.tf,
         resourceType: 'aws_s3_bucket',
-        resourceRecord: {
-          properties: {
-            bucket: 'mock-bucket'
-          }
+        properties: {
+          Name: 'mock-bucket'
         }
       } as unknown as ResourceDiffRecord;
       
@@ -209,10 +201,8 @@ describe('s3 smoke tests', () => {
         changeType: ChangeType.CREATE,
         format: IacFormat.awsCdk,
         resourceType: 'AWS::S3::Bucket',
-        resourceRecord: {
-          properties: {
-            BucketName: 'mock-bucket'
-          }
+        properties: {
+          Name: 'mock-bucket'
         }
       } as unknown as ResourceDiffRecord;
 
@@ -238,10 +228,8 @@ describe('s3 smoke tests', () => {
         changeType: ChangeType.CREATE,
         format: IacFormat.tf,
         resourceType: 'aws_s3_bucket',
-        resourceRecord: {
-          properties: {
-            bucket: 'mock-bucket'
-          }
+        properties: {
+          Name: 'mock-bucket'
         }
       } as unknown as ResourceDiffRecord;
       
