@@ -10,6 +10,7 @@ const SUBNET = 'SUBNET';
 const ROUTE_TABLE_ASSOCIATION = 'ROUTE_TABLE_ASSOCIATION';
 const ROUTE = 'ROUTE';
 const ROUTE_TABLE = 'ROUTE_TABLE';
+const INTERNET_GATEWAY = 'INTERNET_GATEWAY';
 
 // Cloudformation Types
 const CFN_SQS_QUEUE = 'AWS::SQS::Queue';
@@ -44,6 +45,7 @@ const TF_SUBNET = 'aws_subnet';
 const TF_ROUTE_TABLE_ASSOCIATION = 'aws_route_table_association';
 const TF_ROUTE = 'aws_route';
 const TF_ROUTE_TABLE = 'aws_route_table';
+const TF_INTERNET_GATEWAY = 'aws_internet_gateway';
 
 const TerraformTypes = {
   TF_SQS_QUEUE,
@@ -54,7 +56,8 @@ const TerraformTypes = {
   TF_SUBNET,
   TF_ROUTE_TABLE_ASSOCIATION,
   TF_ROUTE,
-  TF_ROUTE_TABLE
+  TF_ROUTE_TABLE,
+  TF_INTERNET_GATEWAY
 };
 
 const resourceTypeMap: Json = {
@@ -84,7 +87,9 @@ const resourceTypeMap: Json = {
   [TF_ROUTE]: ROUTE,
   ROUTE_TABLE,
   [CFN_ROUTE_TABLE]: ROUTE_TABLE,
-  [TF_ROUTE_TABLE]: ROUTE_TABLE
+  [TF_ROUTE_TABLE]: ROUTE_TABLE,
+  INTERNET_GATEWAY,
+  [TF_INTERNET_GATEWAY]: INTERNET_GATEWAY
 };
 
 function getStandardResourceType (type: string): string {

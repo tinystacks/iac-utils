@@ -4,7 +4,8 @@ import {
   TF_DIFF_DELETE_ACTION,
   TF_DIFF_NO_OP_ACTION,
   TF_DIFF_UPDATE_ACTION,
-  TINYSTACKS_TF_PARSER
+  TINYSTACKS_MODULE_PARSER,
+  TINYSTACKS_RESOURCE_PARSER
 } from '../../../../constants';
 import {
   ChangeType,
@@ -49,7 +50,8 @@ async function parseTfResource (diff: TfDiff, tfPlan: Json, config: SmokeTestOpt
   const {
     awsCdkParsers = []
   } = config;
-  if (!awsCdkParsers.includes(TINYSTACKS_TF_PARSER)) awsCdkParsers.push(TINYSTACKS_TF_PARSER);
+  if (!awsCdkParsers.includes(TINYSTACKS_RESOURCE_PARSER)) awsCdkParsers.push(TINYSTACKS_RESOURCE_PARSER);
+  if (!awsCdkParsers.includes(TINYSTACKS_MODULE_PARSER)) awsCdkParsers.push(TINYSTACKS_MODULE_PARSER);
   let properties;
   for (const parser of awsCdkParsers) {
     const response = await tryToUseParser(diff, tfPlan, parser);
