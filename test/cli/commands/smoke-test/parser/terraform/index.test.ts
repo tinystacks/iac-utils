@@ -36,7 +36,7 @@ const path = require('path');
 
 // TODO: update test data with a tf plan that performs a replacement to test "afterAction" branch
 const mockSimpleTfPlan = fs.realRFS(path.realResolve(__dirname, '../../test-data/simple-sqs-stack/MockTfPlan.json'));
-const mockComplexTfPlan = fs.realRFS(path.realResolve(__dirname, '../../test-data/tf-module-stack/MockTfPlan.json'));
+const mockComplexTfPlan = fs.realRFS(path.realResolve(__dirname, '../../test-data/tf-module-stack/plan.json'));
 
 describe('aws-cdk parser', () => {
   beforeEach(() => {

@@ -13,6 +13,7 @@ function getResource (diff: TfDiff, tfPlan: Json): Json {
   const plannedValues = Object.fromEntries(
     Object.entries(plannedResource?.values || {}).filter(([_key, value]) => !isNil(value))
   );
+  console.info('plannedValues: ', plannedValues);
 
   const moduleResource = get(tfPlan, `configuration.root_module.module_calls.${moduleName}.module.resources`) || [];
   const resource = moduleResource.find((res: Json) => res.type === diff.resourceType && res.name === diff.logicalId) || {};
@@ -23,6 +24,7 @@ function getResource (diff: TfDiff, tfPlan: Json): Json {
       } else if (!isNil(value.references) && Array.isArray(value.references) && value.references?.length > 0) {
         const { references } = value;
         references.sort((a: string, b: string) => b.split('.').length - a.split('.').length);
+        console.info('references: ', references);
         if (references.every((ref: string) => ref.startsWith('each.value') || ref.startsWith('each.key'))) {
           const firstReference = references[0];
           const prefix = firstReference.startsWith('each.value') ? 'each.value' : 'each.key';
@@ -38,9 +40,11 @@ function getResource (diff: TfDiff, tfPlan: Json): Json {
     return acc;
   }, {});
 
+  console.info('referencedValues: ', referencedValues);
+
   return {
     ...referencedValues,
-    plannedValues
+    ...plannedValues
   };
 }
 

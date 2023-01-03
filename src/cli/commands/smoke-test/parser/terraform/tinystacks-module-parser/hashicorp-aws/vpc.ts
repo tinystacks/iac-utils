@@ -157,19 +157,20 @@ function parseRoute (diff: TfDiff, tfPlan: Json, _tfFiles: TxtFile[], _tfJson: J
 
 // https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_RouteTable.html
 function parseRouteTable (diff: TfDiff, tfPlan: Json, _tfFiles: TxtFile[], _tfJson: JsonFile[]): Json {
-  const { logicalId, address } = diff;
+  const { logicalId, address, index } = diff;
   const resource = getResource(diff, tfPlan);
   
   const [module, moduleName] = address?.split('.') || [];
   const moduleAddress = `${module}.${moduleName}`;
 
-  const associationSet = getAllOfType(tfPlan, TF_ROUTE_TABLE_ASSOCIATION, moduleAddress).filter((entry: Json) => 
-    entry.route_table_id?.includes(logicalId)
+  const associationSet = getAllOfType(tfPlan, TF_ROUTE_TABLE_ASSOCIATION, moduleAddress).filter((entry: TfDiff & Json) => 
+    entry.properties?.route_table_id?.includes(logicalId) &&
+    entry.index === index
   )
-    .map((entry: Json) => {
-      const gatewayId = entry.gateway_id;
-      const routeTableId = entry.route_table_id;
-      const subnetId = entry.subnet_id;
+    .map((entry: TfDiff & Json) => {
+      const gatewayId = entry?.properties?.gateway_id;
+      const routeTableId = entry?.properties?.route_table_id;
+      const subnetId = entry?.properties?.subnet_id;
 
       return {
         gatewayId,
@@ -180,24 +181,25 @@ function parseRouteTable (diff: TfDiff, tfPlan: Json, _tfFiles: TxtFile[], _tfJs
 
   
   
-  const routeSet = getAllOfType(tfPlan, TF_ROUTE, moduleAddress).filter((entry: Json) => 
-    entry.route_table_id?.includes(logicalId)
+  const routeSet = getAllOfType(tfPlan, TF_ROUTE, moduleAddress).filter((entry: TfDiff & Json) => 
+    entry.properties.route_table_id?.includes(logicalId) &&
+    entry.index === index
   )
-    .map((entry: Json) => {
-      const carrierGatewayId = entry?.carrier_gateway_id;
-      const coreNetworkArn = entry?.core_network_arn;
-      const destinationCidrBlock = entry?.destination_cidr_block;
-      const destinationIpv6CidrBlock = entry?.destination_ipv6_cidr_block;
-      const destinationPrefixListId = entry?.destination_prefix_list_id;
-      const egressOnlyInternetGatewayId = entry?.egress_only_gateway_id;
-      const gatewayId = entry?.gateway_id;
-      const instanceId = entry?.instance_id;
-      const localGatewayId = entry?.local_gateway_id;
-      const natGatewayId = entry?.nat_gateway_id;
-      const networkInterfaceId = entry?.network_interface_id;
-      const transitGatewayId = entry?.transit_gateway_id;
-      const vpcPeeringConnectionId = entry?.vpc_peering_connection_id;
-      const vpcEndpointId = entry?.vpc_endpoint_id;
+    .map((entry: TfDiff & Json) => {
+      const carrierGatewayId = entry?.properties?.carrier_gateway_id;
+      const coreNetworkArn = entry?.properties?.core_network_arn;
+      const destinationCidrBlock = entry?.properties?.destination_cidr_block;
+      const destinationIpv6CidrBlock = entry?.properties?.destination_ipv6_cidr_block;
+      const destinationPrefixListId = entry?.properties?.destination_prefix_list_id;
+      const egressOnlyInternetGatewayId = entry?.properties?.egress_only_gateway_id;
+      const gatewayId = entry?.properties?.gateway_id;
+      const instanceId = entry?.properties?.instance_id;
+      const localGatewayId = entry?.properties?.local_gateway_id;
+      const natGatewayId = entry?.properties?.nat_gateway_id;
+      const networkInterfaceId = entry?.properties?.network_interface_id;
+      const transitGatewayId = entry?.properties?.transit_gateway_id;
+      const vpcPeeringConnectionId = entry?.properties?.vpc_peering_connection_id;
+      const vpcEndpointId = entry?.properties?.vpc_endpoint_id;
 
       return {
         carrierGatewayId,
