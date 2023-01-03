@@ -108,3 +108,14 @@ resource "aws_route_table_association" "ts_aws_route_table_association_private_i
   route_table_id = aws_route_table.ts_aws_route_table_private_isolated.id
   
 }
+
+resource "aws_s3_bucket" "ts_bucket" {
+  
+  bucket = "smoke-test-bucket"
+
+}
+
+resource "aws_sqs_queue" "ts_queue" {
+  name = "smoke-test-queue"
+  visibility_timeout = 45
+}

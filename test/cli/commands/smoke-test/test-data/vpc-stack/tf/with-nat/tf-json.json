@@ -1,6 +1,6 @@
 [
   {
-    "name": "direct-main.tf",
+    "name": "main.tf",
     "contents": {
       "resource": {
         "aws_eip": {
@@ -108,6 +108,21 @@
               "cidr_block": "${var.ts_aws_vpc_cidr_block}",
               "enable_dns_hostnames": true,
               "instance_tenancy": "default"
+            }
+          ]
+        },
+        "aws_s3_bucket": {
+          "ts_bucket": [
+            {
+              "bucket": "smoke-test-bucket"
+            }
+          ]
+        },
+        "aws_sqs_queue": {
+          "ts_queue": [
+            {
+              "name": "smoke-test-queue",
+              "visibility_timeout": 45
             }
           ]
         }
