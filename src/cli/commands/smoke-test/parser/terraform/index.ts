@@ -48,12 +48,12 @@ async function tryToUseParser (diff: TfDiff, tfPlan: Json, parserName: string): 
 
 async function parseTfResource (diff: TfDiff, tfPlan: Json, config: SmokeTestOptions): Promise<Json> {
   const {
-    awsCdkParsers = []
+    terraformParsers = []
   } = config;
-  if (!awsCdkParsers.includes(TINYSTACKS_RESOURCE_PARSER)) awsCdkParsers.push(TINYSTACKS_RESOURCE_PARSER);
-  if (!awsCdkParsers.includes(TINYSTACKS_MODULE_PARSER)) awsCdkParsers.push(TINYSTACKS_MODULE_PARSER);
+  if (!terraformParsers.includes(TINYSTACKS_RESOURCE_PARSER)) terraformParsers.push(TINYSTACKS_RESOURCE_PARSER);
+  if (!terraformParsers.includes(TINYSTACKS_MODULE_PARSER)) terraformParsers.push(TINYSTACKS_MODULE_PARSER);
   let properties;
-  for (const parser of awsCdkParsers) {
+  for (const parser of terraformParsers) {
     const response = await tryToUseParser(diff, tfPlan, parser);
     if (response) {
       properties = response;
