@@ -19,7 +19,7 @@
 
 #### Defined in
 
-[naming/types.ts:14](https://github.com/tinystacks/iac-utils/blob/9731283/src/naming/types.ts#L14)
+[naming/types.ts:14](https://github.com/tinystacks/iac-utils/blob/347f7fd/src/naming/types.ts#L14)
 
 ___
 
@@ -29,7 +29,7 @@ ___
 
 #### Defined in
 
-[naming/types.ts:12](https://github.com/tinystacks/iac-utils/blob/9731283/src/naming/types.ts#L12)
+[naming/types.ts:12](https://github.com/tinystacks/iac-utils/blob/347f7fd/src/naming/types.ts#L12)
 
 ___
 
@@ -39,7 +39,7 @@ ___
 
 #### Defined in
 
-[naming/types.ts:13](https://github.com/tinystacks/iac-utils/blob/9731283/src/naming/types.ts#L13)
+[naming/types.ts:13](https://github.com/tinystacks/iac-utils/blob/347f7fd/src/naming/types.ts#L13)
 
 ___
 
@@ -49,4 +49,4 @@ ___
 
 #### Defined in
 
-[naming/types.ts:11](https://github.com/tinystacks/iac-utils/blob/9731283/src/naming/types.ts#L11)
+[naming/types.ts:11](https://github.com/tinystacks/iac-utils/blob/347f7fd/src/naming/types.ts#L11)

@@ -36,8 +36,8 @@ Valid config properties:
 |-------------|----|-----------|
 |format|String|Specifies the iac format. (valid values: "tf", "aws-cdk")|
 |requirePrivateSubnet|Boolean|For VPC's, requires a subnet with egress to the internet, but no ingress.|
-|awsCdkParsers|Array<String>|A list of npm module names to parse AWS CDK resources.  By default, the internal TinyStacks AWS CDK Parser will be used.  Any parsers besides defaults must be installed in the target cdk repository.|
-|terraformParsers|Array<String>|A list of npm module names to parse Terraform resources or modules.  By default, the internal TinyStacks Terraform Resource Parser and TinyStacks Terraform Module Parser will be used. Any parsers besides defaults must be installed in the target terraform repository.|
+|awsCdkParsers|Array\<String\>|A list of npm module names to parse AWS CDK resources.  By default, the internal TinyStacks AWS CDK Parser will be used.  Any parsers besides defaults must be installed in the target cdk repository.|
+|terraformParsers|Array\<String\>|A list of npm module names to parse Terraform resources or modules.  By default, the internal TinyStacks Terraform Resource Parser and TinyStacks Terraform Module Parser will be used. Any parsers besides defaults must be installed in the target terraform repository.|
 
 
 #### Authentication
