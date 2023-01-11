@@ -2,7 +2,7 @@ import * as logger from '../../../../../logger';
 import { S3 } from '@aws-sdk/client-s3';
 import { ServiceQuotas } from '@aws-sdk/client-service-quotas';
 import { ConflictError } from '../../../../../errors';
-import { ChangeType, IacFormat, ResourceDiffRecord, SmokeTestOptions } from '../../../../../types';
+import { ChangeType, ResourceDiffRecord, SmokeTestOptions } from '../../../../../types';
 import { getCredentials } from '../../../../../utils/aws';
 import { QuotaError } from '../../../../../errors/quota-error';
 import { S3_BUCKET, getStandardResourceType } from '../resources';
@@ -62,10 +62,6 @@ async function validateBucketNameIsUnique (bucketName: string) {
   } else if (error.$metadata?.httpStatusCode !== 404) {
     throw error;
   }
-}
-
-interface StandardS3Bucket {
-  bucketName?: string;
 }
 
 async function s3BucketSmokeTest (resource: ResourceDiffRecord, _allResources?: ResourceDiffRecord[], _config?: SmokeTestOptions) {
