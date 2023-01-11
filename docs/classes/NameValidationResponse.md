@@ -36,7 +36,7 @@
 
 #### Defined in
 
-[naming/validate-name.ts:9](https://github.com/tinystacks/iac-utils/blob/a4b1b24/src/naming/validate-name.ts#L9)
+[naming/validate-name.ts:9](https://github.com/tinystacks/iac-utils/blob/9731283/src/naming/validate-name.ts#L9)
 
 ## Properties
 
@@ -46,7 +46,7 @@
 
 #### Defined in
 
-[naming/validate-name.ts:4](https://github.com/tinystacks/iac-utils/blob/a4b1b24/src/naming/validate-name.ts#L4)
+[naming/validate-name.ts:4](https://github.com/tinystacks/iac-utils/blob/9731283/src/naming/validate-name.ts#L4)
 
 ___
 
@@ -56,4 +56,4 @@ ___
 
 #### Defined in
 
-[naming/validate-name.ts:5](https://github.com/tinystacks/iac-utils/blob/a4b1b24/src/naming/validate-name.ts#L5)
+[naming/validate-name.ts:5](https://github.com/tinystacks/iac-utils/blob/9731283/src/naming/validate-name.ts#L5)
