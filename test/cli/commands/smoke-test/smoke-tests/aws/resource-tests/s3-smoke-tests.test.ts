@@ -68,10 +68,8 @@ describe('s3 smoke tests', () => {
         changeType: ChangeType.CREATE,
         format: IacFormat.awsCdk,
         resourceType: 'AWS::S3::Bucket',
-        resourceRecord: {
-          properties: {
-            BucketName: 'mock-bucket'
-          }
+        properties: {
+          Name: 'mock-bucket'
         }
       } as unknown as ResourceDiffRecord;
       mockHeadBucket.mockResolvedValueOnce({});
@@ -101,10 +99,8 @@ describe('s3 smoke tests', () => {
         changeType: ChangeType.CREATE,
         format: IacFormat.awsCdk,
         resourceType: 'AWS::S3::Bucket',
-        resourceRecord: {
-          properties: {
-            BucketName: 'mock-bucket'
-          }
+        properties: {
+          Name: 'mock-bucket'
         }
       } as unknown as ResourceDiffRecord;
       
@@ -138,9 +134,7 @@ describe('s3 smoke tests', () => {
       const resource = {
         changeType: ChangeType.CREATE,
         format: IacFormat.awsCdk,
-        resourceRecord: {
-          properties: {}
-        }
+        properties: {}
       } as unknown as ResourceDiffRecord;
 
       await s3BucketSmokeTest(resource, [resource]);
@@ -148,6 +142,44 @@ describe('s3 smoke tests', () => {
       expect(mockLoggerInfo).not.toBeCalled();
       expect(mockGetCredentials).not.toBeCalled();
       expect(mockHeadBucket).not.toBeCalled();
+    });
+    it('throws original error if it is not a 403 or 404', async () => {
+      const resource = {
+        changeType: ChangeType.CREATE,
+        format: IacFormat.tf,
+        resourceType: 'aws_s3_bucket',
+        properties: {
+          Name: 'mock-bucket'
+        }
+      } as unknown as ResourceDiffRecord;
+      
+      mockHeadBucket.mockRejectedValueOnce({
+        '$metadata': {
+          httpStatusCode: 500
+        }
+      });
+
+      let thrownError;
+      try {
+        await s3BucketSmokeTest(resource, [resource]);
+      } catch (error) {
+        thrownError = error;
+      } finally {
+        expect(mockLoggerInfo).toBeCalled();
+        expect(mockLoggerInfo).toBeCalledWith('Checking if S3 bucket name mock-bucket is unique...');
+        expect(mockGetCredentials).toBeCalled();
+        expect(mockHeadBucket).toBeCalled();
+        expect(mockHeadBucket).toBeCalledWith({
+          Bucket: 'mock-bucket'
+        });
+
+        expect(thrownError).not.toBeUndefined();
+        expect(thrownError).toEqual({
+          '$metadata': {
+            httpStatusCode: 500
+          }
+        });
+      }
     });
   });
 
@@ -169,10 +201,8 @@ describe('s3 smoke tests', () => {
         changeType: ChangeType.CREATE,
         format: IacFormat.awsCdk,
         resourceType: 'AWS::S3::Bucket',
-        resourceRecord: {
-          properties: {
-            BucketName: 'mock-bucket'
-          }
+        properties: {
+          Name: 'mock-bucket'
         }
       } as unknown as ResourceDiffRecord;
 
@@ -198,10 +228,8 @@ describe('s3 smoke tests', () => {
         changeType: ChangeType.CREATE,
         format: IacFormat.tf,
         resourceType: 'aws_s3_bucket',
-        resourceRecord: {
-          properties: {
-            bucket: 'mock-bucket'
-          }
+        properties: {
+          Name: 'mock-bucket'
         }
       } as unknown as ResourceDiffRecord;
       

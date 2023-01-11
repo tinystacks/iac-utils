@@ -52,10 +52,8 @@ describe('sqs smoke tests', () => {
     it('validates name is unique if change type is create', async () => {
       const resource = {
         changeType: ChangeType.CREATE,
-        resourceRecord: {
-          properties: {
-            QueueName: 'mock-queue'
-          }
+        properties: {
+          QueueName: 'mock-queue'
         }
       } as unknown as ResourceDiffRecord;
 
@@ -72,10 +70,8 @@ describe('sqs smoke tests', () => {
     it('throws a ConflictError if name is not unique and change type is create', async () => {
       const resource = {
         changeType: ChangeType.CREATE,
-        resourceRecord: {
-          properties: {
-            QueueName: 'mock-queue'
-          }
+        properties: {
+          QueueName: 'mock-queue'
         }
       } as unknown as ResourceDiffRecord;
       mockListQueues.mockResolvedValueOnce({

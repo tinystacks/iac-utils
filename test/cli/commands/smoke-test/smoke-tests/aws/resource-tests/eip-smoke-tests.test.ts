@@ -67,9 +67,7 @@ describe('eip smoke tests', () => {
         changeType: ChangeType.CREATE,
         format: IacFormat.awsCdk,
         resourceType: 'AWS::EC2::EIP',
-        resourceRecord: {
-          properties: {}
-        }
+        properties: {}
       } as unknown as ResourceDiffRecord;
 
       mockGetAwsDefaultServiceQuota.mockResolvedValueOnce({
@@ -95,9 +93,7 @@ describe('eip smoke tests', () => {
         changeType: ChangeType.CREATE,
         format: IacFormat.tf,
         resourceType: 'aws_eip',
-        resourceRecord: {
-          properties: {}
-        }
+        properties: {}
       } as unknown as ResourceDiffRecord;
       
       mockGetAwsDefaultServiceQuota.mockResolvedValueOnce({
