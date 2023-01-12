@@ -1,21 +1,10 @@
-class CustomError extends Error {
-  name = 'CustomError';
-  reason: string;
-  hints: string[];
-  constructor (message: string, reason?: string, ...hints: string[]) {
-    super(message);
-    this.name = CustomError.name;
-    this.message = message;
-    this.reason = reason;
-    this.hints = hints || [];
-  }
-}
-
+// eslint-disable-next-line no-shadow
 enum IacFormat {
   tf = 'tf',
   awsCdk = 'aws-cdk'
 }
 
+// eslint-disable-next-line no-shadow
 enum ChangeType {
   CREATE = 'CREATE',
   UPDATE = 'UPDATE',
@@ -31,26 +20,27 @@ interface OsOutput {
 }
 
 interface SmokeTestOptions {
-  format?: IacFormat
+  format?: IacFormat;
+  requirePrivateSubnet?: boolean;
+  configFile?: string;
+  awsCdkParsers?: string[];
+  terraformParsers?: string[];
 }
 
 interface Json {
   [key: string]: any
 }
 
-interface ResourceRecord {
-  address: string;
-  type: string;
-  tfProviderName?: string;
-  properties: Json;
-}
-
 interface ResourceDiffRecord {
   stackName?: string;
   format: IacFormat;
-  resourceType: string;
   changeType: ChangeType;
-  resourceRecord: ResourceRecord;
+  resourceType: string;
+  logicalId: string;
+  address: string;
+  index?: string;
+  providerName?: string;
+  properties: Json;
 }
 
 interface CdkDiff {
@@ -60,20 +50,38 @@ interface CdkDiff {
   logicalId: string;
 }
 
+interface TfDiff {
+  action?: string;
+  resourceType?: string;
+  address: string;
+  index?: string;
+  logicalId: string;
+}
+
 interface DiffSection {
   sectionName: string,
   diffLines: string[]
 }
 
+interface TxtFile {
+  name: string;
+  contents: string;
+}
+interface JsonFile {
+  name: string;
+  contents: Json;
+}
+
 export {
-  CustomError,
   IacFormat,
   OsOutput,
   SmokeTestOptions,
   ChangeType,
   Json,
-  ResourceRecord,
   ResourceDiffRecord,
   CdkDiff,
-  DiffSection
+  TfDiff,
+  DiffSection,
+  TxtFile,
+  JsonFile
 };

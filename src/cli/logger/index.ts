@@ -3,7 +3,8 @@ import {
   magenta,
   yellow,
   blue,
-  gray
+  gray,
+  green
 } from 'colors';
 
 function error (message: string) {
@@ -30,11 +31,16 @@ function hint (message: string) {
   console.log(magenta(`Hint: ${message}`));
 }
 
+function success (message: string) {
+  console.log(green(`Success: ${message}`));
+}
+
 export {
   error,
   debug,
   warn,
   info,
   log,
-  hint
+  hint,
+  success
 };

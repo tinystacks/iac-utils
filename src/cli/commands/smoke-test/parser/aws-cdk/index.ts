@@ -1,6 +1,11 @@
 import { readFileSync } from 'fs';
 import { resolve as resolvePath } from 'path';
-import { CDK_DIFF_CREATE_SYMBOL, CDK_DIFF_DELETE_SYMBOL, CDK_DIFF_UPDATE_SYMBOL, TF_DIFF_CREATE_ACTION, TF_DIFF_DELETE_ACTION, TF_DIFF_NO_OP_ACTION, TF_DIFF_UPDATE_ACTION } from '../../constants';
+import {
+  CDK_DIFF_CREATE_SYMBOL,
+  CDK_DIFF_DELETE_SYMBOL,
+  CDK_DIFF_UPDATE_SYMBOL,
+  TINYSTACKS_AWS_CDK_PARSER
+} from '../../../../constants';
 import {
   CdkDiff,
   ChangeType,
@@ -8,8 +13,8 @@ import {
   Json,
   ResourceDiffRecord,
   DiffSection,
-  ResourceRecord
-} from '../../types';
+  SmokeTestOptions
+} from '../../../../types';
 
 function partitionDiff (diff: string[], diffHeaders: string[]): DiffSection[] {
   const headerIndices: { [key: string]: number } = diffHeaders.reduce<{ [key: string]: number }>((acc, header) => {
@@ -40,14 +45,14 @@ function separateStacks (diff: string[]): DiffSection[] {
 
 function getChangeTypeForCdkDiff (changeTypeSymbol: string): ChangeType {
   switch (changeTypeSymbol) {
-  case CDK_DIFF_CREATE_SYMBOL:
-    return ChangeType.CREATE;
-  case CDK_DIFF_UPDATE_SYMBOL:
-    return ChangeType.UPDATE;
-  case CDK_DIFF_DELETE_SYMBOL:
-    return ChangeType.DELETE;
-  default:
-    return ChangeType.UNKNOWN;
+    case CDK_DIFF_CREATE_SYMBOL:
+      return ChangeType.CREATE;
+    case CDK_DIFF_UPDATE_SYMBOL:
+      return ChangeType.UPDATE;
+    case CDK_DIFF_DELETE_SYMBOL:
+      return ChangeType.DELETE;
+    default:
+      return ChangeType.UNKNOWN;
   }
 }
 
@@ -61,36 +66,64 @@ function parseDiffLine (diff: string): CdkDiff {
   };
 }
 
-function composeCdkResourceDiffRecords (stackName: string, diffs: string[] = [] ): ResourceDiffRecord[] {
+function tryToUseParser (diff: CdkDiff, cloudformationTemplate: Json, parserName: string): Json | undefined {
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const {
+      parseResource
+    } = require(parserName) || {};
+    if (parseResource) return parseResource(diff, cloudformationTemplate);
+    return undefined;
+  }
+  catch (error) {
+    return undefined;
+  }
+}
+
+function parseCdkResource (diff: CdkDiff, cloudformationTemplate: Json, config: SmokeTestOptions): Json {
+  const {
+    awsCdkParsers = []
+  } = config;
+  if (!awsCdkParsers.includes(TINYSTACKS_AWS_CDK_PARSER)) awsCdkParsers.push(TINYSTACKS_AWS_CDK_PARSER);
+  let properties = {};
+  for (const parser of awsCdkParsers) {
+    const response = tryToUseParser(diff, cloudformationTemplate, parser);
+    if (response) {
+      properties = response;
+      break;
+    }
+  }
+  return properties;
+}
+
+function composeCdkResourceDiffRecords (stackName: string, diffs: string[] = [], config: SmokeTestOptions = {}): ResourceDiffRecord[] {
   const templateJson: Json = JSON.parse(readFileSync(resolvePath(`./cdk.out/${stackName}.template.json`)).toString() || '{}');
   return diffs.reduce<ResourceDiffRecord[]>((acc: ResourceDiffRecord[], diff: string): ResourceDiffRecord[] => {
+    const cdkDiff: CdkDiff = parseDiffLine(diff);
     const {
       changeTypeSymbol,
       resourceType,
       cdkPath,
       logicalId
-    }: CdkDiff = parseDiffLine(diff);
+    } = cdkDiff;
     const changeType = getChangeTypeForCdkDiff(changeTypeSymbol);
     if (changeType === ChangeType.UNKNOWN || !resourceType || !cdkPath || !logicalId) return acc;
     const [ _logicalId, cfnEntry = {} ] = Object.entries<Json>(templateJson.Resources).find(([key]) => key === logicalId) || [];
-    const resourceRecord: ResourceRecord = {
-      address: cdkPath,
-      type: cfnEntry.Type || resourceType,
-      properties: cfnEntry.Properties || {}
-    };
     const resourceDiffRecord: ResourceDiffRecord = {
       stackName,
       format: IacFormat.awsCdk,
       changeType,
-      resourceType: resourceRecord.type,
-      resourceRecord
+      resourceType: cfnEntry.Type || resourceType,
+      address: cdkPath,
+      logicalId,
+      properties: parseCdkResource(cdkDiff, templateJson, config)
     };
     acc.push(resourceDiffRecord);
     return acc;
   }, []);
 }
 
-function parseStackDiff (stackDiffLines: DiffSection): ResourceDiffRecord[] {
+function parseStackDiff (stackDiffLines: DiffSection, config: SmokeTestOptions): ResourceDiffRecord[] {
   const {
     sectionName: stackName,
     diffLines
@@ -99,86 +132,18 @@ function parseStackDiff (stackDiffLines: DiffSection): ResourceDiffRecord[] {
 
   const diffSections = partitionDiff(diffLines, diffHeaders);
   const resourceDiffs = diffSections.find(diffSection => diffSection.sectionName === 'Resources');
-  return composeCdkResourceDiffRecords(stackName, resourceDiffs?.diffLines);
+  return composeCdkResourceDiffRecords(stackName, resourceDiffs?.diffLines, config);
 }
 
-function parseCdkDiff (diffFile: string): ResourceDiffRecord[] {
-  const diffTxt = readFileSync(diffFile).toString() || '';
+function parseCdkDiff (diffTxt: string, config: SmokeTestOptions): ResourceDiffRecord[] {
   const diff = diffTxt.split('\n').filter(line => line.trim().length !== 0);
   const stackDiffLines = separateStacks(diff);
   return stackDiffLines.reduce<ResourceDiffRecord[]>((acc, stackDiff) => {
-    acc.push(...parseStackDiff(stackDiff));
-    return acc;
-  }, []);
-}
-
-function getChangeTypeForTerraformDiff (tfChangeType: string): ChangeType {
-  switch (tfChangeType) {
-  case TF_DIFF_CREATE_ACTION:
-    return ChangeType.CREATE;
-  case TF_DIFF_UPDATE_ACTION:
-    return ChangeType.UPDATE;
-  case TF_DIFF_DELETE_ACTION:
-    return ChangeType.DELETE;
-  case TF_DIFF_NO_OP_ACTION:
-    return ChangeType.NO_CHANGES;
-  default:
-    return ChangeType.UNKNOWN;
-  }
-}
-
-function parseTerraformDiff (planFile: string): ResourceDiffRecord[] {
-  const planJson: Json = JSON.parse(readFileSync(planFile)?.toString() || '{}');
-  const {
-    resource_changes = [] as Json[]
-  } = planJson;
-  return resource_changes.reduce((acc: ResourceDiffRecord[], resourceChange: Json): ResourceDiffRecord[] => {
-    const {
-      address,
-      change: {
-        before = {},
-        after = {},
-        actions: [
-          beforeAction,
-          afterAction
-        ] = []
-      } = {},
-      type,
-      provider_name: tfProviderName
-    } = resourceChange || {};
-
-    if (afterAction) {
-      acc.push({
-        format: IacFormat.tf,
-        resourceType: type,
-        changeType: getChangeTypeForTerraformDiff(beforeAction),
-        resourceRecord: {
-          address,
-          type,
-          tfProviderName,
-          properties: before
-        }
-      });
-    }
-    const changeType = getChangeTypeForTerraformDiff(afterAction || beforeAction);
-    if (changeType !== ChangeType.NO_CHANGES) {
-      acc.push({
-        format: IacFormat.tf,
-        resourceType: type,
-        changeType,
-        resourceRecord: {
-          address,
-          type,
-          tfProviderName,
-          properties: after
-        }
-      });
-    }
+    acc.push(...parseStackDiff(stackDiff, config));
     return acc;
   }, []);
 }
 
 export {
-  parseCdkDiff,
-  parseTerraformDiff
+  parseCdkDiff
 };
