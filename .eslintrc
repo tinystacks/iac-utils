@@ -32,7 +32,8 @@
     ],
     "indent": [
       "error",
-      2
+      2,
+      { "SwitchCase": 1 }
     ],
     "object-curly-spacing": [
       "error",
@@ -75,10 +76,12 @@
       "error",
       {
         "vars": "all",
+        "varsIgnorePattern": "^_",
         "args": "after-used",
         "argsIgnorePattern": "^_"
       }
     ],
-    "import/no-cycle": "error"
+    "import/no-cycle": "error",
+    "no-shadow": "error"
   }
 }
