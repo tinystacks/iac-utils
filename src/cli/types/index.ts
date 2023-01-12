@@ -23,33 +23,24 @@ interface SmokeTestOptions {
   format?: IacFormat;
   requirePrivateSubnet?: boolean;
   configFile?: string;
+  awsCdkParsers?: string[];
+  terraformParsers?: string[];
 }
 
 interface Json {
   [key: string]: any
 }
 
-interface TfReference {
-  property: string;
-  reference: string;
-}
-
-interface ResourceRecord {
-  address: string;
-  index?: string;
-  type: string;
-  logicalId: string;
-  tfProviderName?: string;
-  tfReferences?: TfReference[]
-  properties: Json;
-}
-
 interface ResourceDiffRecord {
   stackName?: string;
   format: IacFormat;
-  resourceType: string;
   changeType: ChangeType;
-  resourceRecord: ResourceRecord;
+  resourceType: string;
+  logicalId: string;
+  address: string;
+  index?: string;
+  providerName?: string;
+  properties: Json;
 }
 
 interface CdkDiff {
@@ -59,9 +50,26 @@ interface CdkDiff {
   logicalId: string;
 }
 
+interface TfDiff {
+  action?: string;
+  resourceType?: string;
+  address: string;
+  index?: string;
+  logicalId: string;
+}
+
 interface DiffSection {
   sectionName: string,
   diffLines: string[]
+}
+
+interface TxtFile {
+  name: string;
+  contents: string;
+}
+interface JsonFile {
+  name: string;
+  contents: Json;
 }
 
 export {
@@ -70,9 +78,10 @@ export {
   SmokeTestOptions,
   ChangeType,
   Json,
-  TfReference,
-  ResourceRecord,
   ResourceDiffRecord,
   CdkDiff,
-  DiffSection
+  TfDiff,
+  DiffSection,
+  TxtFile,
+  JsonFile
 };

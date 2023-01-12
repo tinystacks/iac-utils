@@ -18,13 +18,24 @@ const casingFunctions = {
   [Casing.CONSTANT]: constantCase
 };
 
-function generateName (args: {
+interface GenerateNameArguments {
   identifiers: string[];
   separator?: string;
   nameRestriction?: NameRestriction;
   // eslint-disable-next-line @typescript-eslint/ban-types
-  casing?: Casing
-}): string {
+  casing?: Casing;
+}
+
+/**
+ * Generates a name by:
+ *  - concatenating a unique copy of the provided identifiers with the provided separator
+ *  - converting to the specified case
+ *  - removing restricted characters
+ *  - truncating the result with a semi-hash for uniqueness if it exceeds the character limit
+ * @param args - {@link GenerateNameArguments}
+ * @returns string
+ */
+function generateName (args: GenerateNameArguments): string {
   const {
     identifiers,
     separator = '-',
@@ -45,5 +56,6 @@ function generateName (args: {
 }
 
 export {
+  GenerateNameArguments,
   generateName
 };

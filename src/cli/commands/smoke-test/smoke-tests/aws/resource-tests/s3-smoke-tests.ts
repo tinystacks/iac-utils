@@ -2,7 +2,7 @@ import * as logger from '../../../../../logger';
 import { S3 } from '@aws-sdk/client-s3';
 import { ServiceQuotas } from '@aws-sdk/client-service-quotas';
 import { ConflictError } from '../../../../../errors';
-import { ChangeType, IacFormat, ResourceDiffRecord, SmokeTestOptions } from '../../../../../types';
+import { ChangeType, ResourceDiffRecord, SmokeTestOptions } from '../../../../../types';
 import { getCredentials } from '../../../../../utils/aws';
 import { QuotaError } from '../../../../../errors/quota-error';
 import { S3_BUCKET, getStandardResourceType } from '../resources';
@@ -64,28 +64,9 @@ async function validateBucketNameIsUnique (bucketName: string) {
   }
 }
 
-interface StandardS3Bucket {
-  bucketName?: string;
-}
-
-function standardizeBucketProperties (resource: ResourceDiffRecord): StandardS3Bucket {
-  const bucket: StandardS3Bucket = {};
-  switch (resource.format) {
-    case IacFormat.awsCdk:
-      bucket.bucketName = resource.resourceRecord.properties.BucketName;
-      return bucket;
-    case IacFormat.tf:
-      bucket.bucketName = resource.resourceRecord.properties.bucket;
-      return bucket;
-    default:
-      return bucket;
-  }
-}
-
 async function s3BucketSmokeTest (resource: ResourceDiffRecord, _allResources?: ResourceDiffRecord[], _config?: SmokeTestOptions) {
   if (resource.changeType === ChangeType.CREATE) {
-    const standardBucket = standardizeBucketProperties(resource);
-    if (standardBucket.bucketName) await validateBucketNameIsUnique(standardBucket.bucketName);
+    if (resource.properties?.Name) await validateBucketNameIsUnique(resource.properties?.Name);
   }
 }
 

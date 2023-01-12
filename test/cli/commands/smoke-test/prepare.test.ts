@@ -15,7 +15,7 @@ jest.mock('../../../../src/cli/utils/os', () => ({
   runCommand: mockRunCommand
 }));
 
-jest.mock('../../../../src/cli/commands/smoke-test/parser.ts', () => ({
+jest.mock('../../../../src/cli/commands/smoke-test/parser', () => ({
   parseCdkDiff: mockParseCdkDiff,
   parseTerraformDiff: mockParseTerraformDiff
 }));
@@ -37,7 +37,7 @@ describe('prepare', () => {
     it('creates tmp directory if it does not exist', async () => {
       mockExistsSync.mockReturnValueOnce(false);
 
-      const result = await prepareForSmokeTest('mock-format' as IacFormat);
+      const result = await prepareForSmokeTest({ format: 'mock-format' as IacFormat });
 
       expect(mockExistsSync).toBeCalled();
       expect(mockMkdirSync).toBeCalled();
@@ -53,7 +53,7 @@ describe('prepare', () => {
       mockExistsSync.mockReturnValueOnce(true);
       mockRunCommand.mockResolvedValueOnce(mockCdkDiffOutput)
 
-      await prepareForSmokeTest(IacFormat.awsCdk);
+      await prepareForSmokeTest({ format: IacFormat.awsCdk });
 
       expect(mockExistsSync).toBeCalled();
       expect(mockMkdirSync).not.toBeCalled();
@@ -65,7 +65,7 @@ describe('prepare', () => {
       expect(mockWriteFileSync).toBeCalledWith(`/tmp/iac-utils/tmp/diff.txt`, 'mock cdk diff');
 
       expect(mockParseCdkDiff).toBeCalled();
-      expect(mockParseCdkDiff).toBeCalledWith(`/tmp/iac-utils/tmp/diff.txt`);
+      expect(mockParseCdkDiff).toBeCalledWith("mock cdk diff", { format: 'aws-cdk' });
     });
     it('throws on non-zero exit code', async () => {
       const mockCdkDiffOutput: OsOutput = {
@@ -78,7 +78,7 @@ describe('prepare', () => {
 
       let thrownError;
       try {
-        await prepareForSmokeTest(IacFormat.awsCdk);
+        await prepareForSmokeTest({ format: IacFormat.awsCdk });
       } catch (error) {
         thrownError = error;
       } finally {
@@ -107,7 +107,7 @@ describe('prepare', () => {
       mockRunCommand.mockResolvedValueOnce(mockOsOutput)
       mockRunCommand.mockResolvedValueOnce(mockOsOutput)
 
-      await prepareForSmokeTest(IacFormat.tf);
+      await prepareForSmokeTest({ format: IacFormat.tf });
 
       expect(mockExistsSync).toBeCalled();
       expect(mockMkdirSync).not.toBeCalled();
@@ -119,7 +119,7 @@ describe('prepare', () => {
       expect(mockRunCommand).toBeCalledWith('terraform show -no-color -json /tmp/iac-utils/tmp/tfplan > /tmp/iac-utils/tmp/plan.json');
 
       expect(mockParseTerraformDiff).toBeCalled();
-      expect(mockParseTerraformDiff).toBeCalledWith(`/tmp/iac-utils/tmp/plan.json`);
+      expect(mockParseTerraformDiff).toBeCalledWith('/tmp/iac-utils/tmp/plan.json', { format: 'tf' });
     });
   });
 });

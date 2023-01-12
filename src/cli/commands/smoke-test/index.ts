@@ -9,7 +9,7 @@ import { getStandardResourceType } from './smoke-tests/aws/resources';
 
 async function smokeTestResource (resource: ResourceDiffRecord, allResources: ResourceDiffRecord[], config: SmokeTestOptions) {
   const { format } = config;
-  const isAwsResource = format === IacFormat.awsCdk || (format === IacFormat.tf && resource.resourceRecord.tfProviderName === AWS_TF_PROVIDER_NAME);
+  const isAwsResource = format === IacFormat.awsCdk || (format === IacFormat.tf && resource.providerName === AWS_TF_PROVIDER_NAME);
   if (isAwsResource) return smokeTestAwsResource(resource, allResources, config);
 }
 
@@ -28,9 +28,9 @@ async function checkQuotas (allResources: ResourceDiffRecord[]) {
   for (const [resourceType, resources] of resourceGroups) {
     const {
       format,
-      resourceRecord
+      providerName
     } = resources.at(0) || {};
-    const isAwsResourceType = format === IacFormat.awsCdk || (format === IacFormat.tf && resourceRecord.tfProviderName === AWS_TF_PROVIDER_NAME);
+    const isAwsResourceType = format === IacFormat.awsCdk || (format === IacFormat.tf && providerName === AWS_TF_PROVIDER_NAME);
     if (isAwsResourceType) await checkAwsQuotas(resourceType, resources);
   }
 }
@@ -44,7 +44,7 @@ async function smokeTest (options: SmokeTestOptions) {
     config.format = format;
   }
 
-  const resourceDiffRecords = await prepareForSmokeTest(format);
+  const resourceDiffRecords = await prepareForSmokeTest(config);
   await checkQuotas(resourceDiffRecords);
   for (const resource of resourceDiffRecords) {
     await smokeTestResource(resource, resourceDiffRecords, config);

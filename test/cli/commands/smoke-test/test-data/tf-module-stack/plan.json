@@ -1,21 +1,13 @@
 {
   "format_version": "1.1",
   "terraform_version": "1.2.3",
-  "variables": {
-    "ts_aws_vpc_cidr_block": {
-      "value": "10.0.0.0/16"
-    },
-    "ts_aws_vpc_cidr_newbits": {
-      "value": 4
-    }
-  },
   "planned_values": {
     "root_module": {
       "child_modules": [
         {
           "resources": [
             {
-              "address": "module.ts_aws_vpc_hello_world.aws_eip.ts_aws_eip_nat[\"us-east-1a\"]",
+              "address": "module.my_vpc.aws_eip.ts_aws_eip_nat[\"us-east-1a\"]",
               "mode": "managed",
               "type": "aws_eip",
               "name": "ts_aws_eip_nat",
@@ -35,7 +27,7 @@
               }
             },
             {
-              "address": "module.ts_aws_vpc_hello_world.aws_eip.ts_aws_eip_nat[\"us-east-1b\"]",
+              "address": "module.my_vpc.aws_eip.ts_aws_eip_nat[\"us-east-1b\"]",
               "mode": "managed",
               "type": "aws_eip",
               "name": "ts_aws_eip_nat",
@@ -55,7 +47,7 @@
               }
             },
             {
-              "address": "module.ts_aws_vpc_hello_world.aws_internet_gateway.ts_aws_internet_gateway",
+              "address": "module.my_vpc.aws_internet_gateway.ts_aws_internet_gateway",
               "mode": "managed",
               "type": "aws_internet_gateway",
               "name": "ts_aws_internet_gateway",
@@ -70,7 +62,7 @@
               }
             },
             {
-              "address": "module.ts_aws_vpc_hello_world.aws_nat_gateway.ts_aws_nat_gateway[\"us-east-1a\"]",
+              "address": "module.my_vpc.aws_nat_gateway.ts_aws_nat_gateway[\"us-east-1a\"]",
               "mode": "managed",
               "type": "aws_nat_gateway",
               "name": "ts_aws_nat_gateway",
@@ -86,7 +78,7 @@
               }
             },
             {
-              "address": "module.ts_aws_vpc_hello_world.aws_nat_gateway.ts_aws_nat_gateway[\"us-east-1b\"]",
+              "address": "module.my_vpc.aws_nat_gateway.ts_aws_nat_gateway[\"us-east-1b\"]",
               "mode": "managed",
               "type": "aws_nat_gateway",
               "name": "ts_aws_nat_gateway",
@@ -102,7 +94,7 @@
               }
             },
             {
-              "address": "module.ts_aws_vpc_hello_world.aws_route.ts_aws_route_private_ngw[\"us-east-1a\"]",
+              "address": "module.my_vpc.aws_route.ts_aws_route_private_ngw[\"us-east-1a\"]",
               "mode": "managed",
               "type": "aws_route",
               "name": "ts_aws_route_private_ngw",
@@ -126,7 +118,7 @@
               "sensitive_values": {}
             },
             {
-              "address": "module.ts_aws_vpc_hello_world.aws_route.ts_aws_route_private_ngw[\"us-east-1b\"]",
+              "address": "module.my_vpc.aws_route.ts_aws_route_private_ngw[\"us-east-1b\"]",
               "mode": "managed",
               "type": "aws_route",
               "name": "ts_aws_route_private_ngw",
@@ -150,7 +142,7 @@
               "sensitive_values": {}
             },
             {
-              "address": "module.ts_aws_vpc_hello_world.aws_route.ts_aws_route_public_igw",
+              "address": "module.my_vpc.aws_route.ts_aws_route_public_igw",
               "mode": "managed",
               "type": "aws_route",
               "name": "ts_aws_route_public_igw",
@@ -173,7 +165,7 @@
               "sensitive_values": {}
             },
             {
-              "address": "module.ts_aws_vpc_hello_world.aws_route_table.ts_aws_route_table_private_isolated",
+              "address": "module.my_vpc.aws_route_table.ts_aws_route_table_private_isolated",
               "mode": "managed",
               "type": "aws_route_table",
               "name": "ts_aws_route_table_private_isolated",
@@ -190,7 +182,7 @@
               }
             },
             {
-              "address": "module.ts_aws_vpc_hello_world.aws_route_table.ts_aws_route_table_private_ngw[\"us-east-1a\"]",
+              "address": "module.my_vpc.aws_route_table.ts_aws_route_table_private_ngw[\"us-east-1a\"]",
               "mode": "managed",
               "type": "aws_route_table",
               "name": "ts_aws_route_table_private_ngw",
@@ -208,7 +200,7 @@
               }
             },
             {
-              "address": "module.ts_aws_vpc_hello_world.aws_route_table.ts_aws_route_table_private_ngw[\"us-east-1b\"]",
+              "address": "module.my_vpc.aws_route_table.ts_aws_route_table_private_ngw[\"us-east-1b\"]",
               "mode": "managed",
               "type": "aws_route_table",
               "name": "ts_aws_route_table_private_ngw",
@@ -226,7 +218,7 @@
               }
             },
             {
-              "address": "module.ts_aws_vpc_hello_world.aws_route_table.ts_aws_route_table_public_igw",
+              "address": "module.my_vpc.aws_route_table.ts_aws_route_table_public_igw",
               "mode": "managed",
               "type": "aws_route_table",
               "name": "ts_aws_route_table_public_igw",
@@ -243,7 +235,7 @@
               }
             },
             {
-              "address": "module.ts_aws_vpc_hello_world.aws_route_table_association.ts_aws_route_table_association_private_isolated[\"us-east-1a\"]",
+              "address": "module.my_vpc.aws_route_table_association.ts_aws_route_table_association_private_isolated[\"us-east-1a\"]",
               "mode": "managed",
               "type": "aws_route_table_association",
               "name": "ts_aws_route_table_association_private_isolated",
@@ -256,7 +248,7 @@
               "sensitive_values": {}
             },
             {
-              "address": "module.ts_aws_vpc_hello_world.aws_route_table_association.ts_aws_route_table_association_private_isolated[\"us-east-1b\"]",
+              "address": "module.my_vpc.aws_route_table_association.ts_aws_route_table_association_private_isolated[\"us-east-1b\"]",
               "mode": "managed",
               "type": "aws_route_table_association",
               "name": "ts_aws_route_table_association_private_isolated",
@@ -269,7 +261,7 @@
               "sensitive_values": {}
             },
             {
-              "address": "module.ts_aws_vpc_hello_world.aws_route_table_association.ts_aws_route_table_association_private_ngw[\"us-east-1a\"]",
+              "address": "module.my_vpc.aws_route_table_association.ts_aws_route_table_association_private_ngw[\"us-east-1a\"]",
               "mode": "managed",
               "type": "aws_route_table_association",
               "name": "ts_aws_route_table_association_private_ngw",
@@ -282,7 +274,7 @@
               "sensitive_values": {}
             },
             {
-              "address": "module.ts_aws_vpc_hello_world.aws_route_table_association.ts_aws_route_table_association_private_ngw[\"us-east-1b\"]",
+              "address": "module.my_vpc.aws_route_table_association.ts_aws_route_table_association_private_ngw[\"us-east-1b\"]",
               "mode": "managed",
               "type": "aws_route_table_association",
               "name": "ts_aws_route_table_association_private_ngw",
@@ -295,7 +287,7 @@
               "sensitive_values": {}
             },
             {
-              "address": "module.ts_aws_vpc_hello_world.aws_route_table_association.ts_aws_route_table_association_public_igw[\"us-east-1a\"]",
+              "address": "module.my_vpc.aws_route_table_association.ts_aws_route_table_association_public_igw[\"us-east-1a\"]",
               "mode": "managed",
               "type": "aws_route_table_association",
               "name": "ts_aws_route_table_association_public_igw",
@@ -308,7 +300,7 @@
               "sensitive_values": {}
             },
             {
-              "address": "module.ts_aws_vpc_hello_world.aws_route_table_association.ts_aws_route_table_association_public_igw[\"us-east-1b\"]",
+              "address": "module.my_vpc.aws_route_table_association.ts_aws_route_table_association_public_igw[\"us-east-1b\"]",
               "mode": "managed",
               "type": "aws_route_table_association",
               "name": "ts_aws_route_table_association_public_igw",
@@ -321,7 +313,7 @@
               "sensitive_values": {}
             },
             {
-              "address": "module.ts_aws_vpc_hello_world.aws_subnet.ts_aws_subnet_private_isolated[\"us-east-1a\"]",
+              "address": "module.my_vpc.aws_subnet.ts_aws_subnet_private_isolated[\"us-east-1a\"]",
               "mode": "managed",
               "type": "aws_subnet",
               "name": "ts_aws_subnet_private_isolated",
@@ -349,7 +341,7 @@
               }
             },
             {
-              "address": "module.ts_aws_vpc_hello_world.aws_subnet.ts_aws_subnet_private_isolated[\"us-east-1b\"]",
+              "address": "module.my_vpc.aws_subnet.ts_aws_subnet_private_isolated[\"us-east-1b\"]",
               "mode": "managed",
               "type": "aws_subnet",
               "name": "ts_aws_subnet_private_isolated",
@@ -377,7 +369,7 @@
               }
             },
             {
-              "address": "module.ts_aws_vpc_hello_world.aws_subnet.ts_aws_subnet_private_ngw[\"us-east-1a\"]",
+              "address": "module.my_vpc.aws_subnet.ts_aws_subnet_private_ngw[\"us-east-1a\"]",
               "mode": "managed",
               "type": "aws_subnet",
               "name": "ts_aws_subnet_private_ngw",
@@ -405,7 +397,7 @@
               }
             },
             {
-              "address": "module.ts_aws_vpc_hello_world.aws_subnet.ts_aws_subnet_private_ngw[\"us-east-1b\"]",
+              "address": "module.my_vpc.aws_subnet.ts_aws_subnet_private_ngw[\"us-east-1b\"]",
               "mode": "managed",
               "type": "aws_subnet",
               "name": "ts_aws_subnet_private_ngw",
@@ -433,7 +425,7 @@
               }
             },
             {
-              "address": "module.ts_aws_vpc_hello_world.aws_subnet.ts_aws_subnet_public_igw[\"us-east-1a\"]",
+              "address": "module.my_vpc.aws_subnet.ts_aws_subnet_public_igw[\"us-east-1a\"]",
               "mode": "managed",
               "type": "aws_subnet",
               "name": "ts_aws_subnet_public_igw",
@@ -461,7 +453,7 @@
               }
             },
             {
-              "address": "module.ts_aws_vpc_hello_world.aws_subnet.ts_aws_subnet_public_igw[\"us-east-1b\"]",
+              "address": "module.my_vpc.aws_subnet.ts_aws_subnet_public_igw[\"us-east-1b\"]",
               "mode": "managed",
               "type": "aws_subnet",
               "name": "ts_aws_subnet_public_igw",
@@ -489,7 +481,7 @@
               }
             },
             {
-              "address": "module.ts_aws_vpc_hello_world.aws_vpc.ts_aws_vpc",
+              "address": "module.my_vpc.aws_vpc.ts_aws_vpc",
               "mode": "managed",
               "type": "aws_vpc",
               "name": "ts_aws_vpc",
@@ -512,15 +504,15 @@
               }
             }
           ],
-          "address": "module.ts_aws_vpc_hello_world"
+          "address": "module.my_vpc"
         }
       ]
     }
   },
   "resource_changes": [
     {
-      "address": "module.ts_aws_vpc_hello_world.aws_eip.ts_aws_eip_nat[\"us-east-1a\"]",
-      "module_address": "module.ts_aws_vpc_hello_world",
+      "address": "module.my_vpc.aws_eip.ts_aws_eip_nat[\"us-east-1a\"]",
+      "module_address": "module.my_vpc",
       "mode": "managed",
       "type": "aws_eip",
       "name": "ts_aws_eip_nat",
@@ -563,8 +555,8 @@
       }
     },
     {
-      "address": "module.ts_aws_vpc_hello_world.aws_eip.ts_aws_eip_nat[\"us-east-1b\"]",
-      "module_address": "module.ts_aws_vpc_hello_world",
+      "address": "module.my_vpc.aws_eip.ts_aws_eip_nat[\"us-east-1b\"]",
+      "module_address": "module.my_vpc",
       "mode": "managed",
       "type": "aws_eip",
       "name": "ts_aws_eip_nat",
@@ -607,8 +599,8 @@
       }
     },
     {
-      "address": "module.ts_aws_vpc_hello_world.aws_internet_gateway.ts_aws_internet_gateway",
-      "module_address": "module.ts_aws_vpc_hello_world",
+      "address": "module.my_vpc.aws_internet_gateway.ts_aws_internet_gateway",
+      "module_address": "module.my_vpc",
       "mode": "managed",
       "type": "aws_internet_gateway",
       "name": "ts_aws_internet_gateway",
@@ -636,8 +628,8 @@
       }
     },
     {
-      "address": "module.ts_aws_vpc_hello_world.aws_nat_gateway.ts_aws_nat_gateway[\"us-east-1a\"]",
-      "module_address": "module.ts_aws_vpc_hello_world",
+      "address": "module.my_vpc.aws_nat_gateway.ts_aws_nat_gateway[\"us-east-1a\"]",
+      "module_address": "module.my_vpc",
       "mode": "managed",
       "type": "aws_nat_gateway",
       "name": "ts_aws_nat_gateway",
@@ -668,8 +660,8 @@
       }
     },
     {
-      "address": "module.ts_aws_vpc_hello_world.aws_nat_gateway.ts_aws_nat_gateway[\"us-east-1b\"]",
-      "module_address": "module.ts_aws_vpc_hello_world",
+      "address": "module.my_vpc.aws_nat_gateway.ts_aws_nat_gateway[\"us-east-1b\"]",
+      "module_address": "module.my_vpc",
       "mode": "managed",
       "type": "aws_nat_gateway",
       "name": "ts_aws_nat_gateway",
@@ -700,8 +692,8 @@
       }
     },
     {
-      "address": "module.ts_aws_vpc_hello_world.aws_route.ts_aws_route_private_ngw[\"us-east-1a\"]",
-      "module_address": "module.ts_aws_vpc_hello_world",
+      "address": "module.my_vpc.aws_route.ts_aws_route_private_ngw[\"us-east-1a\"]",
+      "module_address": "module.my_vpc",
       "mode": "managed",
       "type": "aws_route",
       "name": "ts_aws_route_private_ngw",
@@ -741,8 +733,8 @@
       }
     },
     {
-      "address": "module.ts_aws_vpc_hello_world.aws_route.ts_aws_route_private_ngw[\"us-east-1b\"]",
-      "module_address": "module.ts_aws_vpc_hello_world",
+      "address": "module.my_vpc.aws_route.ts_aws_route_private_ngw[\"us-east-1b\"]",
+      "module_address": "module.my_vpc",
       "mode": "managed",
       "type": "aws_route",
       "name": "ts_aws_route_private_ngw",
@@ -782,8 +774,8 @@
       }
     },
     {
-      "address": "module.ts_aws_vpc_hello_world.aws_route.ts_aws_route_public_igw",
-      "module_address": "module.ts_aws_vpc_hello_world",
+      "address": "module.my_vpc.aws_route.ts_aws_route_public_igw",
+      "module_address": "module.my_vpc",
       "mode": "managed",
       "type": "aws_route",
       "name": "ts_aws_route_public_igw",
@@ -822,8 +814,8 @@
       }
     },
     {
-      "address": "module.ts_aws_vpc_hello_world.aws_route_table.ts_aws_route_table_private_isolated",
-      "module_address": "module.ts_aws_vpc_hello_world",
+      "address": "module.my_vpc.aws_route_table.ts_aws_route_table_private_isolated",
+      "module_address": "module.my_vpc",
       "mode": "managed",
       "type": "aws_route_table",
       "name": "ts_aws_route_table_private_isolated",
@@ -855,8 +847,8 @@
       }
     },
     {
-      "address": "module.ts_aws_vpc_hello_world.aws_route_table.ts_aws_route_table_private_ngw[\"us-east-1a\"]",
-      "module_address": "module.ts_aws_vpc_hello_world",
+      "address": "module.my_vpc.aws_route_table.ts_aws_route_table_private_ngw[\"us-east-1a\"]",
+      "module_address": "module.my_vpc",
       "mode": "managed",
       "type": "aws_route_table",
       "name": "ts_aws_route_table_private_ngw",
@@ -889,8 +881,8 @@
       }
     },
     {
-      "address": "module.ts_aws_vpc_hello_world.aws_route_table.ts_aws_route_table_private_ngw[\"us-east-1b\"]",
-      "module_address": "module.ts_aws_vpc_hello_world",
+      "address": "module.my_vpc.aws_route_table.ts_aws_route_table_private_ngw[\"us-east-1b\"]",
+      "module_address": "module.my_vpc",
       "mode": "managed",
       "type": "aws_route_table",
       "name": "ts_aws_route_table_private_ngw",
@@ -923,8 +915,8 @@
       }
     },
     {
-      "address": "module.ts_aws_vpc_hello_world.aws_route_table.ts_aws_route_table_public_igw",
-      "module_address": "module.ts_aws_vpc_hello_world",
+      "address": "module.my_vpc.aws_route_table.ts_aws_route_table_public_igw",
+      "module_address": "module.my_vpc",
       "mode": "managed",
       "type": "aws_route_table",
       "name": "ts_aws_route_table_public_igw",
@@ -956,8 +948,8 @@
       }
     },
     {
-      "address": "module.ts_aws_vpc_hello_world.aws_route_table_association.ts_aws_route_table_association_private_isolated[\"us-east-1a\"]",
-      "module_address": "module.ts_aws_vpc_hello_world",
+      "address": "module.my_vpc.aws_route_table_association.ts_aws_route_table_association_private_isolated[\"us-east-1a\"]",
+      "module_address": "module.my_vpc",
       "mode": "managed",
       "type": "aws_route_table_association",
       "name": "ts_aws_route_table_association_private_isolated",
@@ -981,8 +973,8 @@
       }
     },
     {
-      "address": "module.ts_aws_vpc_hello_world.aws_route_table_association.ts_aws_route_table_association_private_isolated[\"us-east-1b\"]",
-      "module_address": "module.ts_aws_vpc_hello_world",
+      "address": "module.my_vpc.aws_route_table_association.ts_aws_route_table_association_private_isolated[\"us-east-1b\"]",
+      "module_address": "module.my_vpc",
       "mode": "managed",
       "type": "aws_route_table_association",
       "name": "ts_aws_route_table_association_private_isolated",
@@ -1006,8 +998,8 @@
       }
     },
     {
-      "address": "module.ts_aws_vpc_hello_world.aws_route_table_association.ts_aws_route_table_association_private_ngw[\"us-east-1a\"]",
-      "module_address": "module.ts_aws_vpc_hello_world",
+      "address": "module.my_vpc.aws_route_table_association.ts_aws_route_table_association_private_ngw[\"us-east-1a\"]",
+      "module_address": "module.my_vpc",
       "mode": "managed",
       "type": "aws_route_table_association",
       "name": "ts_aws_route_table_association_private_ngw",
@@ -1031,8 +1023,8 @@
       }
     },
     {
-      "address": "module.ts_aws_vpc_hello_world.aws_route_table_association.ts_aws_route_table_association_private_ngw[\"us-east-1b\"]",
-      "module_address": "module.ts_aws_vpc_hello_world",
+      "address": "module.my_vpc.aws_route_table_association.ts_aws_route_table_association_private_ngw[\"us-east-1b\"]",
+      "module_address": "module.my_vpc",
       "mode": "managed",
       "type": "aws_route_table_association",
       "name": "ts_aws_route_table_association_private_ngw",
@@ -1056,8 +1048,8 @@
       }
     },
     {
-      "address": "module.ts_aws_vpc_hello_world.aws_route_table_association.ts_aws_route_table_association_public_igw[\"us-east-1a\"]",
-      "module_address": "module.ts_aws_vpc_hello_world",
+      "address": "module.my_vpc.aws_route_table_association.ts_aws_route_table_association_public_igw[\"us-east-1a\"]",
+      "module_address": "module.my_vpc",
       "mode": "managed",
       "type": "aws_route_table_association",
       "name": "ts_aws_route_table_association_public_igw",
@@ -1081,8 +1073,8 @@
       }
     },
     {
-      "address": "module.ts_aws_vpc_hello_world.aws_route_table_association.ts_aws_route_table_association_public_igw[\"us-east-1b\"]",
-      "module_address": "module.ts_aws_vpc_hello_world",
+      "address": "module.my_vpc.aws_route_table_association.ts_aws_route_table_association_public_igw[\"us-east-1b\"]",
+      "module_address": "module.my_vpc",
       "mode": "managed",
       "type": "aws_route_table_association",
       "name": "ts_aws_route_table_association_public_igw",
@@ -1106,8 +1098,8 @@
       }
     },
     {
-      "address": "module.ts_aws_vpc_hello_world.aws_subnet.ts_aws_subnet_private_isolated[\"us-east-1a\"]",
-      "module_address": "module.ts_aws_vpc_hello_world",
+      "address": "module.my_vpc.aws_subnet.ts_aws_subnet_private_isolated[\"us-east-1a\"]",
+      "module_address": "module.my_vpc",
       "mode": "managed",
       "type": "aws_subnet",
       "name": "ts_aws_subnet_private_isolated",
@@ -1151,8 +1143,8 @@
       }
     },
     {
-      "address": "module.ts_aws_vpc_hello_world.aws_subnet.ts_aws_subnet_private_isolated[\"us-east-1b\"]",
-      "module_address": "module.ts_aws_vpc_hello_world",
+      "address": "module.my_vpc.aws_subnet.ts_aws_subnet_private_isolated[\"us-east-1b\"]",
+      "module_address": "module.my_vpc",
       "mode": "managed",
       "type": "aws_subnet",
       "name": "ts_aws_subnet_private_isolated",
@@ -1196,8 +1188,8 @@
       }
     },
     {
-      "address": "module.ts_aws_vpc_hello_world.aws_subnet.ts_aws_subnet_private_ngw[\"us-east-1a\"]",
-      "module_address": "module.ts_aws_vpc_hello_world",
+      "address": "module.my_vpc.aws_subnet.ts_aws_subnet_private_ngw[\"us-east-1a\"]",
+      "module_address": "module.my_vpc",
       "mode": "managed",
       "type": "aws_subnet",
       "name": "ts_aws_subnet_private_ngw",
@@ -1241,8 +1233,8 @@
       }
     },
     {
-      "address": "module.ts_aws_vpc_hello_world.aws_subnet.ts_aws_subnet_private_ngw[\"us-east-1b\"]",
-      "module_address": "module.ts_aws_vpc_hello_world",
+      "address": "module.my_vpc.aws_subnet.ts_aws_subnet_private_ngw[\"us-east-1b\"]",
+      "module_address": "module.my_vpc",
       "mode": "managed",
       "type": "aws_subnet",
       "name": "ts_aws_subnet_private_ngw",
@@ -1286,8 +1278,8 @@
       }
     },
     {
-      "address": "module.ts_aws_vpc_hello_world.aws_subnet.ts_aws_subnet_public_igw[\"us-east-1a\"]",
-      "module_address": "module.ts_aws_vpc_hello_world",
+      "address": "module.my_vpc.aws_subnet.ts_aws_subnet_public_igw[\"us-east-1a\"]",
+      "module_address": "module.my_vpc",
       "mode": "managed",
       "type": "aws_subnet",
       "name": "ts_aws_subnet_public_igw",
@@ -1331,8 +1323,8 @@
       }
     },
     {
-      "address": "module.ts_aws_vpc_hello_world.aws_subnet.ts_aws_subnet_public_igw[\"us-east-1b\"]",
-      "module_address": "module.ts_aws_vpc_hello_world",
+      "address": "module.my_vpc.aws_subnet.ts_aws_subnet_public_igw[\"us-east-1b\"]",
+      "module_address": "module.my_vpc",
       "mode": "managed",
       "type": "aws_subnet",
       "name": "ts_aws_subnet_public_igw",
@@ -1376,8 +1368,8 @@
       }
     },
     {
-      "address": "module.ts_aws_vpc_hello_world.aws_vpc.ts_aws_vpc",
-      "module_address": "module.ts_aws_vpc_hello_world",
+      "address": "module.my_vpc.aws_vpc.ts_aws_vpc",
+      "module_address": "module.my_vpc",
       "mode": "managed",
       "type": "aws_vpc",
       "name": "ts_aws_vpc",
@@ -1432,7 +1424,7 @@
           {
             "resources": [
               {
-                "address": "module.ts_aws_vpc_hello_world.data.aws_availability_zones.available",
+                "address": "module.my_vpc.data.aws_availability_zones.available",
                 "mode": "data",
                 "type": "aws_availability_zones",
                 "name": "available",
@@ -1489,7 +1481,7 @@
                 }
               }
             ],
-            "address": "module.ts_aws_vpc_hello_world"
+            "address": "module.my_vpc"
           }
         ]
       }
@@ -1497,16 +1489,16 @@
   },
   "configuration": {
     "provider_config": {
-      "module.ts_aws_vpc_hello_world:aws": {
+      "module.my_vpc:aws": {
         "name": "aws",
         "full_name": "registry.terraform.io/hashicorp/aws",
-        "module_address": "module.ts_aws_vpc_hello_world"
+        "module_address": "module.my_vpc"
       }
     },
     "root_module": {
       "module_calls": {
-        "ts_aws_vpc_hello_world": {
-          "source": "../../modules/vpc",
+        "my_vpc": {
+          "source": "git::https://github.com/tinystacks/tinystacks-terraform-modules.git//aws/modules/vpc",
           "expressions": {
             "ts_aws_vpc_cidr_block": {
               "constant_value": "10.0.0.0/16"
@@ -1566,7 +1558,7 @@
                 "mode": "managed",
                 "type": "aws_eip",
                 "name": "ts_aws_eip_nat",
-                "provider_config_key": "module.ts_aws_vpc_hello_world:aws",
+                "provider_config_key": "module.my_vpc:aws",
                 "expressions": {
                   "vpc": {
                     "constant_value": true
@@ -1584,7 +1576,7 @@
                 "mode": "managed",
                 "type": "aws_internet_gateway",
                 "name": "ts_aws_internet_gateway",
-                "provider_config_key": "module.ts_aws_vpc_hello_world:aws",
+                "provider_config_key": "module.my_vpc:aws",
                 "expressions": {
                   "vpc_id": {
                     "references": [
@@ -1600,7 +1592,7 @@
                 "mode": "managed",
                 "type": "aws_nat_gateway",
                 "name": "ts_aws_nat_gateway",
-                "provider_config_key": "module.ts_aws_vpc_hello_world:aws",
+                "provider_config_key": "module.my_vpc:aws",
                 "expressions": {
                   "allocation_id": {
                     "references": [
@@ -1630,7 +1622,7 @@
                 "mode": "managed",
                 "type": "aws_route",
                 "name": "ts_aws_route_private_ngw",
-                "provider_config_key": "module.ts_aws_vpc_hello_world:aws",
+                "provider_config_key": "module.my_vpc:aws",
                 "expressions": {
                   "destination_cidr_block": {
                     "constant_value": "0.0.0.0/0"
@@ -1660,7 +1652,7 @@
                 "mode": "managed",
                 "type": "aws_route",
                 "name": "ts_aws_route_public_igw",
-                "provider_config_key": "module.ts_aws_vpc_hello_world:aws",
+                "provider_config_key": "module.my_vpc:aws",
                 "expressions": {
                   "destination_cidr_block": {
                     "constant_value": "0.0.0.0/0"
@@ -1685,7 +1677,7 @@
                 "mode": "managed",
                 "type": "aws_route_table",
                 "name": "ts_aws_route_table_private_isolated",
-                "provider_config_key": "module.ts_aws_vpc_hello_world:aws",
+                "provider_config_key": "module.my_vpc:aws",
                 "expressions": {
                   "vpc_id": {
                     "references": [
@@ -1701,7 +1693,7 @@
                 "mode": "managed",
                 "type": "aws_route_table",
                 "name": "ts_aws_route_table_private_ngw",
-                "provider_config_key": "module.ts_aws_vpc_hello_world:aws",
+                "provider_config_key": "module.my_vpc:aws",
                 "expressions": {
                   "vpc_id": {
                     "references": [
@@ -1722,7 +1714,7 @@
                 "mode": "managed",
                 "type": "aws_route_table",
                 "name": "ts_aws_route_table_public_igw",
-                "provider_config_key": "module.ts_aws_vpc_hello_world:aws",
+                "provider_config_key": "module.my_vpc:aws",
                 "expressions": {
                   "vpc_id": {
                     "references": [
@@ -1738,7 +1730,7 @@
                 "mode": "managed",
                 "type": "aws_route_table_association",
                 "name": "ts_aws_route_table_association_private_isolated",
-                "provider_config_key": "module.ts_aws_vpc_hello_world:aws",
+                "provider_config_key": "module.my_vpc:aws",
                 "expressions": {
                   "route_table_id": {
                     "references": [
@@ -1765,7 +1757,7 @@
                 "mode": "managed",
                 "type": "aws_route_table_association",
                 "name": "ts_aws_route_table_association_private_ngw",
-                "provider_config_key": "module.ts_aws_vpc_hello_world:aws",
+                "provider_config_key": "module.my_vpc:aws",
                 "expressions": {
                   "route_table_id": {
                     "references": [
@@ -1792,7 +1784,7 @@
                 "mode": "managed",
                 "type": "aws_route_table_association",
                 "name": "ts_aws_route_table_association_public_igw",
-                "provider_config_key": "module.ts_aws_vpc_hello_world:aws",
+                "provider_config_key": "module.my_vpc:aws",
                 "expressions": {
                   "route_table_id": {
                     "references": [
@@ -1819,7 +1811,7 @@
                 "mode": "managed",
                 "type": "aws_subnet",
                 "name": "ts_aws_subnet_private_isolated",
-                "provider_config_key": "module.ts_aws_vpc_hello_world:aws",
+                "provider_config_key": "module.my_vpc:aws",
                 "expressions": {
                   "availability_zone": {
                     "references": [
@@ -1853,7 +1845,7 @@
                 "mode": "managed",
                 "type": "aws_subnet",
                 "name": "ts_aws_subnet_private_ngw",
-                "provider_config_key": "module.ts_aws_vpc_hello_world:aws",
+                "provider_config_key": "module.my_vpc:aws",
                 "expressions": {
                   "availability_zone": {
                     "references": [
@@ -1887,7 +1879,7 @@
                 "mode": "managed",
                 "type": "aws_subnet",
                 "name": "ts_aws_subnet_public_igw",
-                "provider_config_key": "module.ts_aws_vpc_hello_world:aws",
+                "provider_config_key": "module.my_vpc:aws",
                 "expressions": {
                   "availability_zone": {
                     "references": [
@@ -1924,7 +1916,7 @@
                 "mode": "managed",
                 "type": "aws_vpc",
                 "name": "ts_aws_vpc",
-                "provider_config_key": "module.ts_aws_vpc_hello_world:aws",
+                "provider_config_key": "module.my_vpc:aws",
                 "expressions": {
                   "cidr_block": {
                     "references": [
@@ -1945,7 +1937,7 @@
                 "mode": "data",
                 "type": "aws_availability_zones",
                 "name": "available",
-                "provider_config_key": "module.ts_aws_vpc_hello_world:aws",
+                "provider_config_key": "module.my_vpc:aws",
                 "expressions": {
                   "state": {
                     "constant_value": "available"
@@ -1975,76 +1967,66 @@
             }
           }
         }
-      },
-      "variables": {
-        "ts_aws_vpc_cidr_block": {
-          "default": "10.0.0.0/16",
-          "description": "TinyStacks AWS VPC CIDR block"
-        },
-        "ts_aws_vpc_cidr_newbits": {
-          "default": 4,
-          "description": "TinyStacks AWS VPC CIDR new bits"
-        }
       }
     }
   },
   "relevant_attributes": [
     {
-      "resource": "module.ts_aws_vpc_hello_world.aws_nat_gateway.ts_aws_nat_gateway",
-      "attribute": []
-    },
-    {
-      "resource": "module.ts_aws_vpc_hello_world.aws_subnet.ts_aws_subnet_private_isolated",
-      "attribute": []
-    },
-    {
-      "resource": "module.ts_aws_vpc_hello_world.aws_vpc.ts_aws_vpc",
+      "resource": "module.my_vpc.aws_vpc.ts_aws_vpc",
       "attribute": [
         "id"
       ]
     },
     {
-      "resource": "module.ts_aws_vpc_hello_world.aws_route_table.ts_aws_route_table_public_igw",
+      "resource": "module.my_vpc.aws_internet_gateway.ts_aws_internet_gateway",
       "attribute": [
         "id"
       ]
     },
     {
-      "resource": "module.ts_aws_vpc_hello_world.aws_vpc.ts_aws_vpc",
+      "resource": "module.my_vpc.aws_route_table.ts_aws_route_table_private_ngw",
+      "attribute": []
+    },
+    {
+      "resource": "module.my_vpc.aws_subnet.ts_aws_subnet_private_ngw",
+      "attribute": []
+    },
+    {
+      "resource": "module.my_vpc.aws_eip.ts_aws_eip_nat",
+      "attribute": []
+    },
+    {
+      "resource": "module.my_vpc.aws_subnet.ts_aws_subnet_public_igw",
+      "attribute": []
+    },
+    {
+      "resource": "module.my_vpc.aws_nat_gateway.ts_aws_nat_gateway",
+      "attribute": []
+    },
+    {
+      "resource": "module.my_vpc.aws_subnet.ts_aws_subnet_private_isolated",
+      "attribute": []
+    },
+    {
+      "resource": "module.my_vpc.aws_route_table.ts_aws_route_table_public_igw",
+      "attribute": [
+        "id"
+      ]
+    },
+    {
+      "resource": "module.my_vpc.aws_vpc.ts_aws_vpc",
       "attribute": [
         "cidr_block"
       ]
     },
     {
-      "resource": "module.ts_aws_vpc_hello_world.aws_subnet.ts_aws_subnet_private_ngw",
-      "attribute": []
-    },
-    {
-      "resource": "module.ts_aws_vpc_hello_world.aws_route_table.ts_aws_route_table_private_isolated",
+      "resource": "module.my_vpc.aws_route_table.ts_aws_route_table_private_isolated",
       "attribute": [
         "id"
       ]
     },
     {
-      "resource": "module.ts_aws_vpc_hello_world.aws_internet_gateway.ts_aws_internet_gateway",
-      "attribute": [
-        "id"
-      ]
-    },
-    {
-      "resource": "module.ts_aws_vpc_hello_world.aws_route_table.ts_aws_route_table_private_ngw",
-      "attribute": []
-    },
-    {
-      "resource": "module.ts_aws_vpc_hello_world.aws_eip.ts_aws_eip_nat",
-      "attribute": []
-    },
-    {
-      "resource": "module.ts_aws_vpc_hello_world.aws_subnet.ts_aws_subnet_public_igw",
-      "attribute": []
-    },
-    {
-      "resource": "module.ts_aws_vpc_hello_world.data.aws_availability_zones.available",
+      "resource": "module.my_vpc.data.aws_availability_zones.available",
       "attribute": [
         "names"
       ]

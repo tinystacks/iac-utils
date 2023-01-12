@@ -18,7 +18,7 @@ async function validateQueueNameIsUnique (queueName: string) {
 
 async function sqsQueueSmokeTest (resource: ResourceDiffRecord, _allResources?: ResourceDiffRecord[], _config?: SmokeTestOptions) {
   if (resource.changeType === ChangeType.CREATE) {
-    await validateQueueNameIsUnique(resource.resourceRecord.properties.QueueName);
+    await validateQueueNameIsUnique(resource.properties.QueueName);
   }
 }
 

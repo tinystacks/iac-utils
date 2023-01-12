@@ -1,13 +1,15 @@
+import isNil from 'lodash.isnil';
+import get from 'lodash.get';
+import isString from 'lodash.isstring';
+import isPlainObject from 'lodash.isplainobject';
 import * as logger from '../../../../../logger';
 import { EC2 } from '@aws-sdk/client-ec2';
 import { ServiceQuotas } from '@aws-sdk/client-service-quotas';
-import { ChangeType, IacFormat, ResourceDiffRecord, ResourceRecord, SmokeTestOptions, TfReference } from '../../../../../types';
+import { ChangeType, Json, ResourceDiffRecord, SmokeTestOptions } from '../../../../../types';
 import { getCredentials } from '../../../../../utils/aws';
 import { QuotaError } from '../../../../../errors/quota-error';
-import { ROUTE, ROUTE_TABLE_ASSOCIATION, SUBNET, VPC, getStandardResourceType } from '../resources';
-import isNil from 'lodash.isnil';
+import { ROUTE_TABLE_ASSOCIATION, SUBNET, VPC, getStandardResourceType } from '../resources';
 import { CustomError } from '../../../../../errors';
-import isEmpty from 'lodash.isempty';
 
 async function checkVpcQuota (resources: ResourceDiffRecord[]) {
   const newVpcCount = resources.filter(resource =>
@@ -51,30 +53,35 @@ enum SubnetType {
 
 interface SubnetRecord {
   type: SubnetType;
-  resourceRecord: ResourceRecord;
+  resourceRecord: ResourceDiffRecord;
 }
 
-function getCdkSubnets (vpcResource: ResourceDiffRecord, allResources: ResourceDiffRecord[]): SubnetRecord[] {
-  const { logicalId: vpcLogicalId } = vpcResource.resourceRecord;
+function referencesLogicalId (resource: Json, property: string, logicalId: string): boolean {
+  const referencedProperty = get(resource?.properties, property);
+  if (isString(referencedProperty)) return referencedProperty.includes(logicalId);
+  if(isPlainObject(referencedProperty)) return referencedProperty.Ref === logicalId;
+  return false;
+}
+
+function getSubnetsForVpc (vpcResource: ResourceDiffRecord, allResources: ResourceDiffRecord[]): SubnetRecord[] {
+  const { logicalId: vpcLogicalId } = vpcResource;
   return allResources.filter((resource: ResourceDiffRecord) => 
     getStandardResourceType(resource.resourceType) === SUBNET &&
-    resource.resourceRecord?.properties?.VpcId?.Ref === vpcLogicalId 
+    referencesLogicalId(resource, 'vpcId', vpcLogicalId)
   ).map<SubnetRecord>((subnetResource: ResourceDiffRecord) => {
-    const { logicalId: subnetLogicalId } = subnetResource.resourceRecord;
+    const { logicalId: subnetLogicalId } = subnetResource;
     
     const routeTableAssociation: ResourceDiffRecord = allResources.find((resource: ResourceDiffRecord) =>
       getStandardResourceType(resource.resourceType) === ROUTE_TABLE_ASSOCIATION &&
-      resource.resourceRecord?.properties?.SubnetId?.Ref === subnetLogicalId
+      referencesLogicalId(resource, 'subnetId', subnetLogicalId)
     );
     
-    const routeTableId = routeTableAssociation?.resourceRecord?.properties?.RouteTableId?.Ref;
-    const routes: ResourceDiffRecord[] = allResources.filter((resource: ResourceDiffRecord) =>
-      getStandardResourceType(resource.resourceType) === ROUTE &&
-      resource.resourceRecord?.properties?.RouteTableId?.Ref === routeTableId
-    );
+    const routeTable = allResources.find((resource: ResourceDiffRecord) => referencesLogicalId(routeTableAssociation, 'routeTableId', resource.logicalId));
     
-    const isPublic = routes?.some((route: ResourceDiffRecord) => route.resourceRecord?.properties?.DestinationCidrBlock === '0.0.0.0/0' && !isNil(route.resourceRecord?.properties?.GatewayId));
-    const isPrivate = !isPublic && routes?.some((route: ResourceDiffRecord) => route.resourceRecord?.properties?.DestinationCidrBlock === '0.0.0.0/0' && !isNil(route.resourceRecord?.properties?.NatGatewayId));
+    const routes = routeTable?.properties?.routeSet;
+    
+    const isPublic = routes?.some((route: Json) => route.destinationCidrBlock === '0.0.0.0/0' && !isNil(route.gatewayId));
+    const isPrivate = !isPublic && routes?.some((route: Json) => route.destinationCidrBlock === '0.0.0.0/0' && !isNil(route.natGatewayId));
 
     let subnetType = SubnetType.ISOLATED;
     if (isPublic) subnetType = SubnetType.PUBLIC;
@@ -82,93 +89,9 @@ function getCdkSubnets (vpcResource: ResourceDiffRecord, allResources: ResourceD
 
     return {
       type: subnetType,
-      resourceRecord: subnetResource.resourceRecord
+      resourceRecord: subnetResource
     };
   });
-}
-
-function getTfSubnets (vpcResource: ResourceDiffRecord, allResources: ResourceDiffRecord[]): SubnetRecord[] {
-  const { address: vpcAddress } = vpcResource.resourceRecord;
-  return allResources.filter((resource: ResourceDiffRecord) => 
-    getStandardResourceType(resource.resourceType) === SUBNET &&
-    resource.resourceRecord?.tfReferences?.some(tfReference => tfReference.property === 'vpc_id' && tfReference.reference.startsWith(vpcAddress))
-  ).map<SubnetRecord>((subnetResource: ResourceDiffRecord) => {
-    const { address: subnetAddress, index } = subnetResource.resourceRecord;
-    
-    const nonIndexedSubnetAddress = !isEmpty(index) ? subnetAddress.replace(`["${index}"]`, '') : subnetAddress;
-    const routeTableAssociation: ResourceDiffRecord = allResources.filter((resource: ResourceDiffRecord) =>
-      getStandardResourceType(resource.resourceType) === ROUTE_TABLE_ASSOCIATION
-    ).find((resource: ResourceDiffRecord) => {  
-      const directReference = resource.resourceRecord?.tfReferences?.find((tfReference: TfReference) => 
-        tfReference.property === 'subnet_id' &&
-        tfReference.reference === nonIndexedSubnetAddress
-      ) || false;
-
-      const loopedReference = resource.resourceRecord?.tfReferences?.find((tfReference: TfReference) => 
-        tfReference.property === 'subnet_id' &&
-        tfReference.reference === 'each.value'
-      ) || false;
-      const forEachReference = resource.resourceRecord?.tfReferences?.find((tfReference: TfReference) => 
-        tfReference.property === 'for_each' &&
-        tfReference.reference === nonIndexedSubnetAddress
-      ) || false;
-
-      return directReference || (loopedReference && forEachReference);
-    });
-    
-    const routeTableIdReference = routeTableAssociation?.resourceRecord?.tfReferences?.find((tfReference: TfReference) => 
-      tfReference.property === 'route_table_id' &&
-      (
-        tfReference.reference.startsWith('aws_route_table.') ||
-        (
-          tfReference.reference.startsWith('module.') &&
-          tfReference.reference.includes('.aws_route_table.')
-        )
-      )
-    )?.reference;
-    const routeTableId = routeTableIdReference?.endsWith('.id') ? routeTableIdReference?.substring(0, routeTableIdReference?.length - 3) : routeTableIdReference;
-
-    const routes: ResourceDiffRecord[] = allResources.filter((resource: ResourceDiffRecord) =>
-      getStandardResourceType(resource.resourceType) === ROUTE &&
-      resource.resourceRecord?.tfReferences?.some((tfReference: TfReference) => 
-        tfReference.property === 'route_table_id' &&
-        tfReference.reference === routeTableId
-      )
-    );
-    
-    const isPublic = routes?.some((route: ResourceDiffRecord) => {
-      const hasGatewayId = route.resourceRecord?.tfReferences?.find((tfReference: TfReference) => tfReference.property === 'gateway_id') || false;
-      const hasInternetDestination = route.resourceRecord?.properties?.destination_cidr_block === '0.0.0.0/0';
-      return hasGatewayId && hasInternetDestination;
-    });
-
-    const isPrivate = routes?.some((route: ResourceDiffRecord) => {
-      const hasNatGatewayId = route.resourceRecord?.tfReferences?.find((tfReference: TfReference) => tfReference.property === 'nat_gateway_id') || false;
-      const hasInternetDestination = route.resourceRecord?.properties?.destination_cidr_block === '0.0.0.0/0';
-      return hasNatGatewayId && hasInternetDestination;
-    });
-
-    let subnetType = SubnetType.ISOLATED;
-    if (isPublic) subnetType = SubnetType.PUBLIC;
-    if (isPrivate) subnetType = SubnetType.PRIVATE;
-
-    return {
-      type: subnetType,
-      resourceRecord: subnetResource.resourceRecord
-    };
-  });
-}
-
-function getSubnetsForVpc (resource: ResourceDiffRecord, allResources: ResourceDiffRecord[]): SubnetRecord[] {
-  const { format } = resource;
-  switch (format) {
-    case IacFormat.awsCdk:
-      return getCdkSubnets(resource, allResources);
-    case IacFormat.tf:
-      return getTfSubnets(resource, allResources);
-    default:
-      return [];
-  }
 }
 
 async function verifyVpcHasPrivateSubnets (resource: ResourceDiffRecord, allResources: ResourceDiffRecord[]) {
@@ -176,7 +99,7 @@ async function verifyVpcHasPrivateSubnets (resource: ResourceDiffRecord, allReso
   const subnets = getSubnetsForVpc(resource, allResources);
   const privateSubnets = subnets.filter((subnet: SubnetRecord) => subnet.type === SubnetType.PRIVATE);
   if (privateSubnets.length === 0) {
-    throw new CustomError('Missing private subnets!', `Based on the configuration passed, private subnets with a NAT Gateway are required for all vpcs but none was found for "${resource.resourceRecord?.logicalId}".`);
+    throw new CustomError('Missing private subnets!', `Based on the configuration passed, private subnets with a NAT Gateway are required for all vpcs but none was found for "${resource?.logicalId}".`);
   }
 }
 
@@ -185,7 +108,6 @@ async function vpcSmokeTest (resource: ResourceDiffRecord, allResources: Resourc
     await verifyVpcHasPrivateSubnets(resource, allResources);
   }
 }
-
 
 export {
   checkVpcQuota,
