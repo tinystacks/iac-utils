@@ -12,6 +12,10 @@ class NameValidationResponse implements NameValidationResponse {
   }
 }
 
+/**
+ * Validates a name against a NameRestriction.
+ * Returns a response with a boolean property indicating validity and a string property with a human readable reason for invalidity.
+ */
 function validateName (name = '', nameRestriction: NameRestriction = {}, label = 'Name'): NameValidationResponse {
   const {
     minimumLength,
