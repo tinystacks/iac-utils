@@ -4,8 +4,10 @@ import {
 } from '@aws-sdk/credential-providers';
 
 async function getCredentials () {
-  const envCreds = await fromEnv()();
-  const nodeChainCreds = await fromNodeProviderChain()();
+  const envProvider = fromEnv();
+  const envCreds = await envProvider();
+  const nodeChainProvider = fromNodeProviderChain();
+  const nodeChainCreds = await nodeChainProvider();
   return envCreds || nodeChainCreds;
 }
 
