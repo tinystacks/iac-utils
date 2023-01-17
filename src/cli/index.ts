@@ -5,22 +5,12 @@ import * as colors from 'colors';
 import { smokeTest } from './commands';
 import * as logger from './logger';
 import { cleanupTmpDirectory } from './hooks';
-import { CliError } from './errors';
 const program = new Command();
 // eslint-disable-next-line
 const { version } = require('../../package.json');
 
 function handleError (error: Error) {
-  if (error.name === CliError.name) {
-    const customError = error as CliError;
-    logger.error(`${customError.message}${customError.reason ? `\n\t${customError.reason}` : ''}`);
-    if (customError.hints) {
-      customError.hints.forEach(hint => logger.hint(hint));
-    }
-  } else {
-    logger.error('An unexpected error occurred! Please file an issue if one does not exist at https://github.com/tinystacks/iac-utils/issues with the below error.');
-    console.error(error);
-  }
+  logger.cliError(error);
   process.exit(1);
 }
 

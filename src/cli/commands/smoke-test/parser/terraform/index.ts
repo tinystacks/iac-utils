@@ -44,7 +44,7 @@ async function tryToUseParser (diff: TfDiff, tfPlan: Json, parserName: string): 
       // eslint-disable-next-line @typescript-eslint/no-var-requires
       const parser = require(parserName);
       if (parser) {
-        parserInstance = new parser();
+        parserInstance = new parser.default();
         if (parserInstance instanceof TerraformParser) {
           parsers[parserName] = parserInstance;
         } else {

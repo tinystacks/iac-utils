@@ -6,6 +6,7 @@ import {
   gray,
   green
 } from 'colors';
+import { CliError } from '../errors';
 
 function error (message: string) {
   console.error(red(`Error: ${message}`));
@@ -41,6 +42,20 @@ function verbose (message: string | Error | any) {
   }
 }
 
+function cliError (err: Error | unknown) {
+  const e = err as Error;
+  if (e.name === CliError.name) {
+    const customError = e as CliError;
+    error(`${customError.message}${customError.reason ? `\n\t${customError.reason}` : ''}`);
+    if (customError.hints) {
+      customError.hints.forEach(hintString => hint(hintString));
+    }
+  } else {
+    error('An unexpected error occurred!');
+    console.error(error);
+  }
+}
+
 export {
   error,
   debug,
@@ -49,5 +64,6 @@ export {
   log,
   hint,
   success,
-  verbose
+  verbose,
+  cliError
 };

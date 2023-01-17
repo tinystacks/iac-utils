@@ -15,7 +15,7 @@ async function tryToUseResourceTester (resource: ResourceDiffRecord, allResource
       // eslint-disable-next-line @typescript-eslint/no-var-requires
       const resourceTester = require(resourceTesterName);
       if (resourceTester) {
-        resourceTesterInstance = new resourceTester();
+        resourceTesterInstance = new resourceTester.default();
         if (resourceTesterInstance instanceof ResourceTester) {
           resourceTesterCache[resourceTesterName] = resourceTesterInstance;
         } else {
@@ -56,7 +56,7 @@ async function tryToUseQuotaChecker (resourceType: string, resources: ResourceDi
       // eslint-disable-next-line @typescript-eslint/no-var-requires
       const quotaChecker = require(quotaCheckerName);
       if (quotaChecker) {
-        quotaCheckerInstance = new quotaChecker();
+        quotaCheckerInstance = new quotaChecker.default();
         if (quotaCheckerInstance instanceof QuotaChecker) {
           quotaCheckerCache[quotaCheckerName] = quotaCheckerInstance;
         } else {

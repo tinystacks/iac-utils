@@ -79,7 +79,7 @@ async function tryToUseParser (diff: CdkDiff, cloudformationTemplate: Json, pars
       // eslint-disable-next-line @typescript-eslint/no-var-requires
       const parser = require(parserName);
       if (parser) {
-        parserInstance = new parser();
+        parserInstance = new parser.default();
         if (parserInstance instanceof AwsCdkParser) {
           parsers[parserName] = parserInstance;
         } else {

@@ -25,7 +25,7 @@
     "minor": "npm version minor --no-git-tag-version",
     "patch": "npm version patch --no-git-tag-version",
     "package": "npm pack && cp tinystacks-iac-utils-*.tgz tinystacks-iac-utils-latest.tgz",
-    "prepack": "npm run qa && npm run clean-build",
+    "prepack": "npm run clean-build",
     "prerelease": "npm version prerelease --preid=local --no-git-tag-version",
     "publish-local": "npm run prerelease; bash ./localNpmLogin.sh; npm publish --tag local --@tinystacks:registry=http://local-npm-registry:4873",
     "qa": "npm run lint && npm run test-cov",

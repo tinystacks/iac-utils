@@ -17,7 +17,7 @@ interface ResourceGroup {
   [key: string]: ResourceDiffRecord[]
 }
 
-async function checkQuotas (allResources: ResourceDiffRecord[], config: SmokeTestOptions) {
+async function checkQuotas (allResources: ResourceDiffRecord[], config: SmokeTestOptions): Promise<Error[]> {
   const groupedByType: ResourceGroup = allResources.reduce<ResourceGroup>((acc: ResourceGroup, resource: ResourceDiffRecord) => {
     const resourceType = getStandardResourceType(resource.resourceType);
     acc[resourceType] = acc[resourceType] || [];
@@ -25,14 +25,16 @@ async function checkQuotas (allResources: ResourceDiffRecord[], config: SmokeTes
     return acc;
   }, {});
   const resourceGroups = Object.entries(groupedByType);
+  const quotaCheckErrors: Error[] = [];
   for (const [resourceType, resources] of resourceGroups) {
     const {
       format,
       providerName
     } = resources.at(0) || {};
     const isAwsResourceType = format === IacFormat.awsCdk || (format === IacFormat.tf && providerName === AWS_TF_PROVIDER_NAME);
-    if (isAwsResourceType) await checkAwsQuotas(resourceType, resources, config);
+    if (isAwsResourceType) await checkAwsQuotas(resourceType, resources, config).catch(error => quotaCheckErrors.push(error));
   }
+  return quotaCheckErrors;
 }
 
 async function smokeTest (options: SmokeTestOptions) {
@@ -45,11 +47,17 @@ async function smokeTest (options: SmokeTestOptions) {
   }
 
   const resourceDiffRecords = await prepareForSmokeTest(config);
-  await checkQuotas(resourceDiffRecords, config);
+  const quotaErrors = await checkQuotas(resourceDiffRecords, config);
+  const smokeTestErrors: Error[] = [];
   for (const resource of resourceDiffRecords) {
-    await smokeTestResource(resource, resourceDiffRecords, config);
+    await smokeTestResource(resource, resourceDiffRecords, config).catch(error => smokeTestErrors.push(error));
   }
-  logger.success('Smoke test passed!');
+  if (quotaErrors.length === 0 && smokeTestErrors.length === 0) {
+    logger.success('Smoke test passed!');
+    return;
+  }
+  quotaErrors.forEach(logger.cliError);
+  smokeTestErrors.forEach(logger.cliError);
 }
 
 export {
