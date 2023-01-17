@@ -1,6 +1,6 @@
+import { MockParser } from './MockParser';
 const mockResolve = jest.fn();
 const mockReadFileSync = jest.fn();
-const mockParseResource = jest.fn();
 
 jest.mock('path', () => {
   const original = jest.requireActual('path');
@@ -18,13 +18,9 @@ jest.mock('fs', () => {
   }
 });
 
-jest.mock('../../../../../../src/cli/commands/smoke-test/parser/aws-cdk/tinystacks-aws-cdk-parser', () => ({
-  parseResource: mockParseResource
-}));
+jest.mock('../../../../../../src/cli/commands/smoke-test/parser/aws-cdk/tinystacks-aws-cdk-parser', () => (MockParser));
 
-import {
-  parseCdkDiff
-} from '../../../../../../src/cli/commands/smoke-test/parser/aws-cdk';
+import { parseCdkDiff } from '../../../../../../src/cli/commands/smoke-test/parser/aws-cdk';
 import { ChangeType, IacFormat } from '../../../../../../src/cli/types';
 
 const fs = require('fs');
@@ -41,10 +37,10 @@ describe('aws-cdk parser', () => {
     jest.restoreAllMocks();
   });
 
-  it('parseCdkDiff', () => {
+  it('parseCdkDiff', async () => {
     mockReadFileSync.mockReturnValueOnce(mockCdkTemplate);
 
-    const result = parseCdkDiff(mockCdkDiff, {});
+    const result = await parseCdkDiff(mockCdkDiff, {});
 
     expect(Array.isArray(result)).toEqual(true);
     expect(result.length).toEqual(3);

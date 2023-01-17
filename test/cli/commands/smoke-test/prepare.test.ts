@@ -88,7 +88,7 @@ describe('prepare', () => {
         expect(mockRunCommand).toBeCalled();
         expect(mockRunCommand).toBeCalledWith('cdk diff');
 
-        expect(thrownError).toHaveProperty('name', 'CustomError');
+        expect(thrownError).toHaveProperty('name', 'CliError');
         expect(thrownError).toHaveProperty('message', 'cdk diff failed with exit code 1');
   
         expect(mockWriteFileSync).not.toBeCalled();  

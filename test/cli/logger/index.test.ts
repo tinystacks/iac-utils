@@ -22,7 +22,8 @@ import {
   info,
   log,
   hint,
-  success
+  success,
+  verbose
 } from '../../../src/cli/logger';
 import * as colors from 'colors';
 
@@ -110,5 +111,28 @@ describe('logger', () => {
     expect(console.log).toBeCalledWith('Success: Success');
     expect(mockGreen).toBeCalled();
     expect(mockGreen).toBeCalledWith('Success: Success');
+  });
+  
+  describe('verbose', () => {
+    it('logs if VERBOSE env var is true', () => {
+      process.env.VERBOSE = 'true';
+      verbose('Verbose')
+      expect(console.log).toBeCalled();
+      expect(console.log).toBeCalledWith('Verbose');
+      expect(mockGray).toBeCalled();
+      expect(mockGray).toBeCalledWith('Verbose');
+    });
+    it('does not log if VERBOSE env var is false', () => {
+      process.env.VERBOSE = 'false';
+      verbose('Verbose')
+      expect(console.log).not.toBeCalled();
+      expect(mockGray).not.toBeCalled();
+    });
+    it('does not log if VERBOSE env var is undefined', () => {
+      process.env.VERBOSE = undefined;
+      verbose('Verbose')
+      expect(console.log).not.toBeCalled();
+      expect(mockGray).not.toBeCalled();
+    });
   });
 });

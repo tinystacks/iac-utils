@@ -3,46 +3,9 @@ import get from 'lodash.get';
 import isString from 'lodash.isstring';
 import isPlainObject from 'lodash.isplainobject';
 import * as logger from '../../../../../logger';
-import { EC2 } from '@aws-sdk/client-ec2';
-import { ServiceQuotas } from '@aws-sdk/client-service-quotas';
-import { ChangeType, Json, ResourceDiffRecord, SmokeTestOptions } from '../../../../../types';
-import { getCredentials } from '../../../../../utils/aws';
-import { QuotaError } from '../../../../../errors/quota-error';
-import { ROUTE_TABLE_ASSOCIATION, SUBNET, VPC, getStandardResourceType } from '../resources';
-import { CustomError } from '../../../../../errors';
-
-async function checkVpcQuota (resources: ResourceDiffRecord[]) {
-  const newVpcCount = resources.filter(resource =>
-    getStandardResourceType(resource.resourceType) === VPC &&
-    resource.changeType === ChangeType.CREATE
-  ).length;
-
-  if (newVpcCount === 0) return;
-
-  logger.info('Checking VPC service quota...');
-  const DEFAULT_VPC_QUOTA = 5;
-  const DEFAULT_NUMBER_OF_VPCS = 1;
-
-  const config = { credentials: await getCredentials() };
-
-  const quotaClient = new ServiceQuotas(config);
-  const quotaResponse = await quotaClient.getAWSDefaultServiceQuota({
-    ServiceCode: 'vpc',
-    QuotaCode: 'L-F678F1CE'
-  });
-
-  const vpcQuota = quotaResponse?.Quota?.Value || DEFAULT_VPC_QUOTA;
-
-  const ec2Client = new EC2(config);
-  const vpcResponse = await ec2Client.describeVpcs({});
-  
-  const currentNumberOfVpcs = vpcResponse?.Vpcs?.length || DEFAULT_NUMBER_OF_VPCS;
-  const remainingNumberOfVpcs = vpcQuota - currentNumberOfVpcs;
-  const proposedNumberOfVpcs = currentNumberOfVpcs + newVpcCount;
-  if (vpcQuota < proposedNumberOfVpcs) {
-    throw new QuotaError(`This stack needs to create ${newVpcCount} VPC(s), but only ${remainingNumberOfVpcs} more can be created with the current quota limit! Request a quota increase or choose another region to continue.`);
-  }
-}
+import { Json, ResourceDiffRecord, SmokeTestOptions } from '../../../../../types';
+import { ROUTE_TABLE_ASSOCIATION, SUBNET, getStandardResourceType } from '../resources';
+import { CliError } from '../../../../../errors';
 
 // eslint-disable-next-line no-shadow
 enum SubnetType {
@@ -99,7 +62,7 @@ async function verifyVpcHasPrivateSubnets (resource: ResourceDiffRecord, allReso
   const subnets = getSubnetsForVpc(resource, allResources);
   const privateSubnets = subnets.filter((subnet: SubnetRecord) => subnet.type === SubnetType.PRIVATE);
   if (privateSubnets.length === 0) {
-    throw new CustomError('Missing private subnets!', `Based on the configuration passed, private subnets with a NAT Gateway are required for all vpcs but none was found for "${resource?.logicalId}".`);
+    throw new CliError('Missing private subnets!', `Based on the configuration passed, private subnets with a NAT Gateway are required for all vpcs but none was found for "${resource?.logicalId}".`);
   }
 }
 
@@ -110,6 +73,5 @@ async function vpcSmokeTest (resource: ResourceDiffRecord, allResources: Resourc
 }
 
 export {
-  checkVpcQuota,
   vpcSmokeTest
 };

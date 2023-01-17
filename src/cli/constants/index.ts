@@ -15,6 +15,8 @@ const TINYSTACKS_AWS_CDK_PARSER = './tinystacks-aws-cdk-parser';
 const TINYSTACKS_RESOURCE_PARSER = './tinystacks-resource-parser';
 const TINYSTACKS_MODULE_PARSER = './tinystacks-module-parser';
 const TINYSTACKS_TF_MODULES_REPO = 'github.com/tinystacks/tinystacks-terraform-modules';
+const TINYSTACKS_AWS_RESOURCE_TESTER = './tinystacks-aws-resource-tests';
+const TINYSTACKS_AWS_QUOTA_CHECKER = './tinystacks-aws-quota-checks';
 
 export {
   TMP_DIRECTORY,
@@ -29,5 +31,7 @@ export {
   TINYSTACKS_AWS_CDK_PARSER,
   TINYSTACKS_RESOURCE_PARSER,
   TINYSTACKS_MODULE_PARSER,
-  TINYSTACKS_TF_MODULES_REPO
+  TINYSTACKS_TF_MODULES_REPO,
+  TINYSTACKS_AWS_RESOURCE_TESTER,
+  TINYSTACKS_AWS_QUOTA_CHECKER
 };

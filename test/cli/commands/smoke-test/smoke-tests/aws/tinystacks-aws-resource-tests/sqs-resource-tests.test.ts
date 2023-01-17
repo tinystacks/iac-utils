@@ -21,7 +21,7 @@ import {
 } from '../../../../../../../src/cli/types';
 import {
   sqsQueueSmokeTest
-} from '../../../../../../../src/cli/commands/smoke-test/smoke-tests/aws/resource-tests';
+} from '../../../../../../../src/cli/commands/smoke-test/smoke-tests/aws/tinystacks-aws-resource-tests/sqs-resource-tests';
 
 describe('sqs smoke tests', () => {
   beforeEach(() => {
@@ -93,7 +93,7 @@ describe('sqs smoke tests', () => {
         });
 
         expect(thrownError).not.toBeUndefined();
-        expect(thrownError).toHaveProperty('name', 'CustomError');
+        expect(thrownError).toHaveProperty('name', 'CliError');
         expect(thrownError).toHaveProperty('message', 'Conflict!');
         expect(thrownError).toHaveProperty('reason', 'An SQS queue with name mock-queue already exists!');
       }

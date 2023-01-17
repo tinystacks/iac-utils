@@ -26,13 +26,14 @@ jest.mock('../../../../../../../src/cli/commands/smoke-test/parser/aws-cdk/tinys
   parseVpc: mockParseVpc
 }));
 
-import { parseResource } from '../../../../../../../src/cli/commands/smoke-test/parser/aws-cdk/tinystacks-aws-cdk-parser';
+import { TinyStacksAwsCdkParser } from '../../../../../../../src/cli/commands/smoke-test/parser/aws-cdk/tinystacks-aws-cdk-parser';
 import { CloudformationTypes } from '../../../../../../../src/cli/commands/smoke-test/smoke-tests/aws/resources';
 import { CDK_DIFF_CREATE_SYMBOL } from '../../../../../../../src/cli/constants/index';
 import { CdkDiff, Json } from '../../../../../../../src/cli/types';
 
 describe('tinystacks-aws-cdk-parser', () => {
   const mockCloudformationTemplate: Json = {};
+  const parser = new TinyStacksAwsCdkParser();
   afterEach(() => {
     // for mocks
     jest.resetAllMocks();
@@ -40,7 +41,7 @@ describe('tinystacks-aws-cdk-parser', () => {
     jest.restoreAllMocks();
   });
 
-  it('returns undefined if there is no parser for the resource type', () => {
+  it('returns undefined if there is no parser for the resource type', async () => {
     const mockDiff: CdkDiff = {
       changeTypeSymbol: CDK_DIFF_CREATE_SYMBOL,
       resourceType: 'AWS::NOT::SUPPORTED',
@@ -48,7 +49,7 @@ describe('tinystacks-aws-cdk-parser', () => {
       logicalId: 'NotSupportedResource'
     };
     
-    const parsedResource = parseResource(mockDiff, mockCloudformationTemplate);
+    const parsedResource = await parser.parseResource(mockDiff, mockCloudformationTemplate);
 
     expect(parsedResource).toBeUndefined();
     expect(mockParseSqsQueue).not.toBeCalled();
@@ -61,7 +62,7 @@ describe('tinystacks-aws-cdk-parser', () => {
     expect(mockParseRoute).not.toBeCalled();
     expect(mockParseRouteTable).not.toBeCalled();
   });
-  it('parses SQS queue', () => {
+  it('parses SQS queue', async () => {
     const mockDiff: CdkDiff = {
       changeTypeSymbol: CDK_DIFF_CREATE_SYMBOL,
       resourceType: CloudformationTypes.CFN_SQS_QUEUE,
@@ -69,7 +70,7 @@ describe('tinystacks-aws-cdk-parser', () => {
       logicalId: 'SqsQueue'
     };
     
-    parseResource(mockDiff, mockCloudformationTemplate);
+    await parser.parseResource(mockDiff, mockCloudformationTemplate);
 
     expect(mockParseSqsQueue).toBeCalled();
     expect(mockParseSqsQueue).toBeCalledWith(mockDiff, mockCloudformationTemplate);
@@ -83,15 +84,15 @@ describe('tinystacks-aws-cdk-parser', () => {
     expect(mockParseRoute).not.toBeCalled();
     expect(mockParseRouteTable).not.toBeCalled();
   });
-  it('parses S3 bucket', () => {
+  it('parses S3 bucket', async () => {
     const mockDiff: CdkDiff = {
       changeTypeSymbol: CDK_DIFF_CREATE_SYMBOL,
       resourceType: CloudformationTypes.CFN_S3_BUCKET,
       cdkPath: 'S3Bucket',
       logicalId: 'S3Bucket'
     };
-    
-    parseResource(mockDiff, mockCloudformationTemplate);
+
+    parser.parseResource(mockDiff, mockCloudformationTemplate);
 
     expect(mockParseS3Bucket).toBeCalled();
     expect(mockParseS3Bucket).toBeCalledWith(mockDiff, mockCloudformationTemplate);
@@ -105,15 +106,15 @@ describe('tinystacks-aws-cdk-parser', () => {
     expect(mockParseRoute).not.toBeCalled();
     expect(mockParseRouteTable).not.toBeCalled();
   });
-  it('parses EIP', () => {
+  it('parses EIP', async () => {
     const mockDiff: CdkDiff = {
       changeTypeSymbol: CDK_DIFF_CREATE_SYMBOL,
       resourceType: CloudformationTypes.CFN_EIP,
       cdkPath: 'EIP',
       logicalId: 'EIP'
     };
-    
-    parseResource(mockDiff, mockCloudformationTemplate);
+
+    parser.parseResource(mockDiff, mockCloudformationTemplate);
 
     expect(mockParseEip).toBeCalled();
     expect(mockParseEip).toBeCalledWith(mockDiff, mockCloudformationTemplate);
@@ -127,7 +128,7 @@ describe('tinystacks-aws-cdk-parser', () => {
     expect(mockParseRoute).not.toBeCalled();
     expect(mockParseRouteTable).not.toBeCalled();
   });
-  it('parses VPC', () => {
+  it('parses VPC', async () => {
     const mockDiff: CdkDiff = {
       changeTypeSymbol: CDK_DIFF_CREATE_SYMBOL,
       resourceType: CloudformationTypes.CFN_VPC,
@@ -135,7 +136,7 @@ describe('tinystacks-aws-cdk-parser', () => {
       logicalId: 'VPC'
     };
     
-    parseResource(mockDiff, mockCloudformationTemplate);
+    parser.parseResource(mockDiff, mockCloudformationTemplate);
 
     expect(mockParseVpc).toBeCalled();
     expect(mockParseVpc).toBeCalledWith(mockDiff, mockCloudformationTemplate);
@@ -149,7 +150,7 @@ describe('tinystacks-aws-cdk-parser', () => {
     expect(mockParseRoute).not.toBeCalled();
     expect(mockParseRouteTable).not.toBeCalled();
   });
-  it('parses Nat Gateway', () => {
+  it('parses Nat Gateway', async () => {
     const mockDiff: CdkDiff = {
       changeTypeSymbol: CDK_DIFF_CREATE_SYMBOL,
       resourceType: CloudformationTypes.CFN_NAT_GATEWAY,
@@ -157,7 +158,7 @@ describe('tinystacks-aws-cdk-parser', () => {
       logicalId: 'NatGateway'
     };
     
-    parseResource(mockDiff, mockCloudformationTemplate);
+    parser.parseResource(mockDiff, mockCloudformationTemplate);
 
     expect(mockParseNatGateway).toBeCalled();
     expect(mockParseNatGateway).toBeCalledWith(mockDiff, mockCloudformationTemplate);
@@ -171,7 +172,7 @@ describe('tinystacks-aws-cdk-parser', () => {
     expect(mockParseRoute).not.toBeCalled();
     expect(mockParseRouteTable).not.toBeCalled();
   });
-  it('parses Subnet', () => {
+  it('parses Subnet', async () => {
     const mockDiff: CdkDiff = {
       changeTypeSymbol: CDK_DIFF_CREATE_SYMBOL,
       resourceType: CloudformationTypes.CFN_SUBNET,
@@ -179,7 +180,7 @@ describe('tinystacks-aws-cdk-parser', () => {
       logicalId: 'Subnet'
     };
     
-    parseResource(mockDiff, mockCloudformationTemplate);
+    parser.parseResource(mockDiff, mockCloudformationTemplate);
 
     expect(mockParseSubnet).toBeCalled();
     expect(mockParseSubnet).toBeCalledWith(mockDiff, mockCloudformationTemplate);
@@ -193,7 +194,7 @@ describe('tinystacks-aws-cdk-parser', () => {
     expect(mockParseRoute).not.toBeCalled();
     expect(mockParseRouteTable).not.toBeCalled();
   });
-  it('parses Route Table Association', () => {
+  it('parses Route Table Association', async () => {
     const mockDiff: CdkDiff = {
       changeTypeSymbol: CDK_DIFF_CREATE_SYMBOL,
       resourceType: CloudformationTypes.CFN_ROUTE_TABLE_ASSOCIATION,
@@ -201,7 +202,7 @@ describe('tinystacks-aws-cdk-parser', () => {
       logicalId: 'RouteTableAssociation'
     };
     
-    parseResource(mockDiff, mockCloudformationTemplate);
+    parser.parseResource(mockDiff, mockCloudformationTemplate);
 
     expect(mockParseRouteTableAssociation).toBeCalled();
     expect(mockParseRouteTableAssociation).toBeCalledWith(mockDiff, mockCloudformationTemplate);
@@ -215,7 +216,7 @@ describe('tinystacks-aws-cdk-parser', () => {
     expect(mockParseRoute).not.toBeCalled();
     expect(mockParseRouteTable).not.toBeCalled();
   });
-  it('parses Route', () => {
+  it('parses Route', async () => {
     const mockDiff: CdkDiff = {
       changeTypeSymbol: CDK_DIFF_CREATE_SYMBOL,
       resourceType: CloudformationTypes.CFN_ROUTE,
@@ -223,7 +224,7 @@ describe('tinystacks-aws-cdk-parser', () => {
       logicalId: 'Route'
     };
     
-    parseResource(mockDiff, mockCloudformationTemplate);
+    parser.parseResource(mockDiff, mockCloudformationTemplate);
 
     expect(mockParseRoute).toBeCalled();
     expect(mockParseRoute).toBeCalledWith(mockDiff, mockCloudformationTemplate);
@@ -237,7 +238,7 @@ describe('tinystacks-aws-cdk-parser', () => {
     expect(mockParseRouteTableAssociation).not.toBeCalled();
     expect(mockParseRouteTable).not.toBeCalled();
   });
-  it('parses Route Table', () => {
+  it('parses Route Table', async () => {
     const mockDiff: CdkDiff = {
       changeTypeSymbol: CDK_DIFF_CREATE_SYMBOL,
       resourceType: CloudformationTypes.CFN_ROUTE_TABLE,
@@ -245,7 +246,7 @@ describe('tinystacks-aws-cdk-parser', () => {
       logicalId: 'RouteTablee'
     };
     
-    parseResource(mockDiff, mockCloudformationTemplate);
+    parser.parseResource(mockDiff, mockCloudformationTemplate);
 
     expect(mockParseRouteTable).toBeCalled();
     expect(mockParseRouteTable).toBeCalledWith(mockDiff, mockCloudformationTemplate);

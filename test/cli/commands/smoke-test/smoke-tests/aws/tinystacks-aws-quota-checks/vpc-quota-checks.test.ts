@@ -1,6 +1,6 @@
 const mockLoggerInfo = jest.fn();
 const mockGetCredentials = jest.fn();
-const mockDescribeAddresses = jest.fn();
+const mockDescribeVpcs = jest.fn();
 const mockEc2 = jest.fn();
 const mockGetAwsDefaultServiceQuota = jest.fn();
 const mockServiceQuotas = jest.fn();
@@ -27,13 +27,13 @@ import {
   ChangeType, IacFormat, ResourceDiffRecord
 } from '../../../../../../../src/cli/types';
 import {
-  checkEipQuota
-} from '../../../../../../../src/cli/commands/smoke-test/smoke-tests/aws/resource-tests';
+  checkVpcQuota
+} from '../../../../../../../src/cli/commands/smoke-test/smoke-tests/aws/tinystacks-aws-quota-checks/vpc-quota-checks';
 
-describe('eip smoke tests', () => {
+describe('vpc smoke tests', () => {
   beforeEach(() => {
     mockEc2.mockReturnValue({
-      describeAddresses: mockDescribeAddresses
+      describeVpcs: mockDescribeVpcs
     });
     mockServiceQuotas.mockReturnValue({
       getAWSDefaultServiceQuota: mockGetAwsDefaultServiceQuota
@@ -47,27 +47,29 @@ describe('eip smoke tests', () => {
     jest.restoreAllMocks();
   });
 
-  describe('checkEipQuota', () => {
-    it('does nothing if no resource has a change type of create', async () => {
+  describe('checkVpcQuota', () => {
+    it('does nothing if change type is not create', async () => {
       const resource = {
         changeType: ChangeType.UPDATE
       } as ResourceDiffRecord;
 
-      await checkEipQuota([resource]);
+      await checkVpcQuota([resource]);
 
       expect(mockLoggerInfo).not.toBeCalled();
       expect(mockGetCredentials).not.toBeCalled();
       expect(mockServiceQuotas).not.toBeCalled();
       expect(mockGetAwsDefaultServiceQuota).not.toBeCalled();
       expect(mockEc2).not.toBeCalled();
-      expect(mockDescribeAddresses).not.toBeCalled();
+      expect(mockDescribeVpcs).not.toBeCalled();
     });
     it('validates quota would not be exceeded if change type is create', async () => {
       const resource = {
         changeType: ChangeType.CREATE,
         format: IacFormat.awsCdk,
-        resourceType: 'AWS::EC2::EIP',
-        properties: {}
+        resourceType: 'AWS::EC2::VPC',
+        resourceRecord: {
+          properties: {}
+        }
       } as unknown as ResourceDiffRecord;
 
       mockGetAwsDefaultServiceQuota.mockResolvedValueOnce({
@@ -75,25 +77,27 @@ describe('eip smoke tests', () => {
           Value: 5
         }
       });
-      mockDescribeAddresses.mockResolvedValueOnce({
-        Addresses: Array(2)
+      mockDescribeVpcs.mockResolvedValueOnce({
+        Vpcs: Array(2)
       });
       
 
-      await checkEipQuota([resource, resource]);
+      await checkVpcQuota([resource, resource]);
 
       expect(mockLoggerInfo).toBeCalled();
-      expect(mockLoggerInfo).toBeCalledWith('Checking Elastic IP service quota...');
+      expect(mockLoggerInfo).toBeCalledWith('Checking VPC service quota...');
       expect(mockGetCredentials).toBeCalled();
       expect(mockGetAwsDefaultServiceQuota).toBeCalled();
-      expect(mockDescribeAddresses).toBeCalled();
+      expect(mockDescribeVpcs).toBeCalled();
     });
-    it('throws a QuotaError if new eip would exceed quota limit', async () => {
+    it('throws a QuotaError if new vpc would exceed quota limit', async () => {
       const resource = {
         changeType: ChangeType.CREATE,
         format: IacFormat.tf,
-        resourceType: 'aws_eip',
-        properties: {}
+        resourceType: 'aws_vpc',
+        resourceRecord: {
+          properties: {}
+        }
       } as unknown as ResourceDiffRecord;
       
       mockGetAwsDefaultServiceQuota.mockResolvedValueOnce({
@@ -101,26 +105,26 @@ describe('eip smoke tests', () => {
           Value: 5
         }
       });
-      mockDescribeAddresses.mockResolvedValueOnce({
-        Addresses: Array(5)
+      mockDescribeVpcs.mockResolvedValueOnce({
+        Vpcs: Array(5)
       });
 
       let thrownError;
       try {
-        await checkEipQuota([resource]);
+        await checkVpcQuota([resource]);
       } catch (error) {
         thrownError = error;
       } finally {
         expect(mockLoggerInfo).toBeCalled();
-        expect(mockLoggerInfo).toBeCalledWith('Checking Elastic IP service quota...');
+        expect(mockLoggerInfo).toBeCalledWith('Checking VPC service quota...');
         expect(mockGetCredentials).toBeCalled();
         expect(mockGetAwsDefaultServiceQuota).toBeCalled();
-        expect(mockDescribeAddresses).toBeCalled();
+        expect(mockDescribeVpcs).toBeCalled();
 
         expect(thrownError).not.toBeUndefined();
-        expect(thrownError).toHaveProperty('name', 'CustomError');
+        expect(thrownError).toHaveProperty('name', 'CliError');
         expect(thrownError).toHaveProperty('message', 'Quota Limit Reached!');
-        expect(thrownError).toHaveProperty('reason', 'This stack needs to create 1 elastic IP address(es), but only 0 more can be created within this region with the current quota limit! Release any unassociated EIPs, request a quota increase, or choose another region to continue.');
+        expect(thrownError).toHaveProperty('reason', 'This stack needs to create 1 VPC(s), but only 0 more can be created with the current quota limit! Request a quota increase or choose another region to continue.');
       }
     });
   });

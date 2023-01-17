@@ -16,6 +16,7 @@ import {
   TfDiff
 } from '../../../../types';
 import * as logger from '../../../../logger';
+import TerraformParser from '../../../../abstracts/terraform-parser';
 
 function getChangeTypeForTerraformDiff (tfChangeType: string): ChangeType {
   switch (tfChangeType) {
@@ -32,16 +33,35 @@ function getChangeTypeForTerraformDiff (tfChangeType: string): ChangeType {
   }
 }
 
+const parsers: {
+  [parserName: string]: TerraformParser
+} = {};
+
 async function tryToUseParser (diff: TfDiff, tfPlan: Json, parserName: string): Promise<Json | undefined> {
   try {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const {
-      parseResource
-    } = require(parserName) || {};
-    if (parseResource) return await parseResource(diff, tfPlan);
+    let parserInstance = parsers[parserName];
+    if (!parserInstance) {
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      const parser = require(parserName);
+      if (parser) {
+        parserInstance = new parser();
+        if (parserInstance instanceof TerraformParser) {
+          parsers[parserName] = parserInstance;
+        } else {
+          logger.warn(`Invalid parser: ${parserName}.`);
+          logger.warn(`The main export from ${parserName} does not properly implement TerraformParser.`);
+        }
+      }
+    }
+    if (parserInstance) {
+      return await parserInstance.parseResource(diff, tfPlan);
+    }
     return undefined;
   }
   catch (error) {
+    logger.warn(`Invalid parser: ${parserName}.`);
+    logger.warn(`The main export from ${parserName} could not be instantiated or it threw an error while parsing the resource.`);
+    logger.verbose(error);
     return undefined;
   }
 }

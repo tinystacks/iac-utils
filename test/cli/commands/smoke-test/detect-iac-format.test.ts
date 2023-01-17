@@ -44,7 +44,7 @@ describe('detectIacFormat', () => {
       thrownError = error;
     } finally {
       expect(thrownError).toBeDefined();
-      expect(thrownError).toHaveProperty('name', 'CustomError');
+      expect(thrownError).toHaveProperty('name', 'CliError');
       expect(thrownError).toHaveProperty('message', 'Cannot determine IaC format!');
       expect(thrownError).toHaveProperty('reason', 'Both AWS cdk and terraform files exist in this repository.');
       expect(thrownError).toHaveProperty('hints', ['You can specify which format to use via the "--format" flag']);
@@ -60,7 +60,7 @@ describe('detectIacFormat', () => {
       thrownError = error;
     } finally {
       expect(thrownError).toBeDefined();
-      expect(thrownError).toHaveProperty('name', 'CustomError');
+      expect(thrownError).toHaveProperty('name', 'CliError');
       expect(thrownError).toHaveProperty('message', 'Cannot determine IaC format!');
       expect(thrownError).toHaveProperty('reason', 'Neither AWS cdk nor terraform files exist in this repository.');
       expect(thrownError).toHaveProperty('hints', [

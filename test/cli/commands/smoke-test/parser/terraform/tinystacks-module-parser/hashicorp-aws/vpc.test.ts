@@ -100,8 +100,6 @@ describe('Terraform Vpc Module Parser Tests', () => {
 
     const parsedRouteTable = parseRouteTable(mockDiff, mockTfPlan, mockTfFiles, mockTfJson);
 
-    console.info(JSON.stringify(parsedRouteTable));
-
     expect(parsedRouteTable).toHaveProperty('associationSet', [
       {
         subnetId: 'aws_subnet.ts_aws_subnet_private_ngw',

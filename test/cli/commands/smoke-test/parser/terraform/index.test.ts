@@ -1,7 +1,6 @@
+import { MockParser } from './MockParser';
 const mockResolve = jest.fn();
 const mockReadFileSync = jest.fn();
-const mockParseResource = jest.fn();
-const mockParseModule = jest.fn();
 
 jest.mock('path', () => {
   const original = jest.requireActual('path');
@@ -19,12 +18,8 @@ jest.mock('fs', () => {
   }
 });
 
-jest.mock('../../../../../../src/cli/commands/smoke-test/parser/terraform/tinystacks-resource-parser', () => ({
-  parseResource: mockParseResource
-}));
-jest.mock('../../../../../../src/cli/commands/smoke-test/parser/terraform/tinystacks-module-parser', () => ({
-  parseResource: mockParseModule
-}));
+jest.mock('../../../../../../src/cli/commands/smoke-test/parser/terraform/tinystacks-resource-parser', () => (MockParser));
+jest.mock('../../../../../../src/cli/commands/smoke-test/parser/terraform/tinystacks-module-parser', () => (MockParser));
 
 import {
   parseTerraformDiff
@@ -39,15 +34,8 @@ const mockSimpleTfPlan = fs.realRFS(path.realResolve(__dirname, '../../test-data
 const mockComplexTfPlan = fs.realRFS(path.realResolve(__dirname, '../../test-data/tf-module-stack/plan.json'));
 
 describe('aws-cdk parser', () => {
-  beforeEach(() => {
-    mockParseResource.mockResolvedValue({});
-    mockParseModule.mockResolvedValue({});
-  });
   afterEach(() => {
-    // for mocks
-    jest.resetAllMocks();
-    // for spies
-    jest.restoreAllMocks();
+    mockReadFileSync.mockReset();
   });
 
   describe('parseTerraformDiff', () => {

@@ -35,6 +35,12 @@ function success (message: string) {
   console.log(green(`Success: ${message}`));
 }
 
+function verbose (message: string | Error | any) {
+  if (process.env.VERBOSE === 'true') {
+    console.log(gray(message));
+  }
+}
+
 export {
   error,
   debug,
@@ -42,5 +48,6 @@ export {
   info,
   log,
   hint,
-  success
+  success,
+  verbose
 };

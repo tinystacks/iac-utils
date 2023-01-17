@@ -1,27 +1,25 @@
-const mockSqsQueueSmokeTest = jest.fn();
-const mockCheckS3Quota = jest.fn();
+import MockResourceTester, { mockTestResource } from './MockResourceTester';
+import MockQuotaChecker, { mockCheckQuotas } from './MockQuotaChecker';
 
-jest.mock('../../../../../../src/cli/commands/smoke-test/smoke-tests/aws/resource-tests', () => ({
-  sqsQueueSmokeTest: mockSqsQueueSmokeTest,
-  checkS3Quota: mockCheckS3Quota
-}));
+jest.mock('../../../../../../src/cli/commands/smoke-test/smoke-tests/aws/tinystacks-aws-resource-tests', () => MockResourceTester);
+jest.mock('../../../../../../src/cli/commands/smoke-test/smoke-tests/aws/tinystacks-aws-quota-checks', () => MockQuotaChecker);
 
 import {
-  smokeTestAwsResource,
+  testAwsResource,
   checkAwsQuotas
 } from '../../../../../../src/cli/commands/smoke-test/smoke-tests/aws';
 import { S3_BUCKET } from '../../../../../../src/cli/commands/smoke-test/smoke-tests/aws/resources';
 import { ResourceDiffRecord } from '../../../../../../src/cli/types';
 
 describe('aws smoke tests', () => {
-  it('smokeTestAwsResource', async () => {
+  it('testAwsResource', async () => {
     const mockResource = {
       resourceType: 'AWS::SQS::Queue'
     } as ResourceDiffRecord;
     
-    await smokeTestAwsResource(mockResource, [mockResource], {});
+    await testAwsResource(mockResource, [mockResource], {});
   
-    expect(mockSqsQueueSmokeTest).toBeCalled();
+    expect(mockTestResource).toBeCalled();
   });
 
   it('checkAwsQuotas', async () => {
@@ -29,8 +27,8 @@ describe('aws smoke tests', () => {
       resourceType: 'AWS::S3::Bucket'
     } as ResourceDiffRecord;
     
-    await checkAwsQuotas(S3_BUCKET, [mockResource]);
+    await checkAwsQuotas(S3_BUCKET, [mockResource], {});
   
-    expect(mockCheckS3Quota).toBeCalled();
+    expect(mockCheckQuotas).toBeCalled();
   });
 });

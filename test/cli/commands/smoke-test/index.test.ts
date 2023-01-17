@@ -19,7 +19,7 @@ jest.mock('../../../../src/cli/commands/smoke-test/prepare.ts', () => ({
 }));
 
 jest.mock('../../../../src/cli/commands/smoke-test/smoke-tests', () => ({
-  smokeTestAwsResource: mockSmokeTestAwsResource,
+  testAwsResource: mockSmokeTestAwsResource,
   checkAwsQuotas: mockCheckAwsQuotas
 }));
 
@@ -66,17 +66,18 @@ describe('smokeTest', () => {
       mockVpc
     ]);
 
-    await smokeTest({ format: IacFormat.awsCdk });
+    const mockConfig = { format: IacFormat.awsCdk };
+    await smokeTest(mockConfig);
 
     expect(mockDetectIacFormat).not.toBeCalled();
     expect(mockLoggerInfo).not.toBeCalled();
-    expect(mockPrepareForSmokeTest).toBeCalledWith({ format: IacFormat.awsCdk });
+    expect(mockPrepareForSmokeTest).toBeCalledWith(mockConfig);
     expect(mockSmokeTestAwsResource).toBeCalledTimes(2);
-    expect(mockSmokeTestAwsResource).toBeCalledWith(mockSqs, [mockSqs, mockVpc], { format: IacFormat.awsCdk });
-    expect(mockSmokeTestAwsResource).toBeCalledWith(mockVpc, [mockSqs, mockVpc], { format: IacFormat.awsCdk });
+    expect(mockSmokeTestAwsResource).toBeCalledWith(mockSqs, [mockSqs, mockVpc], mockConfig);
+    expect(mockSmokeTestAwsResource).toBeCalledWith(mockVpc, [mockSqs, mockVpc], mockConfig);
     expect(mockCheckAwsQuotas).toBeCalledTimes(2);
-    expect(mockCheckAwsQuotas).toBeCalledWith(SQS_QUEUE, [mockSqs]);
-    expect(mockCheckAwsQuotas).toBeCalledWith(VPC, [mockVpc]);
+    expect(mockCheckAwsQuotas).toBeCalledWith(SQS_QUEUE, [mockSqs], mockConfig);
+    expect(mockCheckAwsQuotas).toBeCalledWith(VPC, [mockVpc], mockConfig);
     expect(mockLoggerSuccess).toBeCalledWith('Smoke test passed!');
   });
 });

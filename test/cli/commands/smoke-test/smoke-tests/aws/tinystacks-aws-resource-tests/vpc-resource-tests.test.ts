@@ -27,8 +27,8 @@ import {
   ChangeType, IacFormat, ResourceDiffRecord
 } from '../../../../../../../src/cli/types';
 import {
-  checkVpcQuota, vpcSmokeTest
-} from '../../../../../../../src/cli/commands/smoke-test/smoke-tests/aws/resource-tests';
+  vpcSmokeTest
+} from '../../../../../../../src/cli/commands/smoke-test/smoke-tests/aws/tinystacks-aws-resource-tests/vpc-resource-tests';
 
 describe('vpc smoke tests', () => {
   beforeEach(() => {
@@ -45,88 +45,6 @@ describe('vpc smoke tests', () => {
     jest.resetAllMocks();
     // for spies
     jest.restoreAllMocks();
-  });
-
-  describe('checkVpcQuota', () => {
-    it('does nothing if change type is not create', async () => {
-      const resource = {
-        changeType: ChangeType.UPDATE
-      } as ResourceDiffRecord;
-
-      await checkVpcQuota([resource]);
-
-      expect(mockLoggerInfo).not.toBeCalled();
-      expect(mockGetCredentials).not.toBeCalled();
-      expect(mockServiceQuotas).not.toBeCalled();
-      expect(mockGetAwsDefaultServiceQuota).not.toBeCalled();
-      expect(mockEc2).not.toBeCalled();
-      expect(mockDescribeVpcs).not.toBeCalled();
-    });
-    it('validates quota would not be exceeded if change type is create', async () => {
-      const resource = {
-        changeType: ChangeType.CREATE,
-        format: IacFormat.awsCdk,
-        resourceType: 'AWS::EC2::VPC',
-        resourceRecord: {
-          properties: {}
-        }
-      } as unknown as ResourceDiffRecord;
-
-      mockGetAwsDefaultServiceQuota.mockResolvedValueOnce({
-        Quota: {
-          Value: 5
-        }
-      });
-      mockDescribeVpcs.mockResolvedValueOnce({
-        Vpcs: Array(2)
-      });
-      
-
-      await checkVpcQuota([resource, resource]);
-
-      expect(mockLoggerInfo).toBeCalled();
-      expect(mockLoggerInfo).toBeCalledWith('Checking VPC service quota...');
-      expect(mockGetCredentials).toBeCalled();
-      expect(mockGetAwsDefaultServiceQuota).toBeCalled();
-      expect(mockDescribeVpcs).toBeCalled();
-    });
-    it('throws a QuotaError if new vpc would exceed quota limit', async () => {
-      const resource = {
-        changeType: ChangeType.CREATE,
-        format: IacFormat.tf,
-        resourceType: 'aws_vpc',
-        resourceRecord: {
-          properties: {}
-        }
-      } as unknown as ResourceDiffRecord;
-      
-      mockGetAwsDefaultServiceQuota.mockResolvedValueOnce({
-        Quota: {
-          Value: 5
-        }
-      });
-      mockDescribeVpcs.mockResolvedValueOnce({
-        Vpcs: Array(5)
-      });
-
-      let thrownError;
-      try {
-        await checkVpcQuota([resource]);
-      } catch (error) {
-        thrownError = error;
-      } finally {
-        expect(mockLoggerInfo).toBeCalled();
-        expect(mockLoggerInfo).toBeCalledWith('Checking VPC service quota...');
-        expect(mockGetCredentials).toBeCalled();
-        expect(mockGetAwsDefaultServiceQuota).toBeCalled();
-        expect(mockDescribeVpcs).toBeCalled();
-
-        expect(thrownError).not.toBeUndefined();
-        expect(thrownError).toHaveProperty('name', 'CustomError');
-        expect(thrownError).toHaveProperty('message', 'Quota Limit Reached!');
-        expect(thrownError).toHaveProperty('reason', 'This stack needs to create 1 VPC(s), but only 0 more can be created with the current quota limit! Request a quota increase or choose another region to continue.');
-      }
-    });
   });
 
   describe('vpcSmokeTest', () => {
@@ -249,7 +167,7 @@ describe('vpc smoke tests', () => {
         expect(mockLoggerInfo).toBeCalledWith('Verifying subnet configuration...');
         
         expect(thrownError).toBeDefined();
-        expect(thrownError).toHaveProperty('name', 'CustomError');
+        expect(thrownError).toHaveProperty('name', 'CliError');
         expect(thrownError).toHaveProperty('message', 'Missing private subnets!');
         expect(thrownError).toHaveProperty('reason', 'Based on the configuration passed, private subnets with a NAT Gateway are required for all vpcs but none was found for "VpcC3027511".');
       }

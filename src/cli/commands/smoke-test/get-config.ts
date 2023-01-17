@@ -23,9 +23,14 @@ function tryParseConfig (configString: string, fileName: string) {
 
 function getConfig (options: SmokeTestOptions): SmokeTestOptions {
   const {
-    configFile = 'smoke-test.config.json' 
+    configFile = 'smoke-test.config.json',
+    verbose
   } = options;
   const config = tryParseConfig(tryReadFile(configFile) || '{}', configFile);
+
+  if (verbose) {
+    process.env.VERBOSE = verbose.toString();
+  }
 
   return {
     ...config,

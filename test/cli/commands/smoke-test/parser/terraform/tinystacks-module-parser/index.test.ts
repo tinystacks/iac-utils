@@ -51,7 +51,7 @@ jest.mock('../../../../../../../src/cli/commands/smoke-test/parser/terraform/tin
 }));
 
 import { TfDiff } from '../../../../../../../src/cli/types';
-import { parseResource } from '../../../../../../../src/cli/commands/smoke-test/parser/terraform/tinystacks-module-parser';
+import { TinyStacksTerraformModuleParser } from '../../../../../../../src/cli/commands/smoke-test/parser/terraform/tinystacks-module-parser';
 
 const fs = require('fs');
 const path = require('path');
@@ -80,6 +80,7 @@ describe('Tinystacks Resource Parser', () => {
     jest.restoreAllMocks();
   });
   describe('parseResource', () => {
+    const parser = new TinyStacksTerraformModuleParser();
     it('returns undefined if there is no parser for the resource type', async () => {
       const mockDiff: TfDiff = {
         action: 'create',
@@ -88,7 +89,7 @@ describe('Tinystacks Resource Parser', () => {
         logicalId: 'unknown_resource'
       };
       
-      const parsedResource = await parseResource(mockDiff, mockTfPlan);
+      const parsedResource = await parser.parseResource(mockDiff, mockTfPlan);
   
       expect(parsedResource).toBeUndefined();
       expect(mockParseSqsQueue).not.toBeCalled();
@@ -110,7 +111,7 @@ describe('Tinystacks Resource Parser', () => {
         logicalId: 'test_queue'
       };
       
-      await parseResource(mockDiff, mockTfPlan);
+      await parser.parseResource(mockDiff, mockTfPlan);
       
       expect(mockParseSqsQueue).toBeCalled();
       expect(mockParseSqsQueue).toBeCalledWith(
@@ -137,7 +138,7 @@ describe('Tinystacks Resource Parser', () => {
         logicalId: 'test_bucket'
       };
       
-      await parseResource(mockDiff, mockTfPlan);
+      await parser.parseResource(mockDiff, mockTfPlan);
       
       expect(mockParseS3Bucket).toBeCalled();
       expect(mockParseS3Bucket).toBeCalledWith(
@@ -164,7 +165,7 @@ describe('Tinystacks Resource Parser', () => {
         logicalId: 'ts_aws_eip_nat'
       };
       
-      await parseResource(mockDiff, mockTfPlan);
+      await parser.parseResource(mockDiff, mockTfPlan);
       
       expect(mockParseEip).toBeCalled();
       expect(mockParseEip).toBeCalledWith(
@@ -191,7 +192,7 @@ describe('Tinystacks Resource Parser', () => {
         logicalId: 'ts_aws_nat_gateway'
       };
       
-      await parseResource(mockDiff, mockTfPlan);
+      await parser.parseResource(mockDiff, mockTfPlan);
       
       expect(mockParseNatGateway).toBeCalled();
       expect(mockParseNatGateway).toBeCalledWith(
@@ -218,7 +219,7 @@ describe('Tinystacks Resource Parser', () => {
         logicalId: 'ts_aws_route_private_ngw'
       };
       
-      await parseResource(mockDiff, mockTfPlan);
+      await parser.parseResource(mockDiff, mockTfPlan);
       
       expect(mockParseRoute).toBeCalled();
       expect(mockParseRoute).toBeCalledWith(
@@ -245,7 +246,7 @@ describe('Tinystacks Resource Parser', () => {
         logicalId: 'ts_aws_route_table_private_ngw'
       };
       
-      await parseResource(mockDiff, mockTfPlan);
+      await parser.parseResource(mockDiff, mockTfPlan);
       
       expect(mockParseRouteTable).toBeCalled();
       expect(mockParseRouteTable).toBeCalledWith(
@@ -272,7 +273,7 @@ describe('Tinystacks Resource Parser', () => {
         logicalId: 'ts_aws_route_table_association_private_ngw'
       };
       
-      await parseResource(mockDiff, mockTfPlan);
+      await parser.parseResource(mockDiff, mockTfPlan);
       
       expect(mockParseRouteTableAssociation).toBeCalled();
       expect(mockParseRouteTableAssociation).toBeCalledWith(
@@ -299,7 +300,7 @@ describe('Tinystacks Resource Parser', () => {
         logicalId: 'ts_aws_subnet_private_ngw'
       };
       
-      await parseResource(mockDiff, mockTfPlan);
+      await parser.parseResource(mockDiff, mockTfPlan);
       
       expect(mockParseSubnet).toBeCalled();
       expect(mockParseSubnet).toBeCalledWith(
@@ -326,7 +327,7 @@ describe('Tinystacks Resource Parser', () => {
         logicalId: 'ts_aws_vpc'
       };
       
-      await parseResource(mockDiff, mockTfPlan);
+      await parser.parseResource(mockDiff, mockTfPlan);
       
       expect(mockParseVpc).toBeCalled();
       expect(mockParseVpc).toBeCalledWith(
