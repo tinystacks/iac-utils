@@ -1,5 +1,7 @@
 const mockGetOrElse = jest.fn();
 const mockWriteFileSync = jest.fn();
+const mockReaddirSync = jest.fn();
+const mockReadFileSync = jest.fn();
 const mockResolve = jest.fn();
 const mockParse = jest.fn();
 const mockParseEip = jest.fn();
@@ -21,6 +23,8 @@ jest.mock('fs', () => {
   const original = jest.requireActual('fs');
   return {
     writeFileSync: mockWriteFileSync,
+    readdirSync: mockReaddirSync,
+    readFileSync: mockReadFileSync,
     realRFS: original.readFileSync
   }
 });
@@ -346,5 +350,68 @@ describe('Tinystacks Resource Parser', () => {
       expect(mockParseRouteTableAssociation).not.toBeCalled();
       expect(mockParseSubnet).not.toBeCalled();
     });
+  });
+  it('getTfFiles', () => {
+    mockResolve.mockReturnValueOnce('./');
+    mockReaddirSync.mockReturnValueOnce([
+      'main.tf',
+      'secondary.tf',
+      'outputs.tf',
+      'variables.tf',
+      'vars.auto.tfvars'
+    ]);
+    mockReadFileSync.mockImplementation(fileName => `${fileName} contents`);
+
+    const parser = new TinyStacksTerraformModuleParser();
+    const result = parser.getTfFiles();
+
+    expect(mockResolve).toBeCalledTimes(1);
+    expect(mockReaddirSync).toBeCalledTimes(1);
+    expect(mockReadFileSync).toBeCalledTimes(2);
+    expect(result).toEqual([
+      {
+        name: 'main.tf',
+        contents: 'main.tf contents'
+      },
+      {
+        name: 'secondary.tf',
+        contents: 'secondary.tf contents'
+      }
+    ]);
+  });
+  it('getTfJson', async () => {
+    const tfFiles = [
+      {
+        name: 'main.tf',
+        contents: 'main.tf contents'
+      },
+      {
+        name: 'secondary.tf',
+        contents: 'secondary.tf contents'
+      }
+    ];
+    mockParse.mockImplementation((name, contents) => ({}));
+
+
+    const parser = new TinyStacksTerraformModuleParser();
+    const result = await parser.getTfJson(tfFiles);
+
+    expect(mockParse).toBeCalledTimes(2);
+    expect(result).toEqual([
+      {
+        name: 'main.tf',
+        contents: {}
+      },
+      {
+        name: 'secondary.tf',
+        contents: {}
+      }
+    ]);
+  });
+  it('getTinyStacksTfModuleDeclarations', () => {
+    const parser = new TinyStacksTerraformModuleParser();
+    const result = parser.getTinyStacksTfModuleDeclarations(mockTfJson);
+    expect(result.length).toEqual(1);
+    expect(result[0]).toEqual('my_vpc');
   });
 });

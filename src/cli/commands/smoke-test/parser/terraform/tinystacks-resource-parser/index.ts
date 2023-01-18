@@ -63,7 +63,7 @@ class TinyStacksTerraformResourceParser extends TerraformParser {
     });
   }
 
-  private getTfFiles (): TxtFile[] {
+  getTfFiles (): TxtFile[] {
     const files = readdirSync(resolvePath('./'));
     return files.filter(fileName => fileName.endsWith('.tf') && fileName !== 'variables.tf' && fileName !== 'outputs.tf')
       .map((name: string) => ({
@@ -72,7 +72,7 @@ class TinyStacksTerraformResourceParser extends TerraformParser {
       }));
   }
   
-  private async getTfJson (tfFiles: TxtFile[]): Promise<JsonFile[]> {
+  async getTfJson (tfFiles: TxtFile[]): Promise<JsonFile[]> {
     const tfJson = [];
     for (const tfFile of tfFiles) {
       const {

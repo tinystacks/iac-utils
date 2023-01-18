@@ -1,5 +1,5 @@
 import { AWS_TF_PROVIDER_NAME } from '../../constants';
-import * as logger from '../../logger';
+import logger from '../../logger';
 import { IacFormat, ResourceDiffRecord, SmokeTestOptions } from '../../types';
 import { detectIacFormat } from './detect-iac-format';
 import { getConfig } from './get-config';

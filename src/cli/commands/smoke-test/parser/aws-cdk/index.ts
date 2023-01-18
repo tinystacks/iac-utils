@@ -16,7 +16,7 @@ import {
   SmokeTestOptions
 } from '../../../../types';
 import { AwsCdkParser } from '../../../../abstracts';
-import * as logger from '../../../../logger';
+import logger from '../../../../logger';
 
 function partitionDiff (diff: string[], diffHeaders: string[]): DiffSection[] {
   const headerIndices: { [key: string]: number } = diffHeaders.reduce<{ [key: string]: number }>((acc, header) => {
@@ -78,8 +78,9 @@ async function tryToUseParser (diff: CdkDiff, cloudformationTemplate: Json, pars
     if (!parserInstance) {
       // eslint-disable-next-line @typescript-eslint/no-var-requires
       const parser = require(parserName);
-      if (parser) {
-        parserInstance = new parser.default();
+      const mainExport = parser?.default ? parser.default : parser;
+      if (mainExport) {
+        parserInstance = new mainExport();
         if (parserInstance instanceof AwsCdkParser) {
           parsers[parserName] = parserInstance;
         } else {

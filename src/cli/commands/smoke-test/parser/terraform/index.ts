@@ -15,7 +15,7 @@ import {
   SmokeTestOptions,
   TfDiff
 } from '../../../../types';
-import * as logger from '../../../../logger';
+import logger from '../../../../logger';
 import TerraformParser from '../../../../abstracts/terraform-parser';
 
 function getChangeTypeForTerraformDiff (tfChangeType: string): ChangeType {
@@ -43,8 +43,9 @@ async function tryToUseParser (diff: TfDiff, tfPlan: Json, parserName: string): 
     if (!parserInstance) {
       // eslint-disable-next-line @typescript-eslint/no-var-requires
       const parser = require(parserName);
-      if (parser) {
-        parserInstance = new parser.default();
+      const mainExport = parser?.default ? parser.default : parser;
+      if (mainExport) {
+        parserInstance = new mainExport();
         if (parserInstance instanceof TerraformParser) {
           parsers[parserName] = parserInstance;
         } else {

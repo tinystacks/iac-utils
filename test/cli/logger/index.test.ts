@@ -15,16 +15,8 @@ jest.mock('colors', () => ({
   green: mockGreen
 }));
 
-import {
-  error,
-  debug,
-  warn,
-  info,
-  log,
-  hint,
-  success,
-  verbose
-} from '../../../src/cli/logger';
+import { CliError } from '../../../src/cli/errors';
+import logger from '../../../src/cli/logger';
 import * as colors from 'colors';
 
 describe('logger', () => {
@@ -51,7 +43,7 @@ describe('logger', () => {
   });
 
   it('error', () => {
-    error('Error!');
+    logger.error('Error!');
 
     expect(console.error).toBeCalled();
     expect(console.error).toBeCalledWith('Error: Error!');
@@ -60,7 +52,7 @@ describe('logger', () => {
   });
 
   it('debug', () => {
-    debug('Debug');
+    logger.debug('Debug');
 
     expect(console.debug).toBeCalled();
     expect(console.debug).toBeCalledWith('Debug: Debug');
@@ -69,7 +61,7 @@ describe('logger', () => {
   });
 
   it('warn', () => {
-    warn('Warn');
+    logger.warn('Warn');
 
     expect(console.warn).toBeCalled();
     expect(console.warn).toBeCalledWith('Warning: Warn');
@@ -78,7 +70,7 @@ describe('logger', () => {
   });
   
   it('info', () => {
-    info('Info');
+    logger.info('Info');
 
     expect(console.info).toBeCalled();
     expect(console.info).toBeCalledWith('Info: Info');
@@ -87,7 +79,7 @@ describe('logger', () => {
   });
 
   it('log', () => {
-    log('Log');
+    logger.log('Log');
   
     expect(console.log).toBeCalled();
     expect(console.log).toBeCalledWith('Log');
@@ -96,7 +88,7 @@ describe('logger', () => {
   });
 
   it('hint', () => {
-    hint('Hint');
+    logger.hint('Hint');
   
     expect(console.log).toBeCalled();
     expect(console.log).toBeCalledWith('Hint: Hint');
@@ -105,7 +97,7 @@ describe('logger', () => {
   });
 
   it('success', () => {
-    success('Success');
+    logger.success('Success');
   
     expect(console.log).toBeCalled();
     expect(console.log).toBeCalledWith('Success: Success');
@@ -116,7 +108,7 @@ describe('logger', () => {
   describe('verbose', () => {
     it('logs if VERBOSE env var is true', () => {
       process.env.VERBOSE = 'true';
-      verbose('Verbose')
+      logger.verbose('Verbose')
       expect(console.log).toBeCalled();
       expect(console.log).toBeCalledWith('Verbose');
       expect(mockGray).toBeCalled();
@@ -124,15 +116,46 @@ describe('logger', () => {
     });
     it('does not log if VERBOSE env var is false', () => {
       process.env.VERBOSE = 'false';
-      verbose('Verbose')
+      logger.verbose('Verbose')
       expect(console.log).not.toBeCalled();
       expect(mockGray).not.toBeCalled();
     });
     it('does not log if VERBOSE env var is undefined', () => {
       process.env.VERBOSE = undefined;
-      verbose('Verbose')
+      logger.verbose('Verbose')
       expect(console.log).not.toBeCalled();
       expect(mockGray).not.toBeCalled();
+    });
+  });
+
+  describe('cliError', () => {
+    beforeEach(() => {
+      jest.spyOn(logger, 'error').mockImplementation(jest.fn());
+      jest.spyOn(logger, 'hint').mockImplementation(jest.fn());
+      jest.spyOn(global.console, 'error').mockImplementation(jest.fn());
+    });
+    it ('logs with special format if the error is a CliError', () => {
+      const error = new CliError('Error!', 'Test error.', 'Hint 1', 'hint 2');
+
+      logger.cliError(error);
+
+      expect(logger.error).toBeCalled();
+      expect(logger.error).toBeCalledWith('Error!\n\tTest error.');
+      expect(logger.hint).toBeCalledTimes(2);
+      expect(logger.hint).toBeCalledWith('Hint 1');
+      expect(logger.hint).toBeCalledWith('hint 2');
+      expect(global.console.error).not.toBeCalled();
+    });
+    it ('logs unexpected error if the error is not a CliError', () => {
+      const error = new Error('Error!');
+
+      logger.cliError(error);
+
+      expect(logger.error).toBeCalled();
+      expect(logger.error).toBeCalledWith('An unexpected error occurred!');
+      expect(logger.hint).not.toBeCalled();
+      expect(global.console.error).toBeCalled();
+      expect(global.console.error).toBeCalledWith(error);
     });
   });
 });

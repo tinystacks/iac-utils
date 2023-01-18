@@ -2,7 +2,7 @@ import isNil from 'lodash.isnil';
 import get from 'lodash.get';
 import isString from 'lodash.isstring';
 import isPlainObject from 'lodash.isplainobject';
-import * as logger from '../../../../../logger';
+import logger from '../../../../../logger';
 import { Json, ResourceDiffRecord, SmokeTestOptions } from '../../../../../types';
 import { ROUTE_TABLE_ASSOCIATION, SUBNET, getStandardResourceType } from '../resources';
 import { CliError } from '../../../../../errors';

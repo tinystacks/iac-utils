@@ -1,4 +1,4 @@
-import * as logger from '../../../../../logger';
+import logger from '../../../../../logger';
 import { SQS } from '@aws-sdk/client-sqs';
 import { ConflictError } from '../../../../../errors';
 import { ChangeType, ResourceDiffRecord, SmokeTestOptions } from '../../../../../types';

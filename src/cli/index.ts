@@ -3,7 +3,7 @@
 import { Command, Option } from 'commander';
 import * as colors from 'colors';
 import { smokeTest } from './commands';
-import * as logger from './logger';
+import logger from './logger';
 import { cleanupTmpDirectory } from './hooks';
 const program = new Command();
 // eslint-disable-next-line

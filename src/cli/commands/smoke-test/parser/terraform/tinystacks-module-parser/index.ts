@@ -65,7 +65,7 @@ class TinyStacksTerraformModuleParser extends TerraformParser {
     });
   }
 
-  private getTfFiles (): TxtFile[] {
+  getTfFiles (): TxtFile[] {
     const files = readdirSync(resolvePath('./'));
     return files.filter(fileName => fileName.endsWith('.tf') && fileName !== 'variables.tf' && fileName !== 'outputs.tf')
       .map((name: string) => ({
@@ -74,7 +74,7 @@ class TinyStacksTerraformModuleParser extends TerraformParser {
       }));
   }
     
-  private async getTfJson (tfFiles: TxtFile[]): Promise<JsonFile[]> {
+  async getTfJson (tfFiles: TxtFile[]): Promise<JsonFile[]> {
     const tfJson = [];
     for (const tfFile of tfFiles) {
       const {
@@ -87,7 +87,7 @@ class TinyStacksTerraformModuleParser extends TerraformParser {
     return tfJson;
   }
     
-  private getTinyStacksTfModuleDeclarations (tfJson: JsonFile[]): string[] {
+  getTinyStacksTfModuleDeclarations (tfJson: JsonFile[]): string[] {
     return tfJson?.reduce((acc: string[], tfConfig: Json) => {
       Object.entries(tfConfig.contents?.module || {}).forEach(([logicalId, resources]) => {
         const resource = (resources as Json[])?.at(0);

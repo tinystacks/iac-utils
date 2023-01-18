@@ -8,62 +8,55 @@ import {
 } from 'colors';
 import { CliError } from '../errors';
 
-function error (message: string) {
-  console.error(red(`Error: ${message}`));
-}
+const logger = {
+  error (message: string) {
+    console.error(red(`Error: ${message}`));
+  },
 
-function debug (message: string) {
-  console.debug(yellow(`Debug: ${message}`));
-}
+  debug (message: string) {
+    console.debug(yellow(`Debug: ${message}`));
+  },
 
-function warn (message: string) {
-  console.warn(yellow(`Warning: ${message}`));
-}
+  warn (message: string) {
+    console.warn(yellow(`Warning: ${message}`));
+  },
 
-function info (message: string) {
-  console.info(blue(`Info: ${message}`));
-}
+  info (message: string) {
+    console.info(blue(`Info: ${message}`));
+  },
 
-function log (message: string) {
-  console.log(gray(message));
-}
-
-function hint (message: string) {
-  console.log(magenta(`Hint: ${message}`));
-}
-
-function success (message: string) {
-  console.log(green(`Success: ${message}`));
-}
-
-function verbose (message: string | Error | any) {
-  if (process.env.VERBOSE === 'true') {
+  log (message: string) {
     console.log(gray(message));
-  }
-}
+  },
 
-function cliError (err: Error | unknown) {
-  const e = err as Error;
-  if (e.name === CliError.name) {
-    const customError = e as CliError;
-    error(`${customError.message}${customError.reason ? `\n\t${customError.reason}` : ''}`);
-    if (customError.hints) {
-      customError.hints.forEach(hintString => hint(hintString));
+  hint (message: string) {
+    console.log(magenta(`Hint: ${message}`));
+  },
+
+  success (message: string) {
+    console.log(green(`Success: ${message}`));
+  },
+
+  verbose (message: string | Error | any) {
+    if (process.env.VERBOSE === 'true') {
+      console.log(gray(message));
     }
-  } else {
-    error('An unexpected error occurred!');
-    console.error(error);
-  }
-}
+  },
 
-export {
-  error,
-  debug,
-  warn,
-  info,
-  log,
-  hint,
-  success,
-  verbose,
-  cliError
+  cliError (e: Error | unknown) {
+    const error = e as Error;
+    if (error.name === CliError.name) {
+      const customError = e as CliError;
+      this.error(`${customError.message}${customError.reason ? `\n\t${customError.reason}` : ''}`);
+      if (customError.hints) {
+        customError.hints.forEach(hintString => this.hint(hintString));
+      }
+    } else {
+      this.error('An unexpected error occurred!');
+      console.error(error);
+    }
+  }
 };
+
+
+export default logger;

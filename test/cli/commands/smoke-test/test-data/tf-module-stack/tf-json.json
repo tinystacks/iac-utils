@@ -12,6 +12,11 @@
             "ts_vpc_slice_azs_end_index": 2,
             "ts_vpc_slice_azs_start_index": 0
           }
+        ],
+        "other": [
+          {
+            "source": "git::https://github.com/other/other-terraform-modules.git//aws/modules/other"
+          }
         ]
       }
     }

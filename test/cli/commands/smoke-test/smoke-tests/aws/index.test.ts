@@ -12,6 +12,12 @@ import { S3_BUCKET } from '../../../../../../src/cli/commands/smoke-test/smoke-t
 import { ResourceDiffRecord } from '../../../../../../src/cli/types';
 
 describe('aws smoke tests', () => {
+  beforeEach(() => {
+    process.env.VERBOSE = 'true';
+  });
+  afterEach(() => {
+    delete process.env.VERBOSE;
+  })
   it('testAwsResource', async () => {
     const mockResource = {
       resourceType: 'AWS::SQS::Queue'

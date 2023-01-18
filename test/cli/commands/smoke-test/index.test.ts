@@ -28,6 +28,10 @@ import { SQS_QUEUE, VPC } from '../../../../src/cli/commands/smoke-test/smoke-te
 import { ChangeType, IacFormat } from '../../../../src/cli/types';
 
 describe('smokeTest', () => {
+  beforeEach(() => {
+    mockCheckAwsQuotas.mockResolvedValue(undefined);
+    mockSmokeTestAwsResource.mockResolvedValue(undefined);
+  });
   afterEach(() => {
     // for mocks
     jest.resetAllMocks();

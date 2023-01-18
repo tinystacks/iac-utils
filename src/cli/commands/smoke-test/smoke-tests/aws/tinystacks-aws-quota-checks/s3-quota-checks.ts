@@ -1,4 +1,4 @@
-import * as logger from '../../../../../logger';
+import logger from '../../../../../logger';
 import { S3 } from '@aws-sdk/client-s3';
 import { ServiceQuotas } from '@aws-sdk/client-service-quotas';
 import { ChangeType, ResourceDiffRecord } from '../../../../../types';

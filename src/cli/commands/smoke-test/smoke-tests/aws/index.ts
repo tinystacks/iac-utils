@@ -1,7 +1,7 @@
 import QuotaChecker from '../../../../abstracts/quota-checker';
 import { TINYSTACKS_AWS_QUOTA_CHECKER, TINYSTACKS_AWS_RESOURCE_TESTER } from '../../../../constants';
 import { ResourceDiffRecord, SmokeTestOptions } from '../../../../types';
-import * as logger from '../../../../logger';
+import logger from '../../../../logger';
 import ResourceTester from '../../../../abstracts/resource-tester';
 
 const resourceTesterCache: {
@@ -14,8 +14,9 @@ async function tryToUseResourceTester (resource: ResourceDiffRecord, allResource
     if (!resourceTesterInstance) {
       // eslint-disable-next-line @typescript-eslint/no-var-requires
       const resourceTester = require(resourceTesterName);
-      if (resourceTester) {
-        resourceTesterInstance = new resourceTester.default();
+      const mainExport = resourceTester?.default ? resourceTester.default : resourceTester;
+      if (mainExport) {
+        resourceTesterInstance = new mainExport();
         if (resourceTesterInstance instanceof ResourceTester) {
           resourceTesterCache[resourceTesterName] = resourceTesterInstance;
         } else {
@@ -55,8 +56,9 @@ async function tryToUseQuotaChecker (resourceType: string, resources: ResourceDi
     if (!quotaCheckerInstance) {
       // eslint-disable-next-line @typescript-eslint/no-var-requires
       const quotaChecker = require(quotaCheckerName);
-      if (quotaChecker) {
-        quotaCheckerInstance = new quotaChecker.default();
+      const mainExport = quotaChecker?.default ? quotaChecker.default : quotaChecker;
+      if (mainExport) {
+        quotaCheckerInstance = new mainExport();
         if (quotaCheckerInstance instanceof QuotaChecker) {
           quotaCheckerCache[quotaCheckerName] = quotaCheckerInstance;
         } else {
